@@ -18,6 +18,8 @@ def index():
     return auth.wiki()
     """    
     dids = db().select(db.dids.ALL)
+    for d in dids:
+        d.body = db(db.elements.did_id == d.id).select().first().element_data
     return dict(dids=dids)
 
 
@@ -35,14 +37,15 @@ def create_did():
                             spam = 0,
                             link = None)
             
-    db.elements.insert(did_id= did_id,
+    db.elements.insert(did_id = did_id,
                        stack_num = 0,
                        is_image = False,
                        element_data = body)
 
     did = DIV(P('Author: '+str(author)),
               P('Posted: '+str(date_created)),
-              P('Title: '+title))
+              P('Title: '+title),
+              P('Body: '+body))
     return did
 
 def user():

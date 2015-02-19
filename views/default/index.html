@@ -18,7 +18,8 @@
         <div class="did">
             {{=DIV(P('Author: '+str(d.author_id)),
                    P('Posted: ' +str(d.date_created)),
-                   P('Title: '+d.title))}}
+                   P('Title: '+d.title),
+                   P('Body: '+d.body))}}
         </div>
     {{pass}}
 {{pass}}
