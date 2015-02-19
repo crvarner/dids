@@ -1,0 +1,19 @@
+/*
+    style sheet for dids!
+    first css stylesheet evar!
+*/
+
+.did{
+    margin: 10px;
+    padding: 10px;
+    background-color: #EEE;
+    border-radius: 10px;
+}
+
+.did_form{
+    margin: 0px;
+}
+
+#new_btn{
+    margin-left: 10px;
+}

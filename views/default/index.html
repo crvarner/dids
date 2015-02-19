@@ -1,0 +1,29 @@
+<html>
+<head>
+{{left_sidebar_enabled=False}}
+{{right_sidebar_enabled=False}}
+
+{{response.files.append(URL('static','css/dids.css'))}}
+{{extend 'layout.html'}}
+
+</head>
+
+<body>
+
+{{if len(dids) == 0:}}
+    <p>There are no Dids</p>
+{{else:}}
+    <div id="did_container">
+    {{for d in dids:}}
+        <div class="did">
+            <p>test</p>
+        </div>
+    {{pass}}
+    </div>
+{{pass}}
+
+</body>
+
+<script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
+
+</html>
