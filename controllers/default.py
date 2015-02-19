@@ -17,11 +17,32 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """    
-    return dict(dids=[1])
+    dids = db().select(db.dids.ALL)
+    return dict(dids=dids)
 
+
+@auth.requires_login()
 def create_did():
-    did = DIV( P(request.vars['title']),
-               P(request.vars['body']))
+    title = request.vars['title']
+    body = request.vars['body']
+    author = auth.user_id
+    date_created = datetime.datetime.utcnow()
+    
+    did_id = db.dids.insert(author_id = author,
+                            date_created = date_created,
+                            title = title,
+                            likes = 0,
+                            spam = 0,
+                            link = None)
+            
+    db.elements.insert(did_id= did_id,
+                       stack_num = 0,
+                       is_image = False,
+                       element_data = body)
+
+    did = DIV(P('Author: '+str(author)),
+              P('Posted: '+str(date_created)),
+              P('Title: '+title))
     return did
 
 def user():

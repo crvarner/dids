@@ -10,17 +10,19 @@
 
 <body>
 
+<div id="did_container">
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
 {{else:}}
-    <div id="did_container">
     {{for d in dids:}}
         <div class="did">
-            <p>test</p>
+            {{=DIV(P('Author: '+str(d.author_id)),
+                   P('Posted: ' +str(d.date_created)),
+                   P('Title: '+d.title))}}
         </div>
     {{pass}}
-    </div>
 {{pass}}
+</div>
 
 </body>
 
