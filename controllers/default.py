@@ -17,35 +17,38 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """    
-    dids = db().select(db.dids.ALL)
+    dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
     for d in dids:
-        d.body = db(db.elements.did_id == d.id).select().first().element_data
+        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
     return dict(dids=dids)
 
 
 @auth.requires_login()
 def create_did():
-    title = request.vars['title']
-    body = request.vars['body']
+    data = json.loads(request.vars['data']);
     author = auth.user_id
     date_created = datetime.datetime.utcnow()
-    
+
     did_id = db.dids.insert(author_id = author,
                             date_created = date_created,
-                            title = title,
+                            title = data['title'],
                             likes = 0,
                             spam = 0,
                             link = None)
-            
-    db.elements.insert(did_id = did_id,
-                       stack_num = 0,
-                       is_image = False,
-                       element_data = body)
 
     did = DIV(P('Author: '+str(author)),
               P('Posted: '+str(date_created)),
-              P('Title: '+title),
-              P('Body: '+body))
+              P('Title: '+str(data['title'])))
+                            
+    elem_count = 0
+    for b in data['body']:
+        db.elements.insert(did_id = did_id,
+                       stack_num = elem_count,
+                       is_image = False,
+                       element_data = b)
+        did.append(P( 'Body' + str(elem_count) + ': ' + b))
+        elem_count += 1
+
     return did
 
 def user():

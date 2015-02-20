@@ -10,7 +10,16 @@
     border-radius: 10px;
 }
 
-.did_form{
+.form_btn{
+    margin-top: 10px;
+}
+
+input.form_text{
+    width: 100%;
+    margin: 0px;
+}
+
+#did_form{
     margin: 0px;
 }
 

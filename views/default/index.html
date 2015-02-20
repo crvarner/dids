@@ -16,10 +16,12 @@
 {{else:}}
     {{for d in dids:}}
         <div class="did">
-            {{=DIV(P('Author: '+str(d.author_id)),
-                   P('Posted: ' +str(d.date_created)),
-                   P('Title: '+d.title),
-                   P('Body: '+d.body))}}
+            {{=P('Author: '+str(d.author_id))}}
+            {{=P('Posted: ' +str(d.date_created))}}
+            {{=P('Title: '+d.title)}}
+            {{for b in d.body:}}
+                {{=P('Body'+str(b.stack_num)+': '+b.element_data)}}
+            {{pass}}
         </div>
     {{pass}}
 {{pass}}

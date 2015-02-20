@@ -1,5 +1,6 @@
 
 import datetime
+import json
 
 """
 defines the table "dids" which is responsible for
