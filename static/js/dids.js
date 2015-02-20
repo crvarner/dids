@@ -12,6 +12,7 @@ var publishDid = function(){
         body: elem_data
     };
     $.ajax({
+        type: 'POST',
         url: 'create_did',
         data: {data: JSON.stringify(send_data)},
         success: function(data){

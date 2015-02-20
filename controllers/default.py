@@ -9,6 +9,7 @@
 ## - api is an example of Hypermedia API support and access control
 #########################################################################
 
+@auth.requires_login()
 def index():
     """
     example action using the internationalization operator T and flash
