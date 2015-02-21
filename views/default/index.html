@@ -4,13 +4,18 @@
 {{right_sidebar_enabled=False}}
 
 {{response.files.append(URL('static','css/dids.css'))}}
+{{response.files.append(URL('static','css/dropzone.css'))}}
+
 {{extend 'layout.html'}}
 
 </head>
 
 <body>
 
+
+
 <div id="did_container">
+
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
 {{else:}}
@@ -29,6 +34,7 @@
 
 </body>
 
+<script type="text/javascript" src="{{=URL('static','js/dropzone.js')}}"></script>
 <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
 
 </html>

@@ -52,6 +52,9 @@ def create_did():
 
     return did
 
+def upload_image():
+    cool = True;
+
 def user():
     """
     exposes:

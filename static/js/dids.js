@@ -31,13 +31,20 @@ var addText = function(){
     $('#did_form').append('<input class="form_text" id="elem'+ ++elem_count+'" type="text"/>');
 }
 
+var addImage = function(){
+    $('#did_form').append('<div id="elem'+ ++elem_count+'" class="DZdiv">');
+    $('#elem'+elem_count).dropzone({ url: "/upload-target",
+                                     maxFiles: 1 });
+}
+
 var newDid = function(){
     ++new_count;
     var did_string = '<div class="did" id="new' + new_count + '">'
-                    +'<form id="did_form">'
-                    +'<input id="did_title" type="text" style="width: 100%"/>'
-                    +'</form>'
-                    +'<a class="btn form_btn" onclick="addText()";>add text</a>'
+                    +'<div id="did_form">'
+                    +'<input id="did_title" class="form_text form_title" type="text"/>'
+                    +'</div>'
+                    +'<a class="btn form_btn" onclick="addText()">add text</a>'
+                    +'<a class="btn form_btn" onclick="addImage()">add image</a>'
                     +'<a class="btn form_btn" onclick="publishDid();">publish</a>'
                     +'<a class="btn form_btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
                     +'</div>';
