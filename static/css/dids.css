@@ -4,7 +4,7 @@
 */
 
 .did{
-    width: 600px;
+    width: 100%;
     margin: 10px;
     padding: 10px;
     background-color: #EEE;
@@ -30,6 +30,7 @@ input.form_text{
 }
 
 input.form_title{
+    width: 100%;
     margin-top: 0px;
     margin-bottom: 20px;
 }

@@ -41,7 +41,7 @@ var newDid = function(){
     ++new_count;
     var did_string = '<div class="did" id="new' + new_count + '">'
                     +'<div id="did_form">'
-                    +'<input id="did_title" class="form_text form_title" type="text"/>'
+                    +'<input id="did_title" class="form_title" type="text"/>'
                     +'</div>'
                     +'<a class="btn form_btn" onclick="addText()">add text</a>'
                     +'<a class="btn form_btn" onclick="addImage()">add image</a>'
