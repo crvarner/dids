@@ -26,7 +26,8 @@ def index():
 
 @auth.requires_login()
 def create_did():
-    data = json.loads(request.vars['data']);
+
+    data = json.loads(request.vars['data'])
     author = auth.user_id
     date_created = datetime.datetime.utcnow()
 
@@ -45,15 +46,13 @@ def create_did():
     for b in data['body']:
         db.elements.insert(did_id = did_id,
                        stack_num = elem_count,
-                       is_image = False,
-                       element_data = b)
-        did.append(P( 'Body' + str(elem_count) + ': ' + b))
+                       is_image = b['image'],
+                       element_data = b['value'])
+        if (b['image']): did.append(P('ITS AN IMAGE OMG'))
+        did.append(P( 'Body' + str(elem_count) + ': ' + b['value']))
         elem_count += 1
 
     return did
-
-def upload_image():
-    cool = True;
 
 def user():
     """

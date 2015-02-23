@@ -3,36 +3,55 @@
     first css stylesheet evar!
 */
 
+body{
+    background: #3366FF top right no-repeat;
+    background-attachment: fixed;
+}
+
 .did{
     width: 100%;
     margin: 10px;
     padding: 10px;
     background-color: #EEE;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .form_btn{
     margin-top: 10px;
+    margin-right: 2px;
 }
 
-.DZdiv{
-    height: 400px;
-    background-color: #FCFCFC;
-    margin-top: 10px;
-    border-radius: 10px;
-    border: solid #CCC 1px;
-}
-
-input.form_text{
+textarea.form-text{
+    background-color: #CCDDFF;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 0px;
+    border-radius: 5px;
+}
+textarea.animated {
+    -webkit-transition: height 0.2s;
+    -moz-transition: height 0.2s;
+    transition: height 0.2s;
 }
 
-input.form_title{
+.image-preview{
+    height: 400px;
+    background-color: #CCDDFF;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    border-radius: 5px;
+    border: solid #CCC 1px;
+}
+
+input.form-title{
+    height: 26px;
+    font-size: 22px;
+    background-color: #CCDDFF;
     width: 100%;
     margin-top: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+    border-radius: 5px;
 }
 
 #did_form{

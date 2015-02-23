@@ -4,7 +4,6 @@
 {{right_sidebar_enabled=False}}
 
 {{response.files.append(URL('static','css/dids.css'))}}
-{{response.files.append(URL('static','css/dropzone.css'))}}
 
 {{extend 'layout2.html'}}
 
@@ -34,7 +33,7 @@
 
 </body>
 
-<script type="text/javascript" src="{{=URL('static','js/dropzone.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
 <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
 
 </html>
