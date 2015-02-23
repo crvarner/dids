@@ -24,6 +24,8 @@ body{
 textarea.form-text{
     background-color: #CCDDFF;
     width: 100%;
+    max-width: 100%;
+    resize: none;
     margin-top: 10px;
     margin-bottom: 0px;
     border-radius: 5px;
@@ -46,7 +48,7 @@ textarea.animated {
 
 input.form-title{
     height: 26px;
-    font-size: 22px;
+    font-size: 18px;
     background-color: #CCDDFF;
     width: 100%;
     margin-top: 0px;
