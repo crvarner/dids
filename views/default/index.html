@@ -21,12 +21,15 @@
 {{else:}}
     {{for d in dids:}}
         <div class="did">
-            {{=P('Author: '+str(d.author_id))}}
-            {{=P('Posted: ' +str(d.date_created))}}
-            {{=P('Title: '+str(d.title))}}
+            {{=H4(str(d.title))}}
             {{for b in d.body:}}
-                {{=P('Body'+str(b.stack_num)+': '+str(b.element_data), _style="word-break: break-word")}}
+                {{if b.is_image:}}
+                    {{=IMG( _src=URL('download', args = db.image(b.element_data).img ))}}
+                {{else:}}
+                    {{=P(str(b.element_data), _style="word-break: break-word")}}
+                {{pass}}
             {{pass}}
+            {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
         </div>
     {{pass}}
 {{pass}}
