@@ -26,7 +26,7 @@
                 {{if b.is_image:}}
                     {{=IMG( _src=URL('download', args = db.image(b.element_data).img ))}}
                 {{else:}}
-                    {{=P(str(b.element_data), _style="word-break: break-word")}}
+                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
                 {{pass}}
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}

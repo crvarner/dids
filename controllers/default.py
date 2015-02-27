@@ -59,7 +59,7 @@ def create_did():
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
-            did.append(P(str(d), _style="word-break: break-word"))
+            did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
     return did
 
