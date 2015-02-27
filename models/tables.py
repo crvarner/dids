@@ -26,7 +26,7 @@ db.define_table('dids',
                 
 """
 defines the table holding all the contents of all the dids
-in the system. this includes gifs, images, text bodies, and
+in the system. this includes gifs, image id's, text bodies, and
 videos (potentially)
 """
 
@@ -36,7 +36,13 @@ db.define_table('elements',
                 Field('is_image','boolean'),
                 Field('element_data')
                 )
-                
+
+"""
+defines table that will hold image locations on FS
+"""
+db.define_table('image',
+                Field('img','upload'))
+
 """
 defines the table holding all comments for all dids.
 """

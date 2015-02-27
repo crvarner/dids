@@ -23,9 +23,9 @@
         <div class="did">
             {{=P('Author: '+str(d.author_id))}}
             {{=P('Posted: ' +str(d.date_created))}}
-            {{=P('Title: '+d.title)}}
+            {{=P('Title: '+str(d.title))}}
             {{for b in d.body:}}
-                {{=P('Body'+str(b.stack_num)+': '+b.element_data)}}
+                {{=P('Body'+str(b.stack_num)+': '+str(b.element_data), _style="word-break: break-word")}}
             {{pass}}
         </div>
     {{pass}}

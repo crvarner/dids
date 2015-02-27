@@ -89,3 +89,9 @@ CREATE TABLE likes(
     did_id CHAR(512)
 );
 success!
+timestamp: 2015-02-23T14:48:38.682000
+CREATE TABLE image(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    img CHAR(512)
+);
+success!

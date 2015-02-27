@@ -26,33 +26,54 @@ def index():
 
 @auth.requires_login()
 def create_did():
-
-    data = json.loads(request.vars['data'])
+    data = request.vars
     author = auth.user_id
     date_created = datetime.datetime.utcnow()
-
+    
     did_id = db.dids.insert(author_id = author,
                             date_created = date_created,
-                            title = data['title'],
+                            title = data['did_title'],
                             likes = 0,
                             spam = 0,
                             link = None)
-
+    
     did = DIV(P('Author: '+str(author)),
               P('Posted: '+str(date_created)),
-              P('Title: '+str(data['title'])))
-                            
-    elem_count = 0
-    for b in data['body']:
-        db.elements.insert(did_id = did_id,
-                       stack_num = elem_count,
-                       is_image = b['image'],
-                       element_data = b['value'])
-        if (b['image']): did.append(P('ITS AN IMAGE OMG'))
-        did.append(P( 'Body' + str(elem_count) + ': ' + b['value']))
-        elem_count += 1
-
-    return did
+              P('Title: '+str(data['did_title'])),
+              _style="width:100%")
+    
+    num_elems = (len(data) - 1)/2
+    for i in range(0, num_elems):
+        d = data['elem'+str(i)]
+        if data['is_img' + str(i)]:
+            img_id = db.image.insert(img = db.image.img.store(d.file, d.filename))
+            
+            db.elements.insert(did_id = did_id,
+                stack_num = i,
+                is_image = True,
+                element_data = img_id)
+        else:
+            """db.elements.insert(did_id = did_id,
+                stack_num = i,
+                is_image = False,
+                element_data = d.value)
+        
+            did.append(P('Body'+str(i)+': ' + d, _style="word-break: break-word"))"""
+        
+        #for b in data['body']:
+        #db.elements.insert(did_id = did_id,
+        #               stack_num = elem_count,
+        #               is_image = b['image'],
+        #               element_data = b['value'])
+        #if (b['image']):
+            #session.flash = b['value']
+            #img = db.image.img.store(b['value'])
+            #db.image.insert(img = img)
+            #did.append(P('ITS AN IMAGE OMG'))
+        #did.append(P( 'Body' + str(elem_count) + ': ' + b['value'], _style="word-break: break-word"))
+        #elem_count += 1
+    
+    return num_elems
 
 def user():
     """
