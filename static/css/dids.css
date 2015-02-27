@@ -4,7 +4,7 @@
 */
 
 body{
-    background: #113355 top right no-repeat;
+    background: #295887 top right no-repeat;
     background-attachment: fixed;
 }
 
@@ -21,6 +21,12 @@ body{
     margin-right: 2px;
 }
 
+.clear:after{
+    clear: both;
+    content: "";
+    display: table;
+}
+
 hr.did-sep{
     margin: 0px;
     height: 1px;
@@ -29,7 +35,6 @@ hr.did-sep{
 }
 
 textarea.form-text{
-    background-color: #CCDDFF;
     width: 100%;
     max-width: 100%;
     resize: none;
@@ -45,7 +50,6 @@ textarea.animated {
 
 .image-preview{
     height: 400px;
-    background-color: #CCDDFF;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 0px;
@@ -56,7 +60,6 @@ textarea.animated {
 input.form-title{
     height: 26px;
     font-size: 18px;
-    background-color: #CCDDFF;
     width: 100%;
     margin-top: 0px;
     margin-bottom: 0px;

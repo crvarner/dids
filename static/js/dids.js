@@ -1,5 +1,6 @@
 var new_count = 0;
 var elem_count = 0;
+var com_count = 0;
 
 var publishDid = function(){
     $('#did_form').submit();
@@ -26,6 +27,31 @@ var addImage = function(){
     $('#did_form').append('<div id="img_prev'+ elem_count +'" class="image-preview"></div>'
                          +'<input id="elem'+ elem_count +'" name="elem'+ elem_count +'" type="file" />'
                          +'<input name="is_img'+ elem_count++ +'" type="hidden" value="True" />');
+}
+
+var submitComment = function(){
+    
+}
+
+/* adds a comment field and cancel/submit buttons */
+var addComment = function(div_id, did_id, com_btn){
+    com_id = "com"+com_count;
+    $('#'+div_id).append('<div id="'+com_id+'">'
+                        +'<textarea id="com_text'+div_id+'" class="form-text animated"></textarea>'
+                        +'<a id="submit'+did_id+'" class="btn form-btn" style="float:right">submit</a>'
+                        +'<a id="cancel'+did_id+'" class="btn form-btn" style="float:right">cancel</a>'
+                        +'</div>');
+    $('#com_text'+div_id).autosize();
+    $('#submit'+did_id).click(function(){
+        
+    });
+    $('#cancel'+did_id).click(function(){
+        $('#'+com_id).remove();
+        $(com_btn).show();
+        com_count--;
+    });
+    $(com_btn).hide();
+    com_count++;
 }
 
 /* Removes the last element from the currently editable did */

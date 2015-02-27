@@ -62,7 +62,7 @@ def create_did():
             did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
     did.append(HR( _class="did-sep"))
-    did.append(A('comment', _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+")"))
+    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
     return did
 
 def user():
