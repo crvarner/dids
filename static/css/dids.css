@@ -16,9 +16,16 @@ body{
     border-radius: 5px;
 }
 
-.form_btn{
+.form-btn{
     margin-top: 10px;
     margin-right: 2px;
+}
+
+hr.did-sep{
+    margin: 0px;
+    height: 1px;
+    border: none;
+    background-color: #DDD;
 }
 
 textarea.form-text{

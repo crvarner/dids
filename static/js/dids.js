@@ -44,11 +44,11 @@ var newDid = function(){
                     +'<form id="did_form" enctype="multipart/form-data" action="create_did" method="post">'
                     +'<input class="form-title" name="did_title" type="text"/>'
                     +'</form>'
-                    +'<a class="btn form_btn" onclick="addText()">add text</a>'
-                    +'<a class="btn form_btn" onclick="addImage()">add image</a>'
-                    +'<a class="btn form_btn" onclick="rmElement()">remove element</a>'
-                    +'<a style="float: right" class="btn form_btn" onclick="publishDid();">publish</a>'
-                    +'<a style="float: right" class="btn form_btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
+                    +'<a class="btn form-btn" onclick="addText()">add text</a>'
+                    +'<a class="btn form-btn" onclick="addImage()">add image</a>'
+                    +'<a class="btn form-btn" onclick="rmElement()">remove element</a>'
+                    +'<a style="float: right" class="btn form-btn" onclick="publishDid();">publish</a>'
+                    +'<a style="float: right" class="btn form-btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
                     +'</div>';
     $('#did_container').prepend(did_string);
     

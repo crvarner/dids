@@ -19,8 +19,9 @@
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
 {{else:}}
+    {{i = 0}}
     {{for d in dids:}}
-        <div class="did">
+        <div class="did" id="{{='d'+str(i)}}">
             {{=H4(str(d.title))}}
             {{for b in d.body:}}
                 {{if b.is_image:}}
@@ -30,7 +31,10 @@
                 {{pass}}
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
+            {{=HR( _class="did-sep")}}
+            {{=A('comment', _id="com"+str(i), _class="btn form-btn", _onclick="addComment("+str(i)+", "+str(d.id)+")")}}
         </div>
+        {{i += 1}}
     {{pass}}
 {{pass}}
 </div>
