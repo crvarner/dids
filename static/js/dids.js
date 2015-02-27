@@ -7,55 +7,9 @@ var elem_count = 0;
     }
 }*/
 
-//var publishDid = function(){
-
-    /*var formData = new FormData($('#did_form'));
-    
-    $.ajax({
-        url: 'create_did',  //Server script to process data
-        type: 'POST',
-        //xhr: function() {  // Custom XMLHttpRequest
-        //    var myXhr = $.ajaxSettings.xhr();
-        //    if(myXhr.upload){ // Check if upload property exists
-        //        myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-        //    }
-        //    return myXhr;
-        //},
-        //Ajax events
-        //beforeSend: function(){},
-        success: function(data){
-            $('#new'+new_count).html(data);
-        },
-        // Form data
-        data: formData,
-        //Options to tell jQuery not to process data or worry about content-type.
-        cache: false,
-        contentType: false,
-        processData: false
-    });*/
-    
-    /*$.ajax({
-        type: 'POST',
-        url: 'create_did',
-        data: $('#did_form').serialize(),
-        success: function(data){
-            $('#new'+new_count).html(data);
-        }});*/
-        
-    /*$('#did_form').on('submit',function (e) {
-
-        $.ajax({
-                type: 'POST',
-                url: 'create_did',
-                data: $('#did_form').serialize(),
-                success: function (data) {
-                    $('#new'+new_count).html(data);
-                }
-                });
-        e.preventDefault();
-    });*/
-    
-    //$('#did_form').submit();
+var publishDid = function(){
+    $('#did_form').submit();
+}
 
 /* Cancels the creation of the current 'new#' did */
 var cancelNewDid = function(id_num){
@@ -93,12 +47,12 @@ var newDid = function(){
     var did_string = '<div class="did" id="new' + new_count + '">'
                     +'<form id="did_form" enctype="multipart/form-data" action="create_did" method="post">'
                     +'<input id="did_title" class="form-title" name="did_title" type="text"/>'
-                    +'<input type="submit">'
+                    //+'<input type="submit">'
                     +'</form>'
                     +'<a class="btn form_btn" onclick="addText()">add text</a>'
                     +'<a class="btn form_btn" onclick="addImage()">add image</a>'
                     +'<a class="btn form_btn" onclick="rmElement()">remove element</a>'
-                    //+'<a style="float: right" class="btn form_btn" onclick="publishDid();">publish</a>'
+                    +'<a style="float: right" class="btn form_btn" onclick="publishDid();">publish</a>'
                     +'<a style="float: right" class="btn form_btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
                     +'</div>';
     $('#did_container').prepend(did_string);
