@@ -21,6 +21,7 @@ def index():
     dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
+        d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
     return dict(dids=dids)
 
 
@@ -29,7 +30,7 @@ def create_did():
     """
     creates a new did based on form data uploaded via ajax
     """
-    data = request.vars #form data
+    data = request.vars
 
     author = auth.user_id 
     date_created = datetime.datetime.utcnow()
@@ -50,7 +51,7 @@ def create_did():
         did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
         return did
     
-    num_elems = (len(data) - 1)/2
+    num_elems = (len(data) - 2)/2
     for i in range(0, num_elems):
         d = data['elem'+str(i)]
         if (data['is_img' + str(i)] == 'True'):
@@ -66,10 +67,30 @@ def create_did():
                 is_image = False,
                 element_data = str(d))
             did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
+            
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
     did.append(HR( _class="did-sep"))
-    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
+    
+    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
+    
+    did.append(DIV( _id="com_"+data['div_id'] ))
+    
     return did
+    
+@auth.requires_login()
+def add_comment():
+    data = request.vars
+    
+    db.comments.insert(did_id = data['did_id'],
+                       date_created = datetime.datetime.utcnow(),
+                       author_id = auth.user_id,
+                       reply_id = None,
+                       body = data['comment'])
+    
+    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(data['comment'].replace('\n','<br />')), _style="word-break: break-word"),
+                   _class="comment" )
+    
+    return comment
 
 def user():
     """

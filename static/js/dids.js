@@ -29,27 +29,54 @@ var addImage = function(){
                          +'<input name="is_img'+ elem_count++ +'" type="hidden" value="True" />');
 }
 
-var submitComment = function(){
-    
-}
-
 /* adds a comment field and cancel/submit buttons */
 var addComment = function(div_id, did_id, com_btn){
     com_id = "com"+com_count;
-    $('#'+div_id).append('<div id="'+com_id+'">'
-                        +'<textarea id="com_text'+div_id+'" class="form-text animated"></textarea>'
+    
+    // prepend comment form to comment section
+    $('#com_'+div_id).prepend('<div id="'+com_id+'" class="clear"><form id="'+com_id+'_form">'
+                        +'<textarea name="comment" id="com_text'+div_id+'" class="form-text animated"></textarea>'
+                        +'<input name="did_id" type="hidden" value="'+did_id+'" />'
                         +'<a id="submit'+did_id+'" class="btn form-btn" style="float:right">submit</a>'
                         +'<a id="cancel'+did_id+'" class="btn form-btn" style="float:right">cancel</a>'
-                        +'</div>');
+                        +'</form></div>');
     $('#com_text'+div_id).autosize();
+    
+    // submit comment when submit button is clicked
     $('#submit'+did_id).click(function(){
-        
+        $('#'+com_id+'_form').submit();
     });
+    
+    // removes text-area when cancel is clicked
     $('#cancel'+did_id).click(function(){
         $('#'+com_id).remove();
         $(com_btn).show();
         com_count--;
     });
+    
+    // submit comment form
+    $('#'+com_id+'_form').submit(function(event){
+        event.preventDefault(); 
+        var fd = new FormData(this);
+    
+        $.ajax({
+            url: 'add_comment',
+            data: fd,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+                //remove comment form
+                $('#'+com_id).remove();
+                // show add comment button
+                $(com_btn).show();
+                //add new comment to top of comments
+                $('#com_'+div_id).prepend(data);
+            }
+        });
+    });
+    
+    // hide comment button
     $(com_btn).hide();
     com_count++;
 }
@@ -66,9 +93,10 @@ var rmElement = function(){
 /* Generates a new editable did */
 var newDid = function(){
     ++new_count;
-    var did_string = '<div class="did" id="new' + new_count + '">'
+    var did_string = '<div class="did clear" id="new' + new_count + '">'
                     +'<form id="did_form" enctype="multipart/form-data" action="create_did" method="post">'
                     +'<input class="form-title" name="did_title" type="text"/>'
+                    +'<input name="div_id" type="hidden" value="new' + new_count + '" />'
                     +'</form>'
                     +'<a class="btn form-btn" onclick="addText()">add text</a>'
                     +'<a class="btn form-btn" onclick="addImage()">add image</a>'

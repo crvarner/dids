@@ -49,6 +49,7 @@ defines the table holding all comments for all dids.
 
 db.define_table('comments',
                 Field('did_id'),
+                Field('date_created', 'datetime'),
                 Field('author_id'),
                 Field('reply_id'),
                 Field('body','text')

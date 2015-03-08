@@ -32,7 +32,14 @@
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
             {{=HR( _class="did-sep")}}
-            {{=A('comment', _id="com_btn"+str(d.id), _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)")}}
+            {{=A('comment', _id="com_btn"+str(d.id), _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
+            <div id={{=str("com_d"+str(i))}}>
+            {{for c in d.comments:}}
+                {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
+                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
+                        _class="comment" ) }}
+            {{pass}}
+            </div>
         </div>
         {{i += 1}}
     {{pass}}
