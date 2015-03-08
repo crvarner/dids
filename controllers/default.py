@@ -44,6 +44,12 @@ def create_did():
     did = DIV(H4(data['did_title']),
               _style="width:100%")
     
+    if len(data) == 1:
+        did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
+        did.append(HR( _class="did-sep"))
+        did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
+        return did
+    
     num_elems = (len(data) - 1)/2
     for i in range(0, num_elems):
         d = data['elem'+str(i)]
