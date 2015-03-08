@@ -9,6 +9,9 @@
 ## - api is an example of Hypermedia API support and access control
 #########################################################################
 
+import logging
+
+
 @auth.requires_login()
 def index():
     """
@@ -77,6 +80,47 @@ def create_did():
     
     return did
     
+
+"""###################################################################################################
+###########
+########### profile
+###########
+###################################################################################################"""
+
+
+def update_profile():
+    #logging.error('in update_profile\n')
+    data = request.vars
+    #logging.error('woof')
+    user_id = auth.user.id
+    #logging.error('aouf')
+    up_about = data['about']
+    #logging.error(up_about)
+    #logging.error('grrr')
+    # if an updated about in vars update user's about 
+    if(up_about):
+        #logging.error('yes ua')
+        db(db.users.user_id == user_id).update(about=up_about)
+        #logging.error('user about updated')
+    
+    return
+
+@auth.requires_login()
+def profile():
+    #logging.error('in profile\n')
+    #logging.error(auth.user.id)
+    user = db(db.users.user_id == auth.user.id).select().first()
+
+    dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
+    #logging.error('user id = '+user.user_id+'\n')
+    for d in dids:
+        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
+    return dict(dids=dids, user=user)
+
+
+
+"""################################################################################################"""
+
 @auth.requires_login()
 def add_comment():
     data = request.vars

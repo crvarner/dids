@@ -79,3 +79,59 @@ input.form-title{
 #new_btn{
     margin-left: 10px;
 }
+
+
+/*################################################################
+################ profile.html related css
+################
+#################################################################*/
+
+.profile{
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}
+
+
+#profile_container{
+}
+
+.upper_profile{
+    height: 160px;
+}
+
+.lower_profile{
+    height: 60px;
+}
+
+#lower_profile{
+    padding: 4px;
+    padding-left: 6px;
+}
+
+
+#about{
+    width: 100%;
+}
+
+textarea.about-text {
+  width: 100%;
+  max-width: 100%;
+  resize: none;
+  border: 0px;
+  margin-bottom: 0px;
+  border-radius: 5px;
+}
+
+.profile_image-preview{
+    height: 100px;
+    width: 100px;
+    border-radius: 15%;
+    padding: 4px;
+}
+
+
+
+

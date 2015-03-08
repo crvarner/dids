@@ -156,3 +156,54 @@ var newDid = function(){
     });
     $('#new_btn').remove();
 }
+
+//########################################################################################
+//########### profile functions
+//###########
+//########################################################################################
+
+var editAbout = function() {
+    $('#lower_profile').hide();
+    user_about = $('#about').text();
+    $('#profile_container').append('<div id="edit_div">'
+                        +'<form id="profile_form" enctype="multipart/form-data" action="update_profile" method="post">'
+                        +'</form>'
+                        +'</div>');
+    console.log("in editAbout");
+    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
+    console.log(user_about);
+    $('#editing_about').focus();
+
+    // on.blur() function for text area
+    $('#editing_about').on('blur', function(){
+        console.log('in blur function');
+        $('#about').html($('#editing_about').val());
+        updateProfile();
+        $('#edit_div').remove();
+        $('#lower_profile').show();
+    });
+    // sumbit instrructions for about textarea form
+    $('#profile_form').submit(function(event){
+        event.preventDefault(); 
+        var up = new FormData(this);
+       $.ajax({
+            url: 'update_profile',
+            data: up,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+                $('#profile_form').remove();
+                $(edit_btn).show();
+            }
+        });
+    }); 
+    return;
+}
+
+var updateProfile = function(){
+    console.log('in updateProfile');
+    $('#profile_form').submit();
+}
+
+//########################################################################################

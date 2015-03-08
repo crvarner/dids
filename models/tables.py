@@ -1,7 +1,7 @@
 
 import datetime
 import json
-
+import os
 """
 defines the table "dids" which is responsible for
 holding reference info for all dids in the system.
@@ -64,3 +64,46 @@ db.define_table('likes',
                 Field('user_id'),
                 Field('did_id')
                 )
+
+
+"""#########################################################################################
+#######
+#######   users table 
+#######
+######################################################################################### """
+
+def get_user_name():
+    s = ''
+    if auth.user_id:
+        s = auth.user.first_name
+    else:
+        s = 'John Doe'
+    return s
+
+"""
+defines table holding user information
+"""
+db.define_table('users',
+                Field('user_id'),
+                Field('username'),
+                Field('profile_img', 'upload', default=os.path.join(request.folder, 'static', 'images', 'facebook.png')),
+                Field('about'),
+                Field('email'),
+                Field('dids', 'reference dids'),
+                Field('users_followers', 'reference users'),
+                Field('users_following', 'reference users'),
+                Field('feed'),
+                )
+db.users.username.default = get_user_name()
+db.users.user_id.default = auth.user_id
+db.users.about.default = ''
+#db.users.email.default = auth.user.email
+
+
+"""################################################################################################"""
+
+
+
+
+
+
