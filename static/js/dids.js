@@ -39,13 +39,23 @@ var imgPreview = function(image, div_id){
 
 /* Adds an image upload field to the new did being edited */
 var addImage = function(){
-    $('#did_form').append('<div id="img_prev'+ elem_count +'" class="image-preview"></div>'
-                         +'<input id="elem'+ elem_count +'" name="elem'+ elem_count +'" type="file" />'
-                         +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');
-    var prev_div_id = "img_prev" + elem_count;                     
+    var prev_div_id = "img_prev" + elem_count; 
+    var elem_id = "elem" + elem_count;
     
-    $('#elem'+ elem_count ).change(function(){
+    $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
+                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="../static/images/addimage.png"></img>'
+                         +'</div>'
+                         +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
+                         +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
+    
+    $('#'+elem_id).hide();
+    $('#'+ elem_id ).change(function(){
         imgPreview(this, prev_div_id );
+    });
+    
+    $('#'+prev_div_id).click(function(e){
+        e.preventDefault();
+        $('#'+elem_id).trigger('click');
     });
     
     elem_count++;
