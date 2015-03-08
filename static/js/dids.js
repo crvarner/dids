@@ -22,12 +22,34 @@ var addText = function(){
     $('#elem'+ elem_count++).autosize();
 }
 
+/* Image preview modified from example*/
+/* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
+var imgPreview = function(image, div_id){
+    if(image.files && image.files[0]){
+        var reader = new FileReader();
+        reader.onload = function(e){
+            console.log(e.target.result);
+            $('#'+div_id).html(
+                '<img style="width: 100%; height: 100%; border-radius: 5px;" src="'+ e.target.result +'"></img>'
+            );
+        }
+        reader.readAsDataURL(image.files[0]);
+    }
+};
+
 /* Adds an image upload field to the new did being edited */
 var addImage = function(){
     $('#did_form').append('<div id="img_prev'+ elem_count +'" class="image-preview"></div>'
                          +'<input id="elem'+ elem_count +'" name="elem'+ elem_count +'" type="file" />'
-                         +'<input name="is_img'+ elem_count++ +'" type="hidden" value="True" />');
-}
+                         +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');
+    var prev_div_id = "img_prev" + elem_count;                     
+    
+    $('#elem'+ elem_count ).change(function(){
+        imgPreview(this, prev_div_id );
+    });
+    
+    elem_count++;
+};
 
 /* adds a comment field and cancel/submit buttons */
 var addComment = function(div_id, did_id, com_btn){
