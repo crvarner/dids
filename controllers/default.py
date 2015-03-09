@@ -21,9 +21,17 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    if request.args and request.args[0] == 'all':
+    if request.args and request.args[0] == 'top':
         dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
-    else: 
+    elif request.args and request.args[0] == 'explore':
+        following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+        xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
+        authors = xauthors - following - set([str(auth.user_id)])
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
+    elif request.args and request.args[0] == 'followers':
+        authors = [row.follower_id for row in db(db.followers.following_id == auth.user_id).select(db.followers.follower_id)]
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)        
+    else:
         authors = [row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)]
         authors.append(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
