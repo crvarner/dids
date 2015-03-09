@@ -21,7 +21,13 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
+    if request.args and request.args[0] == 'all':
+        dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
+    else: 
+        authors = [row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)]
+        authors.append(str(auth.user_id))
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
+        
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)

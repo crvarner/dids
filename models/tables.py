@@ -80,6 +80,17 @@ def get_user_name():
         s = 'John Doe'
     return s
 
+    
+"""
+defines the table holding all "likes"
+"""
+                
+db.define_table('followers',
+                Field('follower_id'),
+                Field('following_id')
+                )
+    
+    
 """
 defines table holding user information
 """
