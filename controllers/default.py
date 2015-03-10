@@ -14,13 +14,7 @@ import logging
 
 @auth.requires_login()
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
     dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
@@ -87,32 +81,58 @@ def create_did():
 ###########
 ###################################################################################################"""
 
+def linkify():
+        data = request.vars
+        s = data['about']
+        new_about = ''
+        if s:
+            logging.error('in linkify calling some functions')
+            new_about = represent_link_encoded_text(s)
+            logging.error('in linkify sucess in new linkify')
+            logging.error(new_about)
+        else:
+            new_about = s
+        logging.error('leaving linkify')    
+        return new_about
 
 def update_profile():
-    #logging.error('in update_profile\n')
+
+    """def linkify(s):
+        new_about = ''
+        if(s):
+            logging.error('in linkify calling some functions')
+            new_about = represent_link_encoded_text(s)
+            logging.error('in linkify sucess in new linkify')
+            logging.error(new_about)
+        else:
+            new_about = s
+        logging.error('leaving linkify')    
+        return new_about
+"""
     data = request.vars
-    #logging.error('woof')
     user_id = auth.user.id
-    #logging.error('aouf')
     up_about = data['about']
-    #logging.error(up_about)
-    #logging.error('grrr')
+    new_about = ''
     # if an updated about in vars update user's about 
     if(up_about):
-        #logging.error('yes ua')
+        #logging.error('before calling linkify')
+        #new_about = str(linkify(up_about))
+        #logging.error('after calling linkify')
         db(db.users.user_id == user_id).update(about=up_about)
-        #logging.error('user about updated')
-    
-    return
+        logging.error('user about updated' + new_about)
+    return 
 
 @auth.requires_login()
 def profile():
-    #logging.error('in profile\n')
-    #logging.error(auth.user.id)
+    username = db.users(db.users.username==request.args(0)) or redirect(URL('default', 'index'))
+    logging.error('in profile\n')
     user = db(db.users.user_id == auth.user.id).select().first()
-
+    if username:
+        user = db(db.users.username == username.username).select().first()
+        logging.error('profile match for:' + user.username)
+    #user = db(db.users.user_id == ).select().first()
     dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
-    #logging.error('user id = '+user.user_id+'\n')
+    logging.error('user id = '+user.user_id+'\n')
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
     return dict(dids=dids, user=user)
@@ -120,6 +140,7 @@ def profile():
 
 
 """################################################################################################"""
+
 
 @auth.requires_login()
 def add_comment():
@@ -151,6 +172,8 @@ def user():
         @auth.requires_permission('read','table name',record_id)
     to decorate functions that need access control
     """
+
+
     return dict(form=auth())
 
 

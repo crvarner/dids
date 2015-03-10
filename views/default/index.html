@@ -36,7 +36,7 @@
             <div id={{=str("com_d"+str(i))}}>
             {{for c in d.comments:}}
                 {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
-                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
+                        P(XML(represent_wiki(c.body.replace('\n','<br />'))), _style="word-break: break-word"),
                         _class="comment" ) }}
             {{pass}}
             </div>

@@ -162,7 +162,66 @@ var newDid = function(){
 //###########
 //########################################################################################
 
+//var REGEX = ('/\B#\w*[a-zA-Z]+\w*/');
+// from rayfranco stackpverflow url http://stackoverflow.com/questions/8650007/regular-expression-for-twitter-username
+var regex_my_text = function(s) {
+    var output;
+    //var text = "@RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a @probablyfaketwitterusername";
+    var regex   = /(^|[^@\w])@(\w{1,15})\b/g;
+    var replace = '$1<a href="http://127.0.0.1:8000/dids/default/profile/$2">@$2</a>';
+    var output = s.replace(regex, replace);
+    console.log(output);
+    return output;
+
+}
+
 var editAbout = function() {
+    $('#lower_profile').hide();
+    user_about = $('#about').text();
+    $('#profile_container').append('<div id="edit_div">'
+                        +'<form id="profile_form" enctype="multipart/form-data" action="update_profile" method="post">'
+                        +'</form>'
+                        +'</div>');
+    console.log("in editAbout");
+    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
+    console.log(user_about);
+    $('#editing_about').focus();
+
+    // on.blur() function for text area
+    $('#editing_about').on('blur', function(){
+        console.log('in blur function');
+        $('#about').html($('#editing_about').val());
+        //s = regex_my_text($('#editing_about').val());
+        //$('#about').html(s);
+        //$('#followers').html(s);
+        updateProfile();
+        $('#edit_div').remove();
+        $('#lower_profile').show();
+    });
+    // sumbit instrructions for about textarea form
+    $('#profile_form').submit(function(event){
+        event.preventDefault(); 
+        var up = new FormData(this);
+       $.ajax({
+            url: 'update_profile',
+            data: up,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+                $('#profile_form').remove();
+            }
+        });
+    }); 
+    return;
+}
+
+var updateProfile = function(){
+    console.log('in updateProfile');
+    $('#profile_form').submit();
+}
+
+var editProfileImage = function() {
     $('#lower_profile').hide();
     user_about = $('#about').text();
     $('#profile_container').append('<div id="edit_div">'
@@ -194,16 +253,9 @@ var editAbout = function() {
             type: 'POST',
             success: function(data){
                 $('#profile_form').remove();
-                $(edit_btn).show();
             }
         });
     }); 
     return;
 }
-
-var updateProfile = function(){
-    console.log('in updateProfile');
-    $('#profile_form').submit();
-}
-
 //########################################################################################
