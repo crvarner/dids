@@ -92,7 +92,7 @@ var addComment = function(div_id, did_id, com_btn){
         var fd = new FormData(this);
     
         $.ajax({
-            url: 'add_comment',
+            url: 'http://127.0.0.1:8000/dids/default/add_comment',
             data: fd,
             processData: false,
             contentType: false,
@@ -143,13 +143,16 @@ var newDid = function(){
         var fd = new FormData(this);
     
         $.ajax({
-            url: 'create_did',
+            url: 'http://127.0.0.1:8000/dids/default/create_did',
             data: fd,
             processData: false,
             contentType: false,
             type: 'POST',
             success: function(data){
                 $('#new'+new_count).html(data);
+                console.log('\n\n\n\n')
+                console.log(data)
+                console.log('\n\n\n\n')
                 $('#main_container').prepend('<a class="btn" id="new_btn" onclick="newDid();">new did</a>');
             }
         });
@@ -191,9 +194,6 @@ var editAbout = function() {
     $('#editing_about').on('blur', function(){
         console.log('in blur function');
         $('#about').html($('#editing_about').val());
-        //s = regex_my_text($('#editing_about').val());
-        //$('#about').html(s);
-        //$('#followers').html(s);
         updateProfile();
         $('#edit_div').remove();
         $('#lower_profile').show();
@@ -203,7 +203,7 @@ var editAbout = function() {
         event.preventDefault(); 
         var up = new FormData(this);
        $.ajax({
-            url: 'update_profile',
+            url: 'http://127.0.0.1:8000/dids/default/update_profile',
             data: up,
             processData: false,
             contentType: false,
@@ -222,14 +222,14 @@ var updateProfile = function(){
 }
 
 var editProfileImage = function() {
-    $('#lower_profile').hide();
-    user_about = $('#about').text();
+    $('#profile_image_preview').hide();
+    image = $('#profile_image_preview').val();
     $('#profile_container').append('<div id="edit_div">'
-                        +'<form id="profile_form" enctype="multipart/form-data" action="update_profile" method="post">'
+                        +'<form id="profile_form" enctype="multipart/form-data" action="default/update_profile" method="post">'
                         +'</form>'
                         +'</div>');
     console.log("in editAbout");
-    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
+    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+image+'</textarea>');
     console.log(user_about);
     $('#editing_about').focus();
 
@@ -246,7 +246,7 @@ var editProfileImage = function() {
         event.preventDefault(); 
         var up = new FormData(this);
        $.ajax({
-            url: 'update_profile',
+            url: 'http://127.0.0.1:8000/dids/default/update_profile',
             data: up,
             processData: false,
             contentType: false,
