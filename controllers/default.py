@@ -153,14 +153,14 @@ def add_comment():
     
 """
 follow() called via AJAX adds an entry to the followers table
-currently does not check for duplicates
 """
 def follow():
     data = request.vars
     
-    if db(db.followers.following_id == data['following_id'], db.followers.follower_id == auth.user_id).isempty():
+    if not db.followers(following_id = data['following_id'], follower_id = auth.user_id):
         db.followers.insert(following_id = data['following_id'],
                             follower_id = auth.user_id)
+    
     return
     
 """
@@ -169,10 +169,11 @@ unfollow() called via AJAX deletes entry from the followers table
 def unfollow():
     data = request.vars
 
-    f = db(db.followers.follower_id == auth.user_id, db.followers.following_id == data['following_id']).select().first()
-    if f != None:
-        db(db.followers.id == f.id).delete()
+    f = db.followers(following_id = data['following_id'], follower_id = auth.user_id)
+    if f:
+        db(db.followers.id==f.id).delete()
     return
+
 
 def user():
     """
