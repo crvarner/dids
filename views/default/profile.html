@@ -16,9 +16,9 @@
 
 <div id="profile_container" class="profile">
     <div id="upper_profile" class="upper_profile">  
-        <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image-preview", _src=URL("download", args=user.profile_img))}}</div>
-        <div id="followers"><a class="btn" id="new_btn" onclick="newDid();">followers</a></div>
-        <div id="followers"><a class="btn" id="new_btn" onclick="newDid();">following</a></div>
+        <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+        <div id="followers"><a class="btn" id="followers_btn" >followers</a></div>
+        <div id="followers"><a class="btn" id="following_btn" >following</a></div>
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">

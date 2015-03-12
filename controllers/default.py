@@ -84,12 +84,29 @@ def create_did():
 def update_profile():
     data = request.vars
     user_id = auth.user.id
-    up_about = data['about']
-    #logging.error('in update_profile')
+    logging.error('in update_profile')
+    #logging.error(data)
     # if an updated about in vars update user's about 
+    logging.error(data)
+    if(data['about']):
+        logging.error('updating about\n')
+        db(db.users.user_id == user_id).update(about=data['about'])
+        logging.error('updated about\n')
+    else:
+        logging.error('inserting an image')
+        db(db.users.user_id == user_id).update(profile_img=data['image'])
+        logging.error('inserted an image')
+    """up_about = data['about']
+    logging.error(up_about)
     if(up_about):
         db(db.users.user_id == user_id).update(about=up_about)
         #logging.error('\n\n\nsuccess update')
+    up_about = data['image']
+    logging.error(up_about)
+    if(up_about):
+        db(db.users.user_id == user_id).update(about=up_about)
+        #logging.error('\n\n\nsuccess update')
+    """
     return 
 
 @auth.requires_login()

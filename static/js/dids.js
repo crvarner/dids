@@ -43,7 +43,7 @@ var addImage = function(){
     var elem_id = "elem" + elem_count;
     
     $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="../static/images/addimage.png"></img>'
+                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="http://127.0.0.1:8000/dids/static/images/addimage.png"></img>'
                          +'</div>'
                          +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
                          +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
@@ -60,6 +60,7 @@ var addImage = function(){
     
     elem_count++;
 };
+
 
 /* adds a comment field and cancel/submit buttons */
 var addComment = function(div_id, did_id, com_btn){
@@ -165,6 +166,10 @@ var newDid = function(){
 //###########
 //########################################################################################
 
+
+
+
+
 //var REGEX = ('/\B#\w*[a-zA-Z]+\w*/');
 // from rayfranco stackpverflow url http://stackoverflow.com/questions/8650007/regular-expression-for-twitter-username
 var regex_my_text = function(s) {
@@ -178,15 +183,85 @@ var regex_my_text = function(s) {
 
 }
 
+
+
+/* Image preview modified from example*/
+/* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
+var imgProfilePreview = function(image, div_id){
+    if(image.files && image.files[0]){
+        var reader = new FileReader();
+        console.log("in image preview");
+        reader.onload = function(e){
+            console.log(e.target.result);
+            $('#'+div_id).html(
+                '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ e.target.result +'"></img>'
+            );
+        }
+        reader.readAsDataURL(image.files[0]);
+    }
+};
+
+
+var editProfileImage = function() {
+    $('#profile_image').hide();
+    $('#profile_image').html('');
+    //var image = $('#profile_image').val();
+    $('#upper_profile').prepend('<div id=edit_div type="hidden">'
+                         +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
+                         +'<img id="temp_img" class="profile_image_preview"src="http://127.0.0.1:8000/dids/static/images/addimage.png"></img>'
+                         +'<input id="image" name="image" type="file"/>'
+                         +'<input name="is_img" type="hidden" value="True"/>'
+                         +'</form>'
+                         +'</div>');
+
+
+    $('#image').hide();
+    $('#image').change(function(){
+        console.log("in in image change");
+        $('#image_form').submit();
+        imgProfilePreview(this, 'profile_image');
+        console.log('image sent\n')
+        $('#edit_div').remove();
+        $('#image').remove();
+        $('#is_img').remove();
+        
+        $('#profile_image').show();
+    });
+    console.log("in editProfileImage");
+    $("#temp_img").click(function(e){
+        console.log("in editProfileImage");
+        e.preventDefault();
+        $("#image").trigger('click');
+    });
+   
+    $('#image_form').submit(function(event){
+        event.preventDefault(); 
+        var up = new FormData(this);
+       $.ajax({
+            url: 'http://127.0.0.1:8000/dids/default/update_profile',
+            data: up,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+                console.log(data);
+                $('#image_form').remove();
+            }
+        });
+    }); 
+    return;
+}
+
+
 var editAbout = function() {
     $('#lower_profile').hide();
-    user_about = $('#about').text();
+    var user_about = $('#about').text();
     $('#profile_container').append('<div id="edit_div">'
                         +'<form id="profile_form" enctype="multipart/form-data" action="update_profile" method="post">'
                         +'</form>'
                         +'</div>');
     console.log("in editAbout");
-    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
+    $('#profile_form').prepend('<textarea maxLength="128" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
     console.log(user_about);
     $('#editing_about').focus();
 
@@ -221,41 +296,5 @@ var updateProfile = function(){
     $('#profile_form').submit();
 }
 
-var editProfileImage = function() {
-    $('#profile_image_preview').hide();
-    image = $('#profile_image_preview').val();
-    $('#profile_container').append('<div id="edit_div">'
-                        +'<form id="profile_form" enctype="multipart/form-data" action="default/update_profile" method="post">'
-                        +'</form>'
-                        +'</div>');
-    console.log("in editAbout");
-    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+image+'</textarea>');
-    console.log(user_about);
-    $('#editing_about').focus();
 
-    // on.blur() function for text area
-    $('#editing_about').on('blur', function(){
-        console.log('in blur function');
-        $('#about').html($('#editing_about').val());
-        updateProfile();
-        $('#edit_div').remove();
-        $('#lower_profile').show();
-    });
-    // sumbit instrructions for about textarea form
-    $('#profile_form').submit(function(event){
-        event.preventDefault(); 
-        var up = new FormData(this);
-       $.ajax({
-            url: 'http://127.0.0.1:8000/dids/default/update_profile',
-            data: up,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function(data){
-                $('#profile_form').remove();
-            }
-        });
-    }); 
-    return;
-}
 //########################################################################################
