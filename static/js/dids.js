@@ -37,30 +37,6 @@ var imgPreview = function(image, div_id){
     }
 };
 
-/* Adds an image upload field to the new did being edited */
-var addImage = function(){
-    var prev_div_id = "img_prev" + elem_count; 
-    var elem_id = "elem" + elem_count;
-    
-    $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="../static/images/addimage.png"></img>'
-                         +'</div>'
-                         +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
-                         +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
-    
-    $('#'+elem_id).hide();
-    $('#'+ elem_id ).change(function(){
-        imgPreview(this, prev_div_id );
-    });
-    
-    $('#'+prev_div_id).click(function(e){
-        e.preventDefault();
-        $('#'+elem_id).trigger('click');
-    });
-    
-    elem_count++;
-};
-
 /* Removes the last element from the currently editable did */
 var rmElement = function(){
     if (elem_count > 0){
