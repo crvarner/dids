@@ -21,10 +21,11 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
+    following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    
     if request.args and request.args[0] == 'top':
         dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
     elif request.args and request.args[0] == 'explore':
-        following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
         xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
         authors = xauthors - following - set([str(auth.user_id)])
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
@@ -32,13 +33,13 @@ def index():
         authors = [row.follower_id for row in db(db.followers.following_id == auth.user_id).select(db.followers.follower_id)]
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)        
     else:
-        authors = [row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)]
-        authors.append(str(auth.user_id))
+        authors = following | set(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
         
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
+        d.following = (str(d.author_id) in following)
     return dict(dids=dids)
 
 
@@ -149,6 +150,29 @@ def add_comment():
                    _class="comment" )
     
     return comment
+    
+"""
+follow() called via AJAX adds an entry to the followers table
+currently does not check for duplicates
+"""
+def follow():
+    data = request.vars
+    
+    if db(db.followers.following_id == data['following_id'], db.followers.follower_id == auth.user_id).isempty():
+        db.followers.insert(following_id = data['following_id'],
+                            follower_id = auth.user_id)
+    return
+    
+"""
+unfollow() called via AJAX deletes entry from the followers table
+"""
+def unfollow():
+    data = request.vars
+
+    f = db(db.followers.follower_id == auth.user_id, db.followers.following_id == data['following_id']).select().first()
+    if f != None:
+        db(db.followers.id == f.id).delete()
+    return
 
 def user():
     """

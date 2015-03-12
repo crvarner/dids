@@ -9,6 +9,9 @@
 
 </head>
 
+
+
+
 <body>
 
 <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
@@ -24,7 +27,7 @@
 {{else:}}
     {{i = 0}}
     {{for d in dids:}}
-        <div class="did clear" id="{{='d'+str(i)}}">
+        <div class="did clear" id="{{='d'+str(i)}}" >
             {{=H4(str(d.title))}}
             {{for b in d.body:}}
                 {{if b.is_image:}}
@@ -35,6 +38,13 @@
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
             {{=HR( _class="did-sep")}}
+            {{if d.author_id != str(auth.user_id):}}
+                {{if not d.following:}}
+                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+", this)") }}
+                {{else:}}
+                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+", this)") }}
+                {{pass}}
+            {{pass}}
             {{=A('comment', _id="com_btn"+str(d.id), _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
             <div id={{=str("com_d"+str(i))}}>
             {{for c in d.comments:}}
@@ -54,6 +64,7 @@
 <script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
 <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
 <script>
+
 /* Generates a new editable did */
 var newDid = function(){
     ++new_count;
@@ -164,6 +175,31 @@ var addImage = function(){
     
     elem_count++;
 };
+
+/* follow a user */
+var follow = function(user_id, fol_btn){
+    // add follower to db and all that
+    $.ajax({
+        url: "{{=URL('default','follow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(data){
+            $('.f'+user_id).replaceWith('<a title="unfollow" class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
+        }
+    });
+}
+
+/* unfollow a user */
+var unfollow = function(user_id, unfol_btn){
+    $.ajax({
+        url: "{{=URL('default','unfollow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(){
+            $('.f'+user_id).replaceWith('<a title="follow" class="btn form-btn f'+user_id+'" onclick="follow('+user_id+', this)">follow</a>');
+        }
+    });
+}
 </script>
 
 </html>
