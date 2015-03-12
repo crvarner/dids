@@ -177,9 +177,11 @@ var regex_my_text = function(s) {
     //var text = "@RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a @probablyfaketwitterusername";
     var regex   = /(^|[^@\w])@(\w{1,15})\b/g;
     var replace = '$1<a href="http://127.0.0.1:8000/dids/default/profile/$2">@$2</a>';
-    var output = s.replace(regex, replace);
+    var output = $(s).val().replace(regex, replace);
+    $(s).html('');
+    $(s).html(output);
     console.log(output);
-    return output;
+    return;
 
 }
 
@@ -204,8 +206,8 @@ var imgProfilePreview = function(image, div_id){
 
 var editProfileImage = function() {
     $('#profile_image').hide();
+    var image = $('#profile_image').val();
     $('#profile_image').html('');
-    //var image = $('#profile_image').val();
     $('#upper_profile').prepend('<div id=edit_div type="hidden">'
                          +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
                          +'<img id="temp_img" class="profile_image_preview"src="http://127.0.0.1:8000/dids/static/images/addimage.png"></img>'
@@ -214,17 +216,19 @@ var editProfileImage = function() {
                          +'</form>'
                          +'</div>');
 
-
+    $("#temp_img").focus();
     $('#image').hide();
+    $('#edit_div').on('blur', function(){
+        $('#edit_div').remove();
+        $('#profile_image').html(image);
+        $('#profile_image').show();
+    });
     $('#image').change(function(){
         console.log("in in image change");
         $('#image_form').submit();
         imgProfilePreview(this, 'profile_image');
         console.log('image sent\n')
         $('#edit_div').remove();
-        $('#image').remove();
-        $('#is_img').remove();
-        
         $('#profile_image').show();
     });
     console.log("in editProfileImage");
@@ -245,7 +249,6 @@ var editProfileImage = function() {
             type: 'POST',
             success: function(data){
                 console.log(data);
-                $('#image_form').remove();
             }
         });
     }); 
@@ -270,6 +273,7 @@ var editAbout = function() {
         console.log('in blur function');
         $('#about').html($('#editing_about').val());
         updateProfile();
+        $('#profile_form').remove();
         $('#edit_div').remove();
         $('#lower_profile').show();
     });
@@ -284,7 +288,6 @@ var editAbout = function() {
             contentType: false,
             type: 'POST',
             success: function(data){
-                $('#profile_form').remove();
             }
         });
     }); 

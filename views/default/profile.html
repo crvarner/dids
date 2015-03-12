@@ -22,7 +22,7 @@
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
-        <div id="about" class="form-text lower_profile">{{=(user.about)}}</div>
+        <div id="about" onload="regex_my_text('#about')" class="form-text lower_profile">{{=(user.about)}}</div>
     </div>
 </div>
 
