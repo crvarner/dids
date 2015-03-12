@@ -40,6 +40,7 @@ def index():
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
         d.following = (str(d.author_id) in following)
+        d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
     return dict(dids=dids)
 
 
@@ -78,7 +79,7 @@ def create_did():
                 stack_num = i,
                 is_image = True,
                 element_data = img_id)
-            did.append(IMG( _src=URL('download', args = db.image(img_id).img )))
+            did.append(IMG( _style="witdh:100%", _src=URL('download', args = db.image(img_id).img )))
         else:
             db.elements.insert(did_id = did_id,
                 stack_num = i,
@@ -87,11 +88,13 @@ def create_did():
             did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
             
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
-    did.append(HR( _class="did-sep"))
+    bottom = DIV( _class="clear")
+    bottom.append(HR( _class="did-sep"))
     
-    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
+    bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
     
-    did.append(DIV( _id="com_"+data['div_id'] ))
+    bottom.append(DIV( _id="com_"+data['div_id'] ))
+    did.append(bottom)
     
     return did
     
@@ -172,6 +175,23 @@ def unfollow():
     f = db.followers(following_id = data['following_id'], follower_id = auth.user_id)
     if f:
         db(db.followers.id==f.id).delete()
+    return
+    
+def like():
+    data = request.vars
+    if not db.likes(did_id = data['did_id'], user_id = auth.user_id):
+        db.likes.insert(did_id = data['did_id'],
+                            user_id = auth.user_id)
+        
+    return
+
+def unlike():
+    data = request.vars
+          
+    l = db.likes(did_id = data['did_id'], user_id = auth.user_id)
+    if l:
+        db(db.likes.id==l.id).delete()
+        
     return
 
 

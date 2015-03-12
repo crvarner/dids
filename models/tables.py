@@ -19,7 +19,7 @@ db.define_table('dids',
                 Field('author_id'),
                 Field('date_created','datetime'),
                 Field('title'),
-                Field('likes','integer'),
+                Field('likes','integer', default=0),
                 Field('spam','integer'),
                 Field('link')
                 )

@@ -28,9 +28,9 @@ body{
 }
 
 hr.did-sep{
-    margin: 0px;
+    margin: 1px;
     height: 1px;
-    border: none;
+    border: 0px;
     background-color: #DDD;
 }
 

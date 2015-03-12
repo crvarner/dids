@@ -31,21 +31,28 @@
             {{=H4(str(d.title))}}
             {{for b in d.body:}}
                 {{if b.is_image:}}
-                    {{=IMG( _src=URL('download', args = db.image(b.element_data).img ))}}
+                    {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
                 {{else:}}
                     {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
                 {{pass}}
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
             {{=HR( _class="did-sep")}}
+            <div class="clear">
             {{if d.author_id != str(auth.user_id):}}
                 {{if not d.following:}}
-                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+", this)") }}
+                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+")") }}
                 {{else:}}
-                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+", this)") }}
+                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
+                {{pass}}
+                {{if d.like:}}
+                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
+                {{else:}}
+                    {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
                 {{pass}}
             {{pass}}
-            {{=A('comment', _id="com_btn"+str(d.id), _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
+            {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
+            </div>
             <div id={{=str("com_d"+str(i))}}>
             {{for c in d.comments:}}
                 {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
@@ -177,7 +184,7 @@ var addImage = function(){
 };
 
 /* follow a user */
-var follow = function(user_id, fol_btn){
+var follow = function(user_id){
     // add follower to db and all that
     $.ajax({
         url: "{{=URL('default','follow')}}",
@@ -190,13 +197,37 @@ var follow = function(user_id, fol_btn){
 }
 
 /* unfollow a user */
-var unfollow = function(user_id, unfol_btn){
+var unfollow = function(user_id){
     $.ajax({
         url: "{{=URL('default','unfollow')}}",
         data: {'following_id': user_id},
         type: 'POST',
         success: function(){
             $('.f'+user_id).replaceWith('<a title="follow" class="btn form-btn f'+user_id+'" onclick="follow('+user_id+', this)">follow</a>');
+        }
+    });
+}
+
+/* like a did */
+var like = function(did_id, l_btn){
+    $.ajax({
+        url: "{{=URL('default','like')}}",
+        data: {'did_id': did_id},
+        type: 'POST',
+        success: function(){
+            $(l_btn).replaceWith('<a title="Unlike" class="btn form-btn like" onclick="unlike('+did_id+', this)">unlike</a>');
+        }
+    });
+}
+
+/* unlike a did */
+var unlike = function(did_id, l_btn){
+    $.ajax({
+        url: "{{=URL('default','unlike')}}",
+        data: {'did_id': did_id},
+        type: 'POST',
+        success: function(){
+            $(l_btn).replaceWith('<a title="Like" class="btn form-btn dont-like" onclick="like('+did_id+', this)">like</a>');
         }
     });
 }
