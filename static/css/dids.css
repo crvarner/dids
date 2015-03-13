@@ -19,6 +19,15 @@ body{
     margin: 10px;
     padding: 10px;
 }
+.likes{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0px;
+    margin-top: 10px;
+    padding: 4px;
+    background-color: white;
+    border-radius: 5px;
+}
 .image-preview{
     height: 400px;
     width: 100%;
