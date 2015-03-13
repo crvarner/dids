@@ -42,15 +42,16 @@ response.generic_patterns = ['*'] if request.is_local else []
 #########################################################################
 
 from gluon.tools import Auth, Service, PluginManager
+import logging
 
-auth = Auth(db)
+auth = Auth(db, signature=False)
 service = Service()
 plugins = PluginManager()
 
-## create all tables needed by auth if not custom tables
-auth.define_tables(username=False, signature=False)
+## before auth.define_tables()
 
-## configure email
+auth.define_tables(username=True, signature=False)
+
 mail = auth.settings.mailer
 mail.settings.server = 'logging' if request.is_local else 'smtp.gmail.com:587'
 mail.settings.sender = 'you@gmail.com'

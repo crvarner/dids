@@ -37,6 +37,7 @@ var imgPreview = function(image, div_id){
     }
 };
 
+
 /* Removes the last element from the currently editable did */
 var rmElement = function(){
     if (elem_count > 0){
@@ -46,20 +47,111 @@ var rmElement = function(){
     }
 }
 
+
 //########################################################################################
 //########### profile functions
 //###########
 //########################################################################################
 
+
+
+
+
+//var REGEX = ('/\B#\w*[a-zA-Z]+\w*/');
+// from rayfranco stackpverflow url http://stackoverflow.com/questions/8650007/regular-expression-for-twitter-username
+var regex_my_text = function(s) {
+    var output;
+    //var text = "@RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a @probablyfaketwitterusername";
+    var regex   = /(^|[^@\w])@(\w{1,15})\b/g;
+    var replace = '$1<a href="http://127.0.0.1:8000/dids/default/profile/$2">@$2</a>';
+    //var output = $(s).val().replace(regex, replace);
+    $(s).html('');
+    $(s).html(output);
+    console.log(output);
+    return;
+
+}
+
+
+
+/* Image preview modified from example*/
+/* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
+var imgProfilePreview = function(image, div_id){
+    if(image.files && image.files[0]){
+        var reader = new FileReader();
+        console.log("in image preview");
+        reader.onload = function(e){
+            console.log(e.target.result);
+            $('#'+div_id).html(
+                '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ e.target.result +'"></img>'
+            );
+        }
+        reader.readAsDataURL(image.files[0]);
+    }
+};
+
+
+var editProfileImage = function() {
+    $('#profile_image').hide();
+    var image = $('#profile_image').val();
+    $('#profile_image').html('');
+    $('#upper_profile').prepend('<div id=edit_div type="hidden">'
+                         +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
+                         +'<img id="temp_img" class="profile_image_preview"src="http://127.0.0.1:8000/dids/static/images/addimage.png"></img>'
+                         +'<input id="image" name="image" type="file"/>'
+                         +'<input name="is_img" type="hidden" value="True"/>'
+                         +'</form>'
+                         +'</div>');
+
+    $("#temp_img").focus();
+    $('#image').hide();
+    $('#edit_div').on('blur', function(){
+        $('#edit_div').remove();
+        $('#profile_image').html(image);
+        $('#profile_image').show();
+    });
+    $('#image').change(function(){
+        console.log("in in image change");
+        $('#image_form').submit();
+        imgProfilePreview(this, 'profile_image');
+        console.log('image sent\n')
+        $('#edit_div').remove();
+        $('#profile_image').show();
+    });
+    console.log("in editProfileImage");
+    $("#temp_img").click(function(e){
+        console.log("in editProfileImage");
+        e.preventDefault();
+        $("#image").trigger('click');
+    });
+   
+    $('#image_form').submit(function(event){
+        event.preventDefault(); 
+        var up = new FormData(this);
+       $.ajax({
+            url: 'http://127.0.0.1:8000/dids/default/update_profile',
+            data: up,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+                console.log(data);
+            }
+        });
+    }); 
+    return;
+}
+
+
 var editAbout = function() {
     $('#lower_profile').hide();
-    user_about = $('#about').text();
+    var user_about = $('#about').text();
     $('#profile_container').append('<div id="edit_div">'
                         +'<form id="profile_form" enctype="multipart/form-data" action="update_profile" method="post">'
                         +'</form>'
                         +'</div>');
     console.log("in editAbout");
-    $('#profile_form').prepend('<textarea maxLength="256" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
+    $('#profile_form').prepend('<textarea maxLength="128" id="editing_about" class="about-text animated" name="about">'+user_about+'</textarea>');
     console.log(user_about);
     $('#editing_about').focus();
 
@@ -68,6 +160,7 @@ var editAbout = function() {
         console.log('in blur function');
         $('#about').html($('#editing_about').val());
         updateProfile();
+        $('#profile_form').remove();
         $('#edit_div').remove();
         $('#lower_profile').show();
     });
@@ -76,14 +169,12 @@ var editAbout = function() {
         event.preventDefault(); 
         var up = new FormData(this);
        $.ajax({
-            url: 'update_profile',
+            url: 'http://127.0.0.1:8000/dids/default/update_profile',
             data: up,
             processData: false,
             contentType: false,
             type: 'POST',
             success: function(data){
-                $('#profile_form').remove();
-                $(edit_btn).show();
             }
         });
     }); 
@@ -94,5 +185,6 @@ var updateProfile = function(){
     console.log('in updateProfile');
     $('#profile_form').submit();
 }
+
 
 //########################################################################################

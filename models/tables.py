@@ -1,7 +1,9 @@
 
 import datetime
+import unittest
 import json
 import os
+import re
 """
 defines the table "dids" which is responsible for
 holding reference info for all dids in the system.
@@ -14,6 +16,10 @@ likes (count of likes)
 spam (count of 'marked as spam/invalid')
 link (optional link to external site)
 """
+
+# Format for wiki links.
+RE_LINKS = re.compile('(<<)(.*?)(>>)')
+REGEX = re.compile('/(^|[^@\w])@(\w{1,15})\b/g')
 
 db.define_table('dids',
                 Field('author_id'),
@@ -70,8 +76,7 @@ db.define_table('likes',
 #######
 #######   users table 
 #######
-######################################################################################### """
-
+##########################################################################################"""
 def get_user_name():
     s = ''
     if auth.user_id:
@@ -95,26 +100,40 @@ db.define_table('followers',
 defines table holding user information
 """
 db.define_table('users',
-                Field('user_id'),
+                Field('user_id',),
                 Field('username'),
-                Field('profile_img', 'upload', default=os.path.join(request.folder, 'static', 'images', 'facebook.png')),
-                Field('about'),
+                Field('profile_img', 'upload'),
+                Field('about', 'text'),
                 Field('email'),
                 Field('dids', 'reference dids'),
                 Field('users_followers', 'reference users'),
                 Field('users_following', 'reference users'),
                 Field('feed'),
                 )
+db.users.profile_img.default = os.path.join(request.folder, 'static', 'images', 'facebook.png')
+db.users.username.default = IS_NOT_IN_DB(db, db.users)
 db.users.username.default = get_user_name()
+db.users.user_id.requires = IS_NOT_IN_DB(db, db.users)
+db.users.user_id.requires = IS_IN_DB(db, db.auth_user.id)
 db.users.user_id.default = auth.user_id
 db.users.about.default = ''
-#db.users.email.default = auth.user.email
+
+
+"""##################################################################################################
+########  Represent users with @ and later represent search criteria with 
+########  hashtag marks
+"""##################################################################################################"""
+
 
 
 """################################################################################################"""
+## store new user in users database on_accpet of registration
+##
+"""################################################################################################"""
+def enter_user(myform):
+    logging.error(myform.vars.username)
+    form = myform.vars
+    db.users.insert(user_id=form.id, username=form.username, email=form.email)
 
-
-
-
-
+auth.settings.register_onaccept = enter_user
 

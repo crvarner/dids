@@ -14,10 +14,8 @@ import logging
 
 @auth.requires_login()
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
 
+    """
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
@@ -35,7 +33,7 @@ def index():
     else:
         authors = following | set(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
-        
+
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
@@ -50,7 +48,6 @@ def create_did():
     creates a new did based on form data uploaded via ajax
     """
     data = request.vars
-
     author = auth.user_id 
     date_created = datetime.datetime.utcnow()
     
@@ -88,12 +85,13 @@ def create_did():
             did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
             
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
+
     bottom = DIV( _class="clear")
+
     bottom.append(HR( _class="did-sep"))
-    
     bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
-    
     bottom.append(DIV( _id="com_"+data['div_id'] ))
+    
     did.append(bottom)
     
     return did
@@ -105,39 +103,62 @@ def create_did():
 ###########
 ###################################################################################################"""
 
-
+@auth.requires_login()
 def update_profile():
-    #logging.error('in update_profile\n')
     data = request.vars
-    #logging.error('woof')
     user_id = auth.user.id
-    #logging.error('aouf')
-    up_about = data['about']
-    #logging.error(up_about)
-    #logging.error('grrr')
+    logging.error('in update_profile')
+    #logging.error(data)
     # if an updated about in vars update user's about 
+    logging.error(data)
+    if(data['about']):
+        logging.error('updating about\n')
+        db(db.users.user_id == user_id).update(about=data['about'])
+        logging.error('updated about\n')
+    else:
+        logging.error('inserting an image')
+        db(db.users.user_id == user_id).update(profile_img=data['image'])
+        logging.error('inserted an image')
+    """up_about = data['about']
+    logging.error(up_about)
     if(up_about):
-        #logging.error('yes ua')
         db(db.users.user_id == user_id).update(about=up_about)
-        #logging.error('user about updated')
-    
-    return
+        #logging.error('\n\n\nsuccess update')
+    up_about = data['image']
+    logging.error(up_about)
+    if(up_about):
+        db(db.users.user_id == user_id).update(about=up_about)
+        #logging.error('\n\n\nsuccess update')
+    """
+    return 
 
 @auth.requires_login()
 def profile():
-    #logging.error('in profile\n')
-    #logging.error(auth.user.id)
     user = db(db.users.user_id == auth.user.id).select().first()
+    name = request.args(0)
+    if name:
+        
+        test = db(db.users.username == name).select().first() 
+        logging.error('requested ' + name + "'s profile" )
+        if test != None:
+            user = test
+        else:
+            redirect(URL('default', 'profile/' + user.username))
+    else:
+        redirect(URL('default', 'profile/' + user.username))
 
+    #logging.error('in profile\n')
+    #user = db(db.users.user_id == ).select().first()
     dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
-    #logging.error('user id = '+user.user_id+'\n')
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
+        d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
     return dict(dids=dids, user=user)
 
 
 
 """################################################################################################"""
+
 
 @auth.requires_login()
 def add_comment():
@@ -210,6 +231,8 @@ def user():
         @auth.requires_permission('read','table name',record_id)
     to decorate functions that need access control
     """
+
+
     return dict(form=auth())
 
 

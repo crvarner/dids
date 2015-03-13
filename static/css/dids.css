@@ -116,6 +116,20 @@ input.form-title{
     width: 100%;
 }
 
+#followers{
+    float: left;
+    float: top;
+    margin-top:6%;
+    margin-left: 20%;
+}
+#following{
+    float: left;
+    float: top;
+    margin=top: ;
+    margin-left: 30%;
+}
+
+
 textarea.about-text {
   width: 100%;
   max-width: 100%;
@@ -125,7 +139,8 @@ textarea.about-text {
   border-radius: 5px;
 }
 
-.profile_image-preview{
+.profile_image_preview{
+    float: left;
     height: 100px;
     width: 100px;
     border-radius: 15%;

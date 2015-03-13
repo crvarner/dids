@@ -11,7 +11,7 @@ def _init_log():
     handler = SysLogHandler(address='/dev/log')
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter(
-        '%s' % request.application + '[%(process)d]: %(levelname):
+        '%s' % request.application + '[%(process)d]: %(levelname)s:
     %(filename)s at line %(lineno)d: %(message)s'))'
     logger.addHandler(handler) return logger
 
