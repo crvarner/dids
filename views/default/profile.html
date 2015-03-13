@@ -22,7 +22,7 @@
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
-        <div id="about" onclick="linkify('#about')" class="form-text lower_profile">{{=XML(about_str)}}</div>
+        <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
     </div>
 </div>
 
@@ -67,7 +67,7 @@
             {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
             </div>
             <div id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments:}}
+            {{for c in d.comments.render():}}
                 {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
                         P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
                         _class="comment" ) }}

@@ -60,7 +60,7 @@ db.define_table('comments',
                 Field('reply_id'),
                 Field('body','text')
                 )
-                
+     
                 
 """
 defines the table holding all "likes"
@@ -133,19 +133,15 @@ def regex_text(s):
         title = match.group(0).strip()
         # The page, instead, is a normalized lowercase version.
         page = title.lower()
-        return '%s' % (A(title, _href="http://127.0.0.1:8000/dids/default/profile/"))
-    """if(result):
-        logging.error('something was found')
-        logging.error(result)
-        re.sub(RE_USERS,'@regis', s) 
-    """
+        return '%s' % (A(title, _href=URL('default', 'profile', args=[page])))
     logging.error('exit regex text\n')
     return re.sub(RE_USERS,makelink, s) 
-
 
 def linkify(s):
     return regex_text(s)
 
+def represent_links(s, v):
+    return linkify(s)
 
 """################################################################################################"""
 ## store new user in users database on_accpet of registration
@@ -157,4 +153,4 @@ def enter_user(myform):
     db.users.insert(user_id=form.id, username=form.username, email=form.email)
 
 auth.settings.register_onaccept = enter_user
-
+db.comments.body.represent = represent_links 

@@ -108,9 +108,6 @@ def update_profile():
     data = request.vars
     user_id = auth.user.id
     logging.error('in update_profile')
-    #logging.error(data)
-    # if an updated about in vars update user's about 
-    #logging.error(data)
     about_str = ''
     if(data['about']):
 
@@ -140,7 +137,7 @@ def profile():
         redirect(URL('default', 'profile/' + user.username))
 
     
-    about_str = linkify(user.about).decode('unicode-escape')
+    about_str = linkify(user.about)
     dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
