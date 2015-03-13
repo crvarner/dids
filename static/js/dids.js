@@ -12,7 +12,7 @@ var cancelNewDid = function(id_num){
     elem_count = 0;
     new_count--;
     $('#new'+id_num).remove();
-    $('#main_container').prepend('<a class="btn" id="new_btn" onclick="newDid();">new did</a>');
+    $('#new_btn').show();
 }
 
 /* Adds a text element to new did being edited */

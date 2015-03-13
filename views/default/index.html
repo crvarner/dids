@@ -9,18 +9,16 @@
 
 </head>
 
-
-
-
 <body>
 
-<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
-
+<div class="did temp">
+    <a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
+    <a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
+    <a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
+    <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
+    <a class="btn" id="new_btn" style="float:right" onclick="newDid();">new did</a>
+</div>
 <div id="did_container">
-<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
@@ -100,11 +98,11 @@ var newDid = function(){
             type: 'POST',
             success: function(data){
                 $('#new'+new_count).html(data);
-                $('#main_container').prepend('<a class="btn" id="new_btn" onclick="newDid();">new did</a>');
+                $('#new_btn').show();
             }
         });
     });
-    $('#new_btn').remove();
+    $('#new_btn').hide();
 }
 
 /* adds a comment field and cancel/submit buttons */
