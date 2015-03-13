@@ -59,17 +59,14 @@ var rmElement = function(){
 
 //var REGEX = ('/\B#\w*[a-zA-Z]+\w*/');
 // from rayfranco stackpverflow url http://stackoverflow.com/questions/8650007/regular-expression-for-twitter-username
-var regex_my_text = function(s) {
-    var output;
-    //var text = "@RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a @probablyfaketwitterusername";
+var linkify = function(str) {
+    console.log('in linkify');
     var regex   = /(^|[^@\w])@(\w{1,15})\b/g;
     var replace = '$1<a href="http://127.0.0.1:8000/dids/default/profile/$2">@$2</a>';
-    //var output = $(s).val().replace(regex, replace);
-    $(s).html('');
-    $(s).html(output);
-    console.log(output);
-    return;
-
+    str = str.replace( regex, replace );
+    console.log(str);
+    console.log('exit linkify');
+    return str;
 }
 
 
@@ -158,7 +155,7 @@ var editAbout = function() {
     // on.blur() function for text area
     $('#editing_about').on('blur', function(){
         console.log('in blur function');
-        $('#about').html($('#editing_about').val());
+        $('#about').html(linkify($('#editing_about').val()));
         updateProfile();
         $('#profile_form').remove();
         $('#edit_div').remove();

@@ -19,7 +19,7 @@ link (optional link to external site)
 
 # Format for wiki links.
 RE_LINKS = re.compile('(<<)(.*?)(>>)')
-REGEX = re.compile('/(^|[^@\w])@(\w{1,15})\b/g')
+RE_USERS = re.compile('(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@([A-Za-z]+[A-Za-z0-9_]+)')
 
 db.define_table('dids',
                 Field('author_id'),
@@ -123,7 +123,28 @@ db.users.about.default = ''
 ########  Represent users with @ and later represent search criteria with 
 ########  hashtag marks
 """##################################################################################################"""
+def regex_text(s):
+    logging.error('in regex_text\n')
+    logging.error(s)
+    result = RE_USERS.search(s)
+    def makelink(match):
+        logging.error('in makelink')
+        # The tile is what the user puts in
+        title = match.group(0).strip()
+        # The page, instead, is a normalized lowercase version.
+        page = title.lower()
+        return '%s' % (A(title, _href="http://127.0.0.1:8000/dids/default/profile/"))
+    """if(result):
+        logging.error('something was found')
+        logging.error(result)
+        re.sub(RE_USERS,'@regis', s) 
+    """
+    logging.error('exit regex text\n')
+    return re.sub(RE_USERS,makelink, s) 
 
+
+def linkify(s):
+    return regex_text(s)
 
 
 """################################################################################################"""

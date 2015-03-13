@@ -22,7 +22,7 @@
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
-        <div id="about" class="form-text lower_profile">{{=(user.about)}}</div>
+        <div id="about" onclick="linkify('#about')" class="form-text lower_profile">{{=XML(about_str)}}</div>
     </div>
 </div>
 

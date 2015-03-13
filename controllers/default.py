@@ -91,7 +91,7 @@ def create_did():
     bottom.append(HR( _class="did-sep"))
     bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
     bottom.append(DIV( _id="com_"+data['div_id'] ))
-    
+
     did.append(bottom)
     
     return did
@@ -110,26 +110,18 @@ def update_profile():
     logging.error('in update_profile')
     #logging.error(data)
     # if an updated about in vars update user's about 
-    logging.error(data)
+    #logging.error(data)
+    about_str = ''
     if(data['about']):
-        logging.error('updating about\n')
-        db(db.users.user_id == user_id).update(about=data['about'])
-        logging.error('updated about\n')
+
+        #logging.error('updating about\n')
+        logging.error(linkify(data['about']))
+        db(db.users.user_id == user_id).update(about=str(data['about']))
+        #logging.error('updated about\n')
     else:
         logging.error('inserting an image')
         db(db.users.user_id == user_id).update(profile_img=data['image'])
         logging.error('inserted an image')
-    """up_about = data['about']
-    logging.error(up_about)
-    if(up_about):
-        db(db.users.user_id == user_id).update(about=up_about)
-        #logging.error('\n\n\nsuccess update')
-    up_about = data['image']
-    logging.error(up_about)
-    if(up_about):
-        db(db.users.user_id == user_id).update(about=up_about)
-        #logging.error('\n\n\nsuccess update')
-    """
     return 
 
 @auth.requires_login()
@@ -147,13 +139,13 @@ def profile():
     else:
         redirect(URL('default', 'profile/' + user.username))
 
-    #logging.error('in profile\n')
-    #user = db(db.users.user_id == ).select().first()
+    
+    about_str = linkify(user.about).decode('unicode-escape')
     dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-    return dict(dids=dids, user=user)
+    return dict(dids=dids, user=user, about_str=about_str)
 
 
 
