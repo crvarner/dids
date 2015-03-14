@@ -19,6 +19,7 @@ link (optional link to external site)
 
 # Format for wiki links.
 RE_LINKS = re.compile('(<<)(.*?)(>>)')
+# Format for @usernames
 RE_USERS = re.compile('(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@([A-Za-z]+[A-Za-z0-9_]+)')
 
 db.define_table('dids',
@@ -106,13 +107,12 @@ db.define_table('users',
                 Field('about', 'text'),
                 Field('email'),
                 Field('dids', 'reference dids'),
-                Field('users_followers', 'reference users'),
-                Field('users_following', 'reference users'),
                 Field('feed'),
                 )
-db.users.profile_img.default = os.path.join(request.folder, 'static', 'images', 'facebook.png')
+
 db.users.username.default = IS_NOT_IN_DB(db, db.users)
 db.users.username.default = get_user_name()
+db.users.username.requires = IS_LOWER()
 db.users.user_id.requires = IS_NOT_IN_DB(db, db.users)
 db.users.user_id.requires = IS_IN_DB(db, db.auth_user.id)
 db.users.user_id.default = auth.user_id
@@ -124,17 +124,14 @@ db.users.about.default = ''
 ########  hashtag marks
 """##################################################################################################"""
 def regex_text(s):
-    logging.error('in regex_text\n')
-    logging.error(s)
-    result = RE_USERS.search(s)
     def makelink(match):
-        logging.error('in makelink')
+        #logging.error('in makelink')
         # The tile is what the user puts in
         title = match.group(0).strip()
         # The page, instead, is a normalized lowercase version.
-        page = title.lower()
+        page = match.group(1).lower()
         return '%s' % (A(title, _href=URL('default', 'profile', args=[page])))
-    logging.error('exit regex text\n')
+    #logging.error('exit regex text\n')
     return re.sub(RE_USERS,makelink, s) 
 
 def linkify(s):
@@ -152,5 +149,9 @@ def enter_user(myform):
     form = myform.vars
     db.users.insert(user_id=form.id, username=form.username, email=form.email)
 
+"""################################################################################################"""
+###  Validation and Representation statements
+###
+"""################################################################################################"""
 auth.settings.register_onaccept = enter_user
 db.comments.body.represent = represent_links 

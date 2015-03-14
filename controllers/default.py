@@ -108,6 +108,9 @@ def update_profile():
     data = request.vars
     user_id = auth.user.id
     logging.error('in update_profile')
+    #logging.error(data)
+    # if an updated about in vars update user's about 
+    #logging.error(data)
     about_str = ''
     if(data['about']):
 
@@ -125,28 +128,102 @@ def update_profile():
 def profile():
     user = db(db.users.user_id == auth.user.id).select().first()
     name = request.args(0)
+    editable = False
     if name:
-        
-        test = db(db.users.username == name).select().first() 
-        logging.error('requested ' + name + "'s profile" )
-        if test != None:
-            user = test
-        else:
-            redirect(URL('default', 'profile/' + user.username))
+        name = name.lower()
+        logging.error('name is         :'+name+'\n')
+        if user.username == name: 
+            editable = True
+        else: 
+            test = db(db.users.username == name).select().first() 
+            logging.error('requested ' + name + "'s profile" )
+            logging.error('value of test is:')
+            logging.error(test)
+            if test != None:
+                logging.error('found profile' + name + '\n')
+                user = test
+            else:
+                redirect(URL('default', 'profile/' + user.username))
     else:
         redirect(URL('default', 'profile/' + user.username))
 
-    
+    #logging.error('in profile\n')
+    #user = db(db.users.user_id == ).select().first()
     about_str = linkify(user.about)
-    dids = db(db.dids.author_id == user.user_id).select(orderby=~db.dids.date_created)
+    following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    
+    if request.args and request.args[0] == 'top':
+        dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
+    elif request.args and request.args[0] == 'explore':
+        xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
+        authors = xauthors - following - set([str(auth.user_id)])
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
+    elif request.args and request.args[0] == 'followers':
+        authors = [row.follower_id for row in db(db.followers.following_id == auth.user_id).select(db.followers.follower_id)]
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)        
+    else:
+        authors = following | set(str(auth.user_id))
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
+
     for d in dids:
         d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-    return dict(dids=dids, user=user, about_str=about_str)
+        d.following = (str(d.author_id) in following)
+        d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
+    return dict(dids=dids, user=user, about_str=about_str, editable=editable)
 
 
 
 """################################################################################################"""
+"""###################################################################################################
+###########
+########### FolLowers and Following
+###########
+###################################################################################################"""
+
+def followers():  
+    user = db(db.users.user_id == auth.user.id).select().first()
+    name = request.args(0)
+    editable = False
+    if name:
+        name = name.lower()
+        if user.username == name: 
+            editable = True
+        else: 
+            test = db(db.users.username == name).select().first() 
+            if test != None:
+                user = test
+            else:
+                redirect(URL('default', 'profile/' + user.username))
+    else:
+        redirect(URL('default', 'followers/' + user.username))
+
+    followers = []
+    for f in db(db.followers.following_id == user.user_id).select(db.followers.follower_id):
+        followers.append(db(db.users.user_id==f.follower_id).select(db.users.username, db.users.profile_img))
+    return dict(user=user, followers=followers)
+
+def following():
+    user = db(db.users.user_id == auth.user.id).select().first()
+    name = request.args(0)
+    editable = False
+    if name:
+        name = name.lower()
+        if user.username == name: 
+            editable = True
+        else: 
+            test = db(db.users.username == name).select().first() 
+            if test != None:
+                user = test
+            else:
+                redirect(URL('default', 'profile/' + user.username))
+    else:
+        redirect(URL('default', 'followers/' + user.username))
+
+    followers = []
+    for f in db(db.followers.follower_id == user.user_id).select(db.followers.following_id):
+        followers.append(db(db.users.user_id==f.following_id).select(db.users.username, db.users.profile_img))
+    return dict(user=user, followers=followers)
 
 
 @auth.requires_login()

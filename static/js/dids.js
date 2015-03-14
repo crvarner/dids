@@ -89,39 +89,25 @@ var imgProfilePreview = function(image, div_id){
 
 
 var editProfileImage = function() {
-    $('#profile_image').hide();
-    var image = $('#profile_image').val();
-    $('#profile_image').html('');
+    //$('#profile_image').hide();
+    //var image = $('#profile_image').val();
+    //$('#profile_image').html('');
     $('#upper_profile').prepend('<div id=edit_div type="hidden">'
                          +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
-                         +'<img id="temp_img" class="profile_image_preview"src="http://127.0.0.1:8000/dids/static/images/addimage.png"></img>'
                          +'<input id="image" name="image" type="file"/>'
                          +'<input name="is_img" type="hidden" value="True"/>'
                          +'</form>'
                          +'</div>');
-
-    $("#temp_img").focus();
     $('#image').hide();
-    $('#edit_div').on('blur', function(){
-        $('#edit_div').remove();
-        $('#profile_image').html(image);
-        $('#profile_image').show();
-    });
+    $('#image').click();
+    console.log('image sent\n')
     $('#image').change(function(){
         console.log("in in image change");
         $('#image_form').submit();
         imgProfilePreview(this, 'profile_image');
         console.log('image sent\n')
         $('#edit_div').remove();
-        $('#profile_image').show();
     });
-    console.log("in editProfileImage");
-    $("#temp_img").click(function(e){
-        console.log("in editProfileImage");
-        e.preventDefault();
-        $("#image").trigger('click');
-    });
-   
     $('#image_form').submit(function(event){
         event.preventDefault(); 
         var up = new FormData(this);

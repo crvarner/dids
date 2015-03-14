@@ -13,18 +13,33 @@
 </head>
 
 <body>
-
+{{if editable:}}
 <div id="profile_container" class="profile">
     <div id="upper_profile" class="upper_profile">  
         <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
-        <div id="followers"><a class="btn" id="followers_btn" >followers</a></div>
-        <div id="followers"><a class="btn" id="following_btn" >following</a></div>
+        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+
+        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
         <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
     </div>
 </div>
+{{else:}}
+<div id="profile_container" class="profile">
+    <div id="upper_profile" class="upper_profile">  
+        <div id="profile_image">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+
+        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
+        <div id="num_dids"></div>
+    </div>
+    <div id="lower_profile" class="lower_profile">
+        <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
+    </div>
+</div>
+{{pass}}
 
 
 <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
@@ -59,7 +74,6 @@
                     {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
                 {{pass}}
                 {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
                 {{else:}}
                     {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
                 {{pass}}

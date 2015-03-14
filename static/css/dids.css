@@ -90,7 +90,7 @@ input.form-title{
     width: 100%;
     margin: 10px;
     padding: 10px;
-    background-color: #c0c0c0;
+    background-color: white;
     border-radius: 5px;
 }
 
@@ -147,6 +147,29 @@ textarea.about-text {
     padding: 4px;
 }
 
+.followers_image_preview{
+    margin=left: 0px;
+    height:50px;
+    border: 0px solid white;
 
+}
+
+#followers_listing_username{
+    margin-left: 20%;
+}
+
+#followers_listing_follow_btn {
+    position: relative;
+    margin-left: 10em;
+}
+
+.followers_listing{
+    height: 50px; 
+    width:100%; 
+    background-color: white; 
+    margin-top: -1px;
+    border: 1px solid white;
+    border-collapse:collapse
+}
 
 
