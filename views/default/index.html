@@ -9,18 +9,16 @@
 
 </head>
 
-
-
-
 <body>
 
-<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
-
+<div class="did temp">
+    <a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
+    <a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
+    <a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
+    <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
+    <a class="btn" id="new_btn" style="float:right" onclick="newDid();">new did</a>
+</div>
 <div id="did_container">
-<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
@@ -45,12 +43,13 @@
                 {{else:}}
                     {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
                 {{pass}}
-                {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
-                {{else:}}
-                    {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
-                {{pass}}
             {{pass}}
+            {{if d.like:}}
+                {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
+            {{else:}}
+                {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
+            {{pass}}
+            <span class="likes" id="{{='l'+str(d.id)}}">{{=d.likes}}</span>
             {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
             </div>
             <div id={{=str("com_d"+str(i))}}>
@@ -100,11 +99,11 @@ var newDid = function(){
             type: 'POST',
             success: function(data){
                 $('#new'+new_count).html(data);
-                $('#main_container').prepend('<a class="btn" id="new_btn" onclick="newDid();">new did</a>');
+                $('#new_btn').show();
             }
         });
     });
-    $('#new_btn').remove();
+    $('#new_btn').hide()
 }
 
 /* adds a comment field and cancel/submit buttons */
@@ -216,6 +215,7 @@ var like = function(did_id, l_btn){
         type: 'POST',
         success: function(){
             $(l_btn).replaceWith('<a title="Unlike" class="btn form-btn like" onclick="unlike('+did_id+', this)">unlike</a>');
+            $('#l'+did_id).html( parseInt($('#l'+did_id).html()) + 1 );
         }
     });
 }
@@ -228,6 +228,7 @@ var unlike = function(did_id, l_btn){
         type: 'POST',
         success: function(){
             $(l_btn).replaceWith('<a title="Like" class="btn form-btn dont-like" onclick="like('+did_id+', this)">like</a>');
+            $('#l'+did_id).html( parseInt($('#l'+did_id).html()) - 1 );
         }
     });
 }

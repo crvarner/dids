@@ -22,7 +22,7 @@ def index():
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     
     if request.args and request.args[0] == 'top':
-        dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
+        dids = db().select(db.dids.ALL, orderby=~db.dids.likes)
     elif request.args and request.args[0] == 'explore':
         xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
         authors = xauthors - following - set([str(auth.user_id)])
@@ -186,21 +186,29 @@ def unfollow():
     if f:
         db(db.followers.id==f.id).delete()
     return
-    
+ 
+"""
+like a did
+""" 
 def like():
     data = request.vars
     if not db.likes(did_id = data['did_id'], user_id = auth.user_id):
         db.likes.insert(did_id = data['did_id'],
                             user_id = auth.user_id)
+        db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes + 1)
         
     return
 
+"""
+unlike a did
+"""
 def unlike():
     data = request.vars
           
     l = db.likes(did_id = data['did_id'], user_id = auth.user_id)
     if l:
         db(db.likes.id==l.id).delete()
+        db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes - 1)
         
     return
 

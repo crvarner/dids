@@ -15,45 +15,19 @@ body{
     background-color: #EEE;
     border-radius: 5px;
 }
-
-.form-btn{
+.temp{
+    margin: 10px;
+    padding: 10px;
+}
+.likes{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0px;
     margin-top: 10px;
-    margin-right: 2px;
-}
-
-.clear:after{
-    clear: both;
-    content: "";
-    display: table;
-}
-
-hr.did-sep{
-    margin: 1px;
-    height: 1px;
-    border: 0px;
-    background-color: #DDD;
-}
-
-textarea.form-text{
-    width: 100%;
-    max-width: 100%;
-    resize: none;
-    margin-top: 10px;
-    margin-bottom: 0px;
+    padding: 4px;
+    background-color: white;
     border-radius: 5px;
 }
-textarea.animated {
-    -webkit-transition: height 0.2s;
-    -moz-transition: height 0.2s;
-    transition: height 0.2s;
-}
-div.comment{
-    background-color: white;
-    border-radius: 3px;
-    margin-top: 10px;
-    padding: 5px;
-}
-
 .image-preview{
     height: 400px;
     width: 100%;
@@ -61,6 +35,59 @@ div.comment{
     margin-bottom: 0px;
     border-radius: 5px;
     border: solid #CCC 1px;
+}
+.comment{
+    background-color: white;
+    border-radius: 3px;
+    margin-top: 10px;
+    padding: 5px;
+}
+.profile{
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}
+.upper_profile{
+    height: 160px;
+}
+.lower_profile{
+    height: 60px;
+}
+.profile_image_preview{
+    float: left;
+    height: 100px;
+    width: 100px;
+    border-radius: 15%;
+    padding: 4px;
+}
+.clear:after{
+    clear: both;
+    content: "";
+    display: table;
+}
+
+.form-text{
+    width: 100%;
+    max-width: 100%;
+    resize: none;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    border-radius: 5px;
+}
+.animated {
+    -webkit-transition: height 0.2s;
+    -moz-transition: height 0.2s;
+    transition: height 0.2s;
+}
+.about-text {
+  width: 100%;
+  max-width: 100%;
+  resize: none;
+  border: 0px;
+  margin-bottom: 0px;
+  border-radius: 5px;
 }
 
 input.form-title{
@@ -71,51 +98,31 @@ input.form-title{
     margin-bottom: 0px;
     border-radius: 5px;
 }
+.form-btn{
+    margin-top: 10px;
+    margin-right: 2px;
+}
+
+.did-sep{
+    margin: 1px;
+    height: 1px;
+    border: 0px;
+    background-color: #DDD;
+}
 
 #did_form{
     margin: 0px;
 }
-
-#new_btn{
-    margin-left: 10px;
-}
-
-
-/*################################################################
-################ profile.html related css
-################
-#################################################################*/
-
-.profile{
-    width: 100%;
-    margin: 10px;
-    padding: 10px;
-    background-color: #c0c0c0;
-    border-radius: 5px;
-}
-
-
 #profile_container{
-}
 
-.upper_profile{
-    height: 160px;
 }
-
-.lower_profile{
-    height: 60px;
-}
-
 #lower_profile{
     padding: 4px;
     padding-left: 6px;
 }
-
-
 #about{
     width: 100%;
 }
-
 #followers{
     float: left;
     float: top;
@@ -128,25 +135,3 @@ input.form-title{
     margin=top: ;
     margin-left: 30%;
 }
-
-
-textarea.about-text {
-  width: 100%;
-  max-width: 100%;
-  resize: none;
-  border: 0px;
-  margin-bottom: 0px;
-  border-radius: 5px;
-}
-
-.profile_image_preview{
-    float: left;
-    height: 100px;
-    width: 100px;
-    border-radius: 15%;
-    padding: 4px;
-}
-
-
-
-
