@@ -2,25 +2,20 @@
 <head>
 {{left_sidebar_enabled=False}}
 {{right_sidebar_enabled=False}}
-
 {{response.files.append(URL('static','css/dids.css'))}}
-
 {{extend 'layout2.html'}}
 
 </head>
 
 
-
-
-<body>
-
+<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
 <a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
 <a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
 <a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
 
+<body>
 <div id="did_container">
-<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>

@@ -11,6 +11,12 @@
 {{extend 'layout2.html'}}
 
 </head>
+<a class="btn" id="new_btn" onclick="newDid();">new did</a>
+<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
+<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
+<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
+<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
+
 
 <body>
 {{if editable:}}
@@ -42,13 +48,7 @@
 {{pass}}
 
 
-<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
-
 <div id="did_container">
-<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
@@ -61,7 +61,7 @@
                 {{if b.is_image:}}
                     {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
                 {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
+                    {{=P(XML(linkify(b.element_data).replace('\n','<br />')), _style="word-break: break-word")}}
                 {{pass}}
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}

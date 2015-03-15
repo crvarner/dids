@@ -21,6 +21,8 @@ link (optional link to external site)
 RE_LINKS = re.compile('(<<)(.*?)(>>)')
 # Format for @usernames
 RE_USERS = re.compile('(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@([A-Za-z]+[A-Za-z0-9_]+)')
+# Format for #hashtags
+RE_HASH = re.compile('\B#([^,\W]+)')
 
 db.define_table('dids',
                 Field('author_id'),
@@ -43,6 +45,20 @@ db.define_table('elements',
                 Field('is_image','boolean'),
                 Field('element_data')
                 )
+
+
+"""
+Define the table holding hashtag data
+"""
+
+db.define_table('hashtags',
+                Field('did_id'),
+                Field('hashtag', 'text'),
+                Field('date_hashed'),
+                )
+db.hashtags.date_hashed.default = datetime.datetime.utcnow()
+
+
 
 """
 defines table that will hold image locations on FS
@@ -103,6 +119,8 @@ defines table holding user information
 db.define_table('users',
                 Field('user_id',),
                 Field('username'),
+                Field('first_name'),
+                Field('last_name'),
                 Field('profile_img', 'upload'),
                 Field('about', 'text'),
                 Field('email'),
@@ -123,19 +141,27 @@ db.users.about.default = ''
 ########  Represent users with @ and later represent search criteria with 
 ########  hashtag marks
 """##################################################################################################"""
-def regex_text(s):
+def regex_users(s):
     def makelink(match):
-        #logging.error('in makelink')
-        # The tile is what the user puts in
         title = match.group(0).strip()
-        # The page, instead, is a normalized lowercase version.
         page = match.group(1).lower()
         return '%s' % (A(title, _href=URL('default', 'profile', args=[page])))
-    #logging.error('exit regex text\n')
-    return re.sub(RE_USERS,makelink, s) 
 
-def linkify(s):
-    return regex_text(s)
+    return re.sub(RE_USERS, makelink, s) 
+
+def regex_hash(s, did_id):
+    def makelink(match):
+        title = match.group(0).strip()
+        page = match.group(1).lower()
+        if did_id != None: 
+            logging.error(str(id) + page +'\n')
+            db.hashtags.insert(hashtag=page, did_id=did_id)
+        return '%s' % (A(title, _href=URL('default', 'find', args=[page])))
+
+    return re.sub(RE_HASH, makelink, s)
+
+def linkify(s, did_id=None):
+    return regex_hash(regex_users(s), did_id)
 
 def represent_links(s, v):
     return linkify(s)
@@ -147,11 +173,17 @@ def represent_links(s, v):
 def enter_user(myform):
     logging.error(myform.vars.username)
     form = myform.vars
-    db.users.insert(user_id=form.id, username=form.username, email=form.email)
+    db.users.insert(user_id=form.id, 
+                    username=form.username, 
+                    email=form.email, 
+                    first_name=form.first_name,
+                    last_name=form.last_name,
+                    )
 
 """################################################################################################"""
 ###  Validation and Representation statements
 ###
 """################################################################################################"""
-auth.settings.register_onaccept = enter_user
+auth.settings.register_onaccept = enter_user 
 db.comments.body.represent = represent_links 
+db.elements.element_data.represent = represent_links

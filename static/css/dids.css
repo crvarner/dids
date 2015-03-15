@@ -148,6 +148,7 @@ textarea.about-text {
 }
 
 .followers_image_preview{
+    float: left;
     margin=left: 0px;
     height:50px;
     border: 0px solid white;
@@ -155,12 +156,15 @@ textarea.about-text {
 }
 
 #followers_listing_username{
-    margin-left: 20%;
+    margin-left: 160px;
+    margin-top: 15px;
+    float: left;
 }
 
 #followers_listing_follow_btn {
-    position: relative;
-    margin-left: 10em;
+    float:right;
+    margin-right: 5%;
+    margin-top: 10px;
 }
 
 .followers_listing{
@@ -168,7 +172,8 @@ textarea.about-text {
     width:100%; 
     background-color: white; 
     margin-top: -1px;
-    border: 1px solid white;
+    border: 1px solid #D3d3d3;
+    border-top-color: gray
     border-collapse:collapse
 }
 

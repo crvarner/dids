@@ -35,7 +35,7 @@ def index():
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
 
     for d in dids:
-        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
+        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
         d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
         d.following = (str(d.author_id) in following)
         d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
@@ -82,7 +82,7 @@ def create_did():
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
-            did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
+            did.append(P(XML(linkify(str(d), did_id).replace('\n','<br />')), _style="word-break: break-word"))
             
     did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
 
@@ -147,8 +147,6 @@ def profile():
     else:
         redirect(URL('default', 'profile/' + user.username))
 
-    #logging.error('in profile\n')
-    #user = db(db.users.user_id == ).select().first()
     about_str = linkify(user.about)
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     
@@ -226,6 +224,32 @@ def following():
     return dict(user=user, followers=followers)
 
 
+
+"""################################################################################################"""
+"""###################################################################################################
+###########
+########### Searching Hashtags and Users
+###########
+###################################################################################################"""
+
+def find():
+    if request.args:
+        following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+        hashtags = set([row.did_id for row in db(db.hashtags.hashtag == request.args(0)).select(db.hashtags.did_id)])
+        dids = db(db.dids.id.belongs(hashtags)).select(orderby=~db.dids.date_created)
+        logging.error(dids)
+        if dids:
+            for d in dids:
+                d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
+                d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
+                d.following = (str(d.author_id) in following)
+                d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
+    else:
+        return dict(dids=dids)
+    return dict(dids=dids)
+
+
+
 @auth.requires_login()
 def add_comment():
     data = request.vars
@@ -236,7 +260,7 @@ def add_comment():
                        reply_id = None,
                        body = data['comment'])
     
-    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(data['comment'].replace('\n','<br />')), _style="word-break: break-word"),
+    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(linkify(data['comment'], data['did_id']).replace('\n','<br />')), _style="word-break: break-word"),
                    _class="comment" )
     
     return comment
