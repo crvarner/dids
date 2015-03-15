@@ -111,6 +111,13 @@ input.form-title{
     padding-left: 6px;
 }
 
+#profile_author_name{
+    margin-left: 0px;
+}
+
+#profile_username{
+    margin-left: 40%;
+}
 
 #about{
     width: 100%;
@@ -155,6 +162,7 @@ textarea.about-text {
 
 }
 
+
 #followers_listing_username{
     margin-left: 160px;
     margin-top: 15px;
@@ -173,8 +181,8 @@ textarea.about-text {
     background-color: white; 
     margin-top: -1px;
     border: 1px solid #D3d3d3;
-    border-top-color: gray
-    border-collapse:collapse
+    padding: 0px;
+    border-collapse:collapse;
 }
 
 

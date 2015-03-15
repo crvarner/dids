@@ -175,7 +175,7 @@ def profile():
 """################################################################################################"""
 """###################################################################################################
 ###########
-########### FolLowers and Following
+########### Folowers and Following
 ###########
 ###################################################################################################"""
 
@@ -195,10 +195,14 @@ def followers():
                 redirect(URL('default', 'profile/' + user.username))
     else:
         redirect(URL('default', 'followers/' + user.username))
+    
 
-    followers = []
-    for f in db(db.followers.following_id == user.user_id).select(db.followers.follower_id):
-        followers.append(db(db.users.user_id==f.follower_id).select(db.users.username, db.users.profile_img))
+    set_followers = set([row.follower_id for row in db(db.followers.following_id == user.user_id).select(db.followers.follower_id)])
+    set_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    followers = db(db.users.id.belongs(set_followers)).select(orderby=~db.users.first_name)
+    for f in followers:
+        f.following = str(f.user_id in set_following)
+        logging.error("I am following "+f.username+ " = "+ f.following+"\n")
     return dict(user=user, followers=followers)
 
 def following():
@@ -218,9 +222,12 @@ def following():
     else:
         redirect(URL('default', 'followers/' + user.username))
 
-    followers = []
-    for f in db(db.followers.follower_id == user.user_id).select(db.followers.following_id):
-        followers.append(db(db.users.user_id==f.following_id).select(db.users.username, db.users.profile_img))
+    set_following = set([row.following_id for row in db(db.followers.follower_id == user.user_id).select(db.followers.following_id)])
+    set_auth_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    followers = db(db.users.id.belongs(set_following)).select(orderby=~db.users.first_name)
+    for f in followers:
+        f.following = str(f.user_id in set_auth_following)
+        logging.error("I am following "+f.username+ " = "+ f.following+"\n")
     return dict(user=user, followers=followers)
 
 

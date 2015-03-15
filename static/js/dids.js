@@ -63,8 +63,8 @@ var linkify = function(str) {
     console.log('in linkify');
     var regex_user   = /(^|[^@\w])@(\w{1,15})\b/g;
     var regex_hash = /(^|\s)#([^ ]*)/g;
-    var replace_user = '$1<a href="http://127.0.0.1:8000/dids/default/profile/$2">@$2</a>';
-    var replace_hash = '$1<a href="http://127.0.0.1:8000/dids/default/index/$2">#$2</a>';
+    var replace_user = '$1<a href="../dids/default/profile/$2">@$2</a>';
+    var replace_hash = '$1<a href="../dids/default/find/$2">#$2</a>';
     str = str.replace( regex_user, replace_user );
     str = str.replace( regex_hash, replace_hash );
     console.log(str);
