@@ -2,22 +2,18 @@
 <head>
 {{left_sidebar_enabled=False}}
 {{right_sidebar_enabled=False}}
-
 {{response.files.append(URL('static','css/dids.css'))}}
-
 {{extend 'layout2.html'}}
 
 </head>
 
-<body>
+<a class="btn" id="new_btn" onclick="newDid();">new did</a>
+<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
+<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
+<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
+<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
 
-<div class="did temp">
-    <a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
-    <a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-    <a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-    <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-    <a class="btn" id="new_btn" style="float:right" onclick="newDid();">new did</a>
-</div>
+<body>
 <div id="did_container">
 
 {{if len(dids) == 0:}}
@@ -53,7 +49,7 @@
             {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
             </div>
             <div id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments:}}
+            {{for c in d.comments.render():}}
                 {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
                         P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
                         _class="comment" ) }}

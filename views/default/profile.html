@@ -11,29 +11,46 @@
 {{extend 'layout2.html'}}
 
 </head>
+<a class="btn" id="new_btn" onclick="newDid();">new did</a>
+<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
+<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
+<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
+<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
+
 
 <body>
-
+{{if editable:}}
 <div id="profile_container" class="profile">
     <div id="upper_profile" class="upper_profile">  
         <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
-        <div id="followers"><a class="btn" id="followers_btn" >followers</a></div>
-        <div id="followers"><a class="btn" id="following_btn" >following</a></div>
+        <div id="profile_username"> {{=H4(user.username)}} </div>
+        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+        <!--<div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}}-->
+        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
         <div id="num_dids"></div>
     </div>
     <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
         <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
     </div>
 </div>
+{{else:}}
+<div id="profile_container" class="profile">
+    <div id="upper_profile" class="upper_profile">  
+        <div id="profile_image">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+        <div id="profile_username"> {{=H4(user.username)}} </div>
+        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
 
+        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
+        <div id="num_dids"></div>
+    </div>
+    <div id="lower_profile" class="lower_profile">
+        <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
+    </div>
+</div>
+{{pass}}
 
-<a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-<a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-<a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-<a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
 
 <div id="did_container">
-<a class="btn" id="new_btn" onclick="newDid();">new did</a>
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
@@ -46,7 +63,7 @@
                 {{if b.is_image:}}
                     {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
                 {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
+                    {{=P(XML(linkify(b.element_data).replace('\n','<br />')), _style="word-break: break-word")}}
                 {{pass}}
             {{pass}}
             {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
@@ -59,7 +76,6 @@
                     {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
                 {{pass}}
                 {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
                 {{else:}}
                     {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
                 {{pass}}
