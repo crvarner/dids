@@ -46,7 +46,7 @@ body{
     width: 100%;
     margin: 10px;
     padding: 10px;
-    background-color: #c0c0c0;
+    background-color: #FFFFFF;
     border-radius: 5px;
 }
 .upper_profile{
@@ -212,14 +212,9 @@ input.form-title{
     float: left;
     float: top;
     margin-top:6%;
-    margin-left: 20%;
+    margin-left: 10%;
 }
-#following{
-    float: left;
-    float: top;
-    margin=top: ;
-    margin-left: 30%;
-}
+
 
 
 
