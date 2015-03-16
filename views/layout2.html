@@ -49,6 +49,7 @@
 </head>
 <body>
 
+  <!-- Custom Navbar -->
   <div class="dids-navbar" style="position: fixed; top: 0px; width: 100%;">
     <div class="flash">{{=response.flash or ''}}</div>
     <div class="dids-navbar clear">
@@ -63,12 +64,18 @@
         </div>
         <div id="dids-menu-right-container">
             <a id="dids-menu-title">{{=db.users(auth.user_id).username}} <img style="width: 10px; height: 10px;" src="{{=URL('static', 'images/menu-arrow.png')}}"></img></a>
-            <div id="dids-menu-right">menu</div>
+            <div id="dids-menu-right">
+                <a href="{{=URL('default','profile')}}" class="dids-menu-right-item">My Profile</a>
+                <a href="{{=URL('default','user', args=['profile'])}}" class="dids-menu-right-item">Account Settings</a>
+                <a href="{{=URL('default','user', args=['change_password'])}}" class="dids-menu-right-item">Change Password</a>
+                <a href="{{=URL('default','user', args=['logout'])}}" class="dids-menu-right-item">Sign Out</a>
+            </div>
         </div>
     </div>
-  </div>
+  </div> 
+  <!-- </navbar> -->
   
-  <div class="container" style="margin-top: 60px;">
+  <div class="container" style="margin-top: 40px;">
     <!-- Masthead ================================================== -->
 
     <section id="main" class="main row">
@@ -109,11 +116,13 @@
       var arg = '{{=request.args[0]}}';
   {{else:}}
       var arg = 'feed';
+      var new_url = "{{=URL('static', 'images/new-default.png')}}";
+      $('.dids-btn-container').append('<a><img id="new-btn" onclick="newDid();"class="dids-btn" title="New Did" src="'+new_url+'"></img></a>');
   {{pass}}
   var img_url = "{{=URL('static','images/')}}" + arg + '-selected.png';
   $('#'+arg+'-btn').attr('src',img_url);
   
-  var btns = new Set(['feed', 'explore', 'followers', 'top']);
+  var btns = new Set(['feed', 'explore', 'followers', 'top', 'new']);
   btns.delete(arg);
  
   btns.forEach(function(name){
@@ -125,38 +134,6 @@
           $('#'+name+'-btn').attr('src',img_url + name + '-default.png');
       });
   });
-  /*$('#feed-btn').on('mouseover', function(){
-    $('#feed-btn').attr('src','{{=URL("static","images/feed-selected.png")}}');
-  });
-  $('#feed-btn').on('mouseout', function(){
-    $('#feed-btn').attr('src','{{=URL("static","images/feed-default.png")}}');
-  });
-  $('#explore-btn').on('mouseover', function(){
-    $('#explore-btn').attr('src','{{=URL("static","images/explore-selected.png")}}');
-  });
-  $('#explore-btn').on('mouseout', function(){
-    $('#explore-btn').attr('src','{{=URL("static","images/explore-default.png")}}');
-  });
-  $('#followers-btn').on('mouseover', function(){
-    $('#followers-btn').attr('src','{{=URL("static","images/followers-selected.png")}}');
-  });
-  $('#followers-btn').on('mouseout', function(){
-    $('#followers-btn').attr('src','{{=URL("static","images/followers-default.png")}}');
-  });
-  $('#top-btn').on('mouseover', function(){
-    $('#top-btn').attr('src','{{=URL("static","images/top-selected.png")}}');
-  });
-  $('#top-btn').on('mouseout', function(){
-    $('#top-btn').attr('src','{{=URL("static","images/top-default.png")}}');
-  });
-  
-  {{if request.args:}}
-      var arg = '{{=request.args[0]}}';
-  {{else:}}
-      var arg = 'feed';
-  {{pass}}
-  var img_url = "{{=URL('static','images/')}}" + arg + '-selected.png';
-  $('#'+arg+'-btn').attr('src',img_url);*/
   
   </script>
   <!--[if lt IE 7 ]>

@@ -12,7 +12,7 @@ var cancelNewDid = function(id_num){
     elem_count = 0;
     new_count--;
     $('#new'+id_num).remove();
-    $('#new_btn').show();
+    $('#new-btn').show();
 }
 
 /* Adds a text element to new did being edited */
@@ -199,7 +199,7 @@ $('#dids-menu-right-container').click(function(event){
 });
 
 $('#dids-menu-title').click(function(event){
-     $('#dids-menu-right').toggle();
+     $('#dids-menu-right').slideToggle(100);
 });
 
 /*************************
@@ -213,5 +213,5 @@ var toggleComments = function(div_id, com_btn){
     } else {
         $(com_btn).html('hide comments ('+num+')');
     }
-    $('#'+div_id).toggle();
+    $('#'+div_id).slideToggle(100);
 }

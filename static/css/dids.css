@@ -4,7 +4,10 @@
 */
 
 body{
-    background: #295887 top right no-repeat;
+    /* background: #295887 top right no-repeat; */
+    background: top right no-repeat;
+    background-size: 100% auto;
+    background-image: url('../images/dids_back.jpg');
     background-attachment: fixed;
 }
 
@@ -141,11 +144,12 @@ input.form-title{
 }
 
 .dids-btn{
-    margin-top: 5px;
+    margin-top: 4px;
     height: 50px;
     border: 2px solid #3377AA;
     border-radius: 5px;
     display: inline-block;
+    cursor: default;
 }
 
 .toggle-coms{
@@ -158,6 +162,18 @@ input.form-title{
     cursor: pointer;
 }
 
+.dids-menu-right-item{
+    display: block;
+    color: white;
+    margin: 10px;
+    padding: 0px 20px;
+    cursor: pointer;
+}
+.dids-menu-right-item:hover{
+    text-decoration: none;
+    color:  #3377AA;
+}
+
 #logo{
     width: 140px;
     height:100%;
@@ -166,30 +182,30 @@ input.form-title{
 #dids-menu-right-container{
     /* border: 2px solid white; */
     height: 100%;
-    width: 300px;
+    width: 340px;
     display: inline-block;
     float: right;
     text-align: right;
 }
 
 #dids-menu-title, .dids-menu-title:hover{
-    text-align: left;
+    text-align: right;
     text-decoration: none;
     font-size: 20px;
-    cursor: context-menu;
+    cursor: default;
     color:  #3377AA;
-    display: inline-block;
+    display: block;
     padding: 20px;
     padding-right: 60px;
 }
 
 #dids-menu-right{
-    text-align: left;
+    text-align: right;
     float: right;
-    width: 100%;
     display: none;
     background-color: #113355;
     border-radius: 5px;
+    margin-right: 40px;
 }
 
 #did_form{
