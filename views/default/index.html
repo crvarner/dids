@@ -164,7 +164,7 @@ var addImage = function(){
     var elem_id = "elem" + elem_count;
     
     $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="{{=URL('static','images/addimage.png')}}"></img>'
+                         +'<img style="width: 100%; border-radius: 5px;" src="{{=URL('static','images/addimage.png')}}"></img>'
                          +'</div>'
                          +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
                          +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    

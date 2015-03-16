@@ -76,7 +76,7 @@ def create_did():
                 stack_num = i,
                 is_image = True,
                 element_data = img_id)
-            did.append(IMG( _style="witdh:100%", _src=URL('download', args = db.image(img_id).img )))
+            did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(img_id).img )))
         else:
             db.elements.insert(did_id = did_id,
                 stack_num = i,

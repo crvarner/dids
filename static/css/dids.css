@@ -6,7 +6,7 @@
 body{
     /* background: #295887 top right no-repeat; */
     background: top right no-repeat;
-    background-size: 100% auto;
+    background-size: 100% 100%;
     background-image: url('../images/dids_back.jpg');
     background-attachment: fixed;
 }
@@ -32,7 +32,6 @@ body{
     border-radius: 5px;
 }
 .image-preview{
-    height: 400px;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 0px;
