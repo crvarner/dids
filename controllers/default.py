@@ -11,7 +11,6 @@
 
 import logging
 
-
 @auth.requires_login()
 def index():
 
@@ -135,40 +134,47 @@ def profile():
         if user.username == name: 
             editable = True
         else: 
-            test = db(db.users.username == name).select().first() 
+            find_user = db(db.users.username == name).select().first() 
             logging.error('requested ' + name + "'s profile" )
             logging.error('value of test is:')
-            logging.error(test)
-            if test != None:
+            if find_user != None:
                 logging.error('found profile' + name + '\n')
-                user = test
+                user = find_user
             else:
                 redirect(URL('default', 'profile/' + user.username))
     else:
         redirect(URL('default', 'profile/' + user.username))
-
     about_str = linkify(user.about)
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
-    
-    if request.args and request.args[0] == 'top':
-        dids = db().select(db.dids.ALL, orderby=~db.dids.date_created)
-    elif request.args and request.args[0] == 'explore':
-        xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
-        authors = xauthors - following - set([str(auth.user_id)])
-        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
-    elif request.args and request.args[0] == 'followers':
-        authors = [row.follower_id for row in db(db.followers.following_id == auth.user_id).select(db.followers.follower_id)]
-        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)        
-    else:
-        authors = following | set(str(auth.user_id))
-        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
-
-    for d in dids:
-        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num)
-        d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-        d.following = (str(d.author_id) in following)
-        d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-    return dict(dids=dids, user=user, about_str=about_str, editable=editable)
+    dids_left = []
+    dids_center = []
+    dids_right = []
+    if request.args(1) and request.args(1) == 'bucketlist':
+        bucket_items = set([row.did_id for row in db(db.bucketlist.user_id == user.user_id).select(db.bucketlist.did_id)])
+        dids = db(db.dids.id.belongs(bucket_items)).select(orderby=~db.dids.date_created)
+        logging.error('in my bucketlist')
+        about_str = linkify(user.about)
+        following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    else:        
+        dids = db(db.dids.author_id==user.user_id).select(orderby=~db.dids.date_created)
+    if dids:
+        i = 1
+        for d in dids:
+            d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
+            d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
+            d.following = (str(d.author_id) in following)
+            d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
+            if i == 1:
+                dids_left.append(d)
+                i += 1
+            elif i == 2:
+                dids_center.append(d)
+                i += 1
+            else: 
+                dids_right.append(d)
+                i = 1
+    return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
+                                    user=user, about_str=about_str, editable=editable)
 
 
 
@@ -245,15 +251,29 @@ def find():
         hashtags = set([row.did_id for row in db(db.hashtags.hashtag == request.args(0)).select(db.hashtags.did_id)])
         dids = db(db.dids.id.belongs(hashtags)).select(orderby=~db.dids.date_created)
         logging.error(dids)
+        hashtag = linkify('#' + request.args(0))
+        dids_left = []
+        dids_center = []
+        dids_right = []
+        i=1
         if dids:
             for d in dids:
                 d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
                 d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
                 d.following = (str(d.author_id) in following)
                 d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
+                if i == 1:
+                    dids_left.append(d)
+                    i += 1
+                elif i == 2:
+                    dids_center.append(d)
+                    i += 1
+                else: 
+                    dids_right.append(d)
+                    i = 1
     else:
-        return dict(dids=dids)
-    return dict(dids=dids)
+        return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag='')
+    return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag=hashtag)
 
 
 
@@ -267,7 +287,7 @@ def add_comment():
                        reply_id = None,
                        body = data['comment'])
     
-    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(linkify(data['comment'], data['did_id']).replace('\n','<br />')), _style="word-break: break-word"),
+    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(linkify(data['comment'], data['did_id'], auth.user_id).replace('\n','<br />')), _style="word-break: break-word"),
                    _class="comment" )
     
     return comment
@@ -371,3 +391,7 @@ def api():
         '<tablename>': {'GET':{},'POST':{},'PUT':{},'DELETE':{}},
         }
     return Collection(db).process(request,response,rules)
+
+
+
+
