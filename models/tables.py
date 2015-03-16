@@ -61,6 +61,22 @@ db.hashtags.date_hashed.default = datetime.datetime.utcnow()
 
 
 """
+Define the table holding bucketlist data
+"""
+
+db.define_table('bucketlist',
+                Field('did_id'),
+                Field('user_id'),
+                Field('date_bucketed'),
+                )
+db.bucketlist.date_bucketed.default = datetime.datetime.utcnow()
+
+
+
+
+
+
+"""
 defines table that will hold image locations on FS
 """
 db.define_table('image',
@@ -149,19 +165,20 @@ def regex_users(s):
 
     return re.sub(RE_USERS, makelink, s) 
 
-def regex_hash(s, did_id):
+def regex_hash(s, did_id, user_id):
     def makelink(match):
         title = match.group(0).strip()
         page = match.group(1).lower()
         if did_id != None: 
             logging.error(str(id) + page +'\n')
             db.hashtags.insert(hashtag=page, did_id=did_id)
+            if page == 'bucketlist': db.bucketlist.insert(did_id=did_id, user_id=user_id)
         return '%s' % (A(title, _href=URL('default', 'find', args=[page])))
 
     return re.sub(RE_HASH, makelink, s)
 
-def linkify(s, did_id=None):
-    return regex_hash(regex_users(s), did_id)
+def linkify(s, did_id=None, user_id=None):
+    return regex_hash(regex_users(s), did_id, user_id)
 
 def represent_links(s, v):
     return linkify(s)
