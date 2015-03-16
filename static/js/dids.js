@@ -201,3 +201,11 @@ $('#dids-menu-right-container').click(function(event){
 $('#dids-menu-title').click(function(event){
      $('#dids-menu-right').toggle();
 });
+
+/*************************
+toggle comments
+*************************/
+
+var toggleComments = function(div_id){
+    $('#'+div_id).toggle();
+}

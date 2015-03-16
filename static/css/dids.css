@@ -113,7 +113,7 @@ input.form-title{
 .dids-navbar{
     height: 60px;
     /* background-color: #113355; */
-    background: linear-gradient( #113355, #052740);
+    background: linear-gradient( #113355, #022030);
     -moz-user-select: none; 
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -143,6 +143,16 @@ input.form-title{
     border: 2px solid #3377AA;
     border-radius: 5px;
     display: inline-block;
+}
+
+.toggle-coms{
+    margin-top: 10px;
+    float: right;
+    padding: 5px;
+    margin-right: 20px;
+}
+.toggle-coms:hover{
+    cursor: pointer;
 }
 
 #logo{

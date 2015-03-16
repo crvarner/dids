@@ -11,13 +11,8 @@
 
 <body>
 
-<div class="did temp">
-    <a class="btn" id="my_feed" href="{{=URL('default', 'index')}}">my feed</a>
-    <a class="btn" id="explore" href="{{=URL('default','index',args=['explore'])}}">explore</a>
-    <a class="btn" id="my_followers" href="{{=URL('default','index',args=['followers'])}}">my followers</a>
-    <a class="btn" id="top_dids" href="{{=URL('default','index',args=['top'])}}">top dids</a>
-    <a class="btn" id="new_btn" style="float:right" onclick="newDid();">new did</a>
-</div>
+<a class="btn" id="new_btn" onclick="newDid();">new did</a>
+
 <div id="did_container">
 
 {{if len(dids) == 0:}}
@@ -51,6 +46,7 @@
             {{pass}}
             <span class="likes" id="{{='l'+str(d.id)}}">{{=d.likes}}</span>
             {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
+            {{=A('show comments ('+str(len(d.comments))+')', _id='toggleComments'+str(d.id), _class='toggle-coms', _onclick='toggleComments("com_d'+str(i)+'")')}}
             </div>
             <div id={{=str("com_d"+str(i))}}>
             {{for c in d.comments:}}
