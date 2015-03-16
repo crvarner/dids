@@ -49,29 +49,26 @@
 </head>
 <body>
 
-  <div class="navbar navbar-inverse" style="position: fixed; top: 0px; width: 100%;">
+  <div class="dids-navbar" style="position: fixed; top: 0px; width: 100%;">
     <div class="flash">{{=response.flash or ''}}</div>
-    <div class="navbar-inner">
-      <div class="container">
-        {{is_mobile=request.user_agent().is_mobile}}
-        <!-- the next tag is necessary for bootstrap menus, do not remove -->
-        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse" style="{{='display:none;' if not is_mobile else ''}}">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        {{=response.logo or ''}}
-        <ul id="navbar" class="nav pull-right">{{='auth' in globals() and auth.navbar(mode="dropdown") or ''}}</ul>
-        <div class="{{='nav-collapse' if is_mobile else 'nav'}}">
-          {{if response.menu:}}
-          {{=MENU(response.menu, _class='mobile-menu nav' if is_mobile else 'nav',mobile=is_mobile,li_class='dropdown',ul_class='dropdown-menu')}}
-          {{pass}}
-        </div><!--/.nav-collapse -->
-      </div>
+    <div class="dids-navbar clear">
+        <div class="logo-container">
+            <a><img id="logo" src="{{=URL('static', 'images/dids.png')}}"></img></a>
+        </div>
+        <div class='dids-btn-container' align='center'>
+            <a href="{{=URL('default','index')}}"><img id="feed-btn" class='dids-btn' title="Home" src="{{=URL('static','images/feed-default.png')}}"></img></a>
+            <a href="{{=URL('default','index', args=['explore'])}}"><img id="explore-btn" class='dids-btn' title="Explore" src="{{=URL('static','images/explore-default.png')}}"></img></a>
+            <a href="{{=URL('default','index', args=['followers'])}}"><img id="followers-btn" class='dids-btn' title="Followers" src="{{=URL('static','images/followers-default.png')}}"></img></a>
+            <a href="{{=URL('default','index', args=['top'])}}"><img id="top-btn" class='dids-btn' title="Top Dids" src="{{=URL('static','images/top-default.png')}}"></img></a>
+        </div>
+        <div id="dids-menu-right-container">
+            <a id="dids-menu-title">{{=db.users(auth.user_id).username}} <img style="width: 10px; height: 10px;" src="{{=URL('static', 'images/menu-arrow.png')}}"></img></a>
+            <div id="dids-menu-right">menu</div>
+        </div>
     </div>
-  </div><!--/top navbar -->
+  </div>
   
-  <div class="container" style="margin-top: 50px;">
+  <div class="container" style="margin-top: 60px;">
     <!-- Masthead ================================================== -->
 
     <section id="main" class="main row">
@@ -107,6 +104,61 @@
        (Placed at the end of the document so the pages load faster) -->
   <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
   <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
+  <script>
+  {{if request.args:}}
+      var arg = '{{=request.args[0]}}';
+  {{else:}}
+      var arg = 'feed';
+  {{pass}}
+  var img_url = "{{=URL('static','images/')}}" + arg + '-selected.png';
+  $('#'+arg+'-btn').attr('src',img_url);
+  
+  var btns = new Set(['feed', 'explore', 'followers', 'top']);
+  btns.delete(arg);
+ 
+  btns.forEach(function(name){
+      img_url = "{{=URL('static','images/')}}";
+      $('#'+name+'-btn').on('mouseover', function(){
+          $('#'+name+'-btn').attr('src',img_url + name + '-selected.png');
+      });
+      $('#'+name+'-btn').on('mouseout', function(){
+          $('#'+name+'-btn').attr('src',img_url + name + '-default.png');
+      });
+  });
+  /*$('#feed-btn').on('mouseover', function(){
+    $('#feed-btn').attr('src','{{=URL("static","images/feed-selected.png")}}');
+  });
+  $('#feed-btn').on('mouseout', function(){
+    $('#feed-btn').attr('src','{{=URL("static","images/feed-default.png")}}');
+  });
+  $('#explore-btn').on('mouseover', function(){
+    $('#explore-btn').attr('src','{{=URL("static","images/explore-selected.png")}}');
+  });
+  $('#explore-btn').on('mouseout', function(){
+    $('#explore-btn').attr('src','{{=URL("static","images/explore-default.png")}}');
+  });
+  $('#followers-btn').on('mouseover', function(){
+    $('#followers-btn').attr('src','{{=URL("static","images/followers-selected.png")}}');
+  });
+  $('#followers-btn').on('mouseout', function(){
+    $('#followers-btn').attr('src','{{=URL("static","images/followers-default.png")}}');
+  });
+  $('#top-btn').on('mouseover', function(){
+    $('#top-btn').attr('src','{{=URL("static","images/top-selected.png")}}');
+  });
+  $('#top-btn').on('mouseout', function(){
+    $('#top-btn').attr('src','{{=URL("static","images/top-default.png")}}');
+  });
+  
+  {{if request.args:}}
+      var arg = '{{=request.args[0]}}';
+  {{else:}}
+      var arg = 'feed';
+  {{pass}}
+  var img_url = "{{=URL('static','images/')}}" + arg + '-selected.png';
+  $('#'+arg+'-btn').attr('src',img_url);*/
+  
+  </script>
   <!--[if lt IE 7 ]>
       <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
       <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>

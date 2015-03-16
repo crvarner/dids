@@ -110,6 +110,75 @@ input.form-title{
     background-color: #DDD;
 }
 
+.dids-navbar{
+    height: 60px;
+    /* background-color: #113355; */
+    background: linear-gradient( #113355, #052740);
+    -moz-user-select: none; 
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    text-align: center;
+}
+
+.logo-container{
+    float: left;
+    margin-left: 0px;
+    width: 300px;
+    padding-left: 40px;
+    height: 80%;
+    margin-top: 5px;
+    text-align: left;
+}
+
+.dids-btn-container{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dids-btn{
+    margin-top: 5px;
+    height: 50px;
+    border: 2px solid #3377AA;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+#logo{
+    width: 140px;
+    height:100%;
+}
+
+#dids-menu-right-container{
+    /* border: 2px solid white; */
+    height: 100%;
+    width: 300px;
+    display: inline-block;
+    float: right;
+    text-align: right;
+}
+
+#dids-menu-title, .dids-menu-title:hover{
+    text-align: left;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: context-menu;
+    color:  #3377AA;
+    display: inline-block;
+    padding: 20px;
+    padding-right: 60px;
+}
+
+#dids-menu-right{
+    text-align: left;
+    float: right;
+    width: 100%;
+    display: none;
+    background-color: #113355;
+    border-radius: 5px;
+}
+
 #did_form{
     margin: 0px;
 }

@@ -185,3 +185,19 @@ var updateProfile = function(){
 
 
 //########################################################################################
+
+/******************
+navbar menu behaviour
+*******************/
+
+$('html').click(function() {
+   $('#dids-menu-right').hide(); 
+});
+
+$('#dids-menu-right-container').click(function(event){
+     event.stopPropagation();
+});
+
+$('#dids-menu-title').click(function(event){
+     $('#dids-menu-right').toggle();
+});
