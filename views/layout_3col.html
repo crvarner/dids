@@ -115,26 +115,17 @@
 
   <!-- The javascript =============================================
        (Placed at the end of the document so the pages load faster) -->
-  <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
-  <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
-  <!--[if lt IE 7 ]>
-      <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
-      <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
-      <![endif]-->
-  
-  {{if response.google_analytics_id:}}
-  <!-- Google Analytics -->
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', '{{=response.google_analytics_id}}', 'auto');
-    ga('send', 'pageview');
-  </script>
 
 
+
+<script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
 <script>
+
+var new_count = 0;
+var elem_count = 0;
+var com_count = 0;
+
 
 /* Generates a new editable did */
 var newDid = function(){
@@ -357,8 +348,6 @@ var rmElement = function(){
 
 
 
-
-
 //var REGEX = ('/\B#\w*[a-zA-Z]+\w*/');
 // from rayfranco stackpverflow url http://stackoverflow.com/questions/8650007/regular-expression-for-twitter-username
 var linkify = function(str) {
@@ -373,8 +362,6 @@ var linkify = function(str) {
     console.log('exit linkify');
     return str;
 }
-
-
 
 /* Image preview modified from example*/
 /* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
@@ -476,6 +463,28 @@ var updateProfile = function(){
 
 </script>
 
+
+
+
+
+
+  <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
+  <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
+  <!--[if lt IE 7 ]>
+      <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
+      <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+      <![endif]-->
+  
+  {{if response.google_analytics_id:}}
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', '{{=response.google_analytics_id}}', 'auto');
+    ga('send', 'pageview');
+  </script>
 
 
   <!-- End Google Analytics -->
