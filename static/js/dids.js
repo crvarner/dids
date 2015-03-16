@@ -206,6 +206,12 @@ $('#dids-menu-title').click(function(event){
 toggle comments
 *************************/
 
-var toggleComments = function(div_id){
+var toggleComments = function(div_id, com_btn){
+    var num = ($(com_btn).html()).replace(/^\D+|\D+$/g, "")
+    if ($('#'+div_id).css('display') != 'none'){
+        $(com_btn).html('show comments ('+num+')');
+    } else {
+        $(com_btn).html('hide comments ('+num+')');
+    }
     $('#'+div_id).toggle();
 }

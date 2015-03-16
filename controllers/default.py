@@ -59,7 +59,7 @@ def create_did():
                             link = None)
     
     did = DIV(H4(data['did_title']),
-              _style="width:100%")
+              _class='did clear')
     
     if len(data) == 1:
         did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
@@ -84,13 +84,18 @@ def create_did():
                 element_data = str(d))
             did.append(P(XML(str(d).replace('\n','<br />')), _style="word-break: break-word"))
             
-    did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
+    did.append(P(str(db.users(auth.user_id).username) +' on '+ str(date_created)))
 
     bottom = DIV( _class="clear")
 
     bottom.append(HR( _class="did-sep"))
+    
+    bottom.append(A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(did_id)+", this)"))
+    bottom.append(SPAN( '0', _style="margin-left: 5px;", _class="likes", _id='l'+str(did_id)))
+    
     bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
-    bottom.append(DIV( _id="com_"+data['div_id'] ))
+    bottom.append(A("show comments (0)", _class="toggle-coms", _onclick="toggleComments('com_"+data['div_id']+"', this)"));
+    bottom.append(DIV( _class="comment-container", _id="com_"+data['div_id'] ))
 
     did.append(bottom)
     

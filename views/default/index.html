@@ -46,9 +46,9 @@
             {{pass}}
             <span class="likes" id="{{='l'+str(d.id)}}">{{=d.likes}}</span>
             {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
-            {{=A('show comments ('+str(len(d.comments))+')', _id='toggleComments'+str(d.id), _class='toggle-coms', _onclick='toggleComments("com_d'+str(i)+'")')}}
+            {{=A("show comments ("+str(len(d.comments))+")", _class="toggle-coms", _onclick="toggleComments('com_d"+str(i)+"', this)")}}
             </div>
-            <div id={{=str("com_d"+str(i))}}>
+            <div class='comment-container' id={{=str("com_d"+str(i))}}>
             {{for c in d.comments:}}
                 {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
                         P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
@@ -94,7 +94,7 @@ var newDid = function(){
             contentType: false,
             type: 'POST',
             success: function(data){
-                $('#new'+new_count).html(data);
+                $('#new'+new_count).replaceWith(data);
                 $('#new_btn').show();
             }
         });
@@ -104,7 +104,8 @@ var newDid = function(){
 
 /* adds a comment field and cancel/submit buttons */
 var addComment = function(div_id, did_id, com_btn){
-    com_id = "com"+com_count;
+    var com_id = "com"+com_count;
+    
     
     // prepend comment form to comment section
     $('#com_'+div_id).prepend('<div id="'+com_id+'" class="clear"><form id="'+com_id+'_form">'
@@ -120,6 +121,7 @@ var addComment = function(div_id, did_id, com_btn){
         $('#'+com_id+'_form').submit();
     });
     
+    
     // removes text-area when cancel is clicked
     $('#cancel'+did_id).click(function(){
         $('#'+com_id).remove();
@@ -130,6 +132,7 @@ var addComment = function(div_id, did_id, com_btn){
     // submit comment form
     $('#'+com_id+'_form').submit(function(event){
         event.preventDefault(); 
+        console.log(this);
         var fd = new FormData(this);
     
         $.ajax({
