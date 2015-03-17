@@ -330,11 +330,11 @@ def find():
         if dids:
             for d in dids:
                 if i%3 == 0:
-                    dids_left.append(did2DOM(d, following, i))
+                    dids_left.append(did2DOM(row = d, following = following, div_num = i))
                 elif i%3 == 1:
-                    dids_center.append(did2DOM(d, following, i))
+                    dids_center.append(did2DOM(row = d, following = following, div_num = i))
                 elif i%3 == 2: 
-                    dids_right.append(did2DOM(d, following, i))
+                    dids_right.append(did2DOM(row = d, following = following, div_num = i))
                 i += 1
     else:
         return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag='')
