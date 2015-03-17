@@ -60,7 +60,7 @@ def did2DOM(row, div_num, following=set(), new=False):
     
     # attach title
     if row.title != '':
-        did.append(H4(row.title, _class="did-title"))
+        did.append(H4(XML(linkify(row.title)), _class="did-title"))
     
     # get elements
     elems = db(db.elements.did_id==row.id).select(orderby=db.elements.stack_num).render()
@@ -126,6 +126,7 @@ def create_did():
                             spam = 0,
                             link = None)
     
+
     #did = DIV(H4(data['did_title']),
     #          _class='did clear')
     
@@ -294,7 +295,7 @@ def following():
             else:
                 redirect(URL('default', 'profile/' + user.username))
     else:
-        redirect(URL('default', 'followers/' + user.username))
+        redirect(URL('default', 'following/' + user.username))
 
     set_following = set([row.following_id for row in db(db.followers.follower_id == user.user_id).select(db.followers.following_id)])
     set_auth_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])

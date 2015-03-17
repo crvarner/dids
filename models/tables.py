@@ -202,5 +202,6 @@ def enter_user(myform):
 ###
 """################################################################################################"""
 auth.settings.register_onaccept = enter_user 
+db.dids.title.represent = represent_links 
 db.comments.body.represent = represent_links 
 db.elements.element_data.represent = represent_links
