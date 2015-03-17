@@ -16,64 +16,67 @@
 
 {{block left}}
 {{include}}
-<!-- ############## profile information block -->
-{{if editable:}}
-<div id="profile_container" class="profile">
-    <div id="upper_profile" class="upper_profile">  
-        <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
-        <div id="profile_username"> {{=H4(user.username)}} </div>
-        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-        <!-- <div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}} </div> -->
-        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
-        <div id="num_dids"></div>
+
+<div id="left_main_container" class="did-span">
+
+    <!-- ############## profile information block -->
+    {{if editable:}}
+    <div id="profile_container" class="profile">
+        <div id="upper_profile" class="upper_profile">  
+            <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+            <div id="profile_username"> {{=H4(user.username)}} </div>
+            <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+            <!-- <div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}} </div> -->
+            <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
+            <div id="num_dids"></div>
+        </div>
+        <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
+            <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
+        </div>
     </div>
-    <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
-        <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
+    {{else:}}
+    <div id="profile_container" class="profile">
+        <div id="upper_profile" class="upper_profile">  
+            <div id="profile_image">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+            <div id="profile_username"> {{=H4(user.username)}} </div>
+            <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+            <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
+            <div id="num_dids"></div>
+        </div>
+        <div id="lower_profile" class="lower_profile">
+            <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
+        </div>
     </div>
+    {{pass}}
+
+    <!-- DID information from here down -->
+
+    {{for d in dids_left:}}
+        {{=d}}
+    {{pass}}
 </div>
-{{else:}}
-<div id="profile_container" class="profile">
-    <div id="upper_profile" class="upper_profile">  
-        <div id="profile_image">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
-        <div id="profile_username"> {{=H4(user.username)}} </div>
-        <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-        <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
-        <div id="num_dids"></div>
-    </div>
-    <div id="lower_profile" class="lower_profile">
-        <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
-    </div>
-</div>
-{{pass}}
-
-<!-- DID information from here down -->
-
-{{for d in dids_left:}}
-    {{=d}}
-{{pass}}
-
 {{end}}
 
 
 <!-- center column -->
 {{block center}}
 {{include}}
-
-{{for d in dids_center:}}
-    {{=d}}
-{{pass}}
-
+<div id="center_main_container" class="did-span" >
+    {{for d in dids_center:}}
+        {{=d}}
+    {{pass}}
+</div>
 {{end}}
 
 
 <!-- right column -->
 {{block right}}
 {{include}}
-
-{{for d in dids_right:}}
-    {{=d}}
-{{pass}}
-
+<div id="right_main_container" class="did-span" >
+    {{for d in dids_right:}}
+        {{=d}}
+    {{pass}}
+</div>
 {{end}}
 
 </body>

@@ -78,23 +78,19 @@
   <div class="container main-container" style="width: auto;">
     <!-- Masthead ================================================== -->
 
-    <section id="main" class="main row">
-
-          <div id="left_main_container" class="did-span" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
-            {{block left}}
-            {{include}}
-            {{end}}
-          </div>
-          <div id="center_main_container" class="did-span" style="margin-left:0px; padding:15px; margin-top:0px; text-align:left;">  
-            {{block center}}
-            {{include}}
-            {{end}}
-          </div>
-          <div id="right_main_container" class="did-span" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
-            {{block right}}
-            {{include}}
-            {{end}}
-          </div>
+    <section id="main" class="main row" style="min-height: 50%;">
+  
+        {{block left}}
+        {{include}}
+        {{end}}
+        
+        {{block center}}
+        {{include}}
+        {{end}}
+        
+        {{block right}}
+        {{include}}
+        {{end}}
 
         <!-- <div class="span3 left-sidebar"></div>
         
@@ -108,8 +104,8 @@
     </section><!--/main-->
 
     <!-- Footer ================================================== -->
-    <div class="row">
-        <footer class="footer span12" id="footer">
+    <div class="row" style="text-align: center;">
+        <footer class="footer span12" id="footer" style="display: inline-block; margin: auto 0px; width: 100%">
             <div class="footer-content">
                 {{block footer}} <!-- this is default footer -->
                 <div class="copyright pull-left">{{=T('Copyright')}} &#169; {{=request.now.year}}</div>

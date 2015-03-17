@@ -22,14 +22,30 @@ body{
 
 .did{
     width: 100%;
-    margin: 10px;
-    padding: 10px;
-    background-color: #EEE;
+    margin: 0px;
+    margin-bottom: 10px;
+    padding: 0px;
+    background-color: white;
     border-radius: 5px;
+    padding-bottom: 10px;
+    padding-top: 5px;
 }
-.temp{
+.text-element{
+    word-break: break-word;
     margin: 10px;
-    padding: 10px;
+}
+.did-author{
+    margin-left: 10px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+.did-title{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.did-actions{
+    margin-left: 10px;
+    margin-right: 10px;
 }
 .likes{
     display: inline-block;
@@ -50,16 +66,23 @@ body{
 .comment{
     background-color: white;
     border-radius: 3px;
-    margin-top: 10px;
-    padding: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
 }
 .comment-container{
     display: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
 }
 .profile{
     width: 100%;
-    margin: 10px;
+    margin: 0px;
+    margin-bottom: 10px;
     padding: 10px;
+    padding-left: 0px;
+    padding-right:0px;
     background-color: #FFFFFF;
     border-radius: 5px;
 }
@@ -153,7 +176,7 @@ input.form-title{
 }
 
 .dids-btn-container{
-    width: 450px;
+    width: 540px;
     display: inline-block;
     text-align: left;
     margin-left: auto;
@@ -173,7 +196,7 @@ input.form-title{
     margin-top: 10px;
     float: right;
     padding: 5px;
-    margin-right: 20px;
+    margin-right: 5px;
 }
 .toggle-coms:hover{
     cursor: pointer;
@@ -209,6 +232,7 @@ input.form-title{
     display: inline-block;
     float: right;
     text-align: right;
+    margin-left: 30px;
 }
 
 #dids-menu-title, .dids-menu-title:hover{
@@ -262,7 +286,18 @@ input.form-title{
 
 
 .did-span{
-    width: 450px;
+    width: 440px;
+    padding: 10px;
+    text-align: left;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+.did-span-big{
+    width: 540px;
+    padding: 10px;
+    text-align: left;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
 
 textarea.about-text {
