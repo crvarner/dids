@@ -123,7 +123,7 @@ def create_did():
                             spam = 0,
                             link = None)
     
-    did = DIV(H4(XML(linkify(data['did_title']))),
+    did = DIV(H4(XML(linkify(str(data['did_title']), did_id, author))),
               _class='did clear')
     
     if len(data) == 1:
