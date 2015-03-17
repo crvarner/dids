@@ -292,12 +292,12 @@ textarea.about-text {
 
 
 #followers_listing_username{
-    margin-left: 160px;
     margin-top: 15px;
+    margin-left: 20%;
     float: left;
 }
 
-#followers_listing_follow_btn {
+.followers_listing_follow_btn {
     float:right;
     margin-right: 5%;
     margin-top: 10px;

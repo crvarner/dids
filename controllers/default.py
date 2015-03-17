@@ -289,7 +289,7 @@ def following():
             else:
                 redirect(URL('default', 'profile/' + user.username))
     else:
-        redirect(URL('default', 'followers/' + user.username))
+        redirect(URL('default', 'following/' + user.username))
 
     set_following = set([row.following_id for row in db(db.followers.follower_id == user.user_id).select(db.followers.following_id)])
     set_auth_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])

@@ -10,49 +10,51 @@
 </head>
 <body>
 
-
-
+{{block center}}
+{{include}}
 {{for f in followers:}}
-	{{if f.following == "True":}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _id=str(user.user_id), _class="followers_listing")}}
-	{{else:}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _id=str(user.user_id), _class="followers_listing")}}
-	{{pass}}
+    {{if f.following == "True":}}
+        {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "unfollow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="unfollow", _onclick="local_unfollow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
+    {{else:}}
+        {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "follow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="follow", _onclick="local_follow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
+    {{pass}}
 {{pass}}
-
+{{end}}
 </body>
 
 
 
 <script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
 <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
-<script>
 
+<script>
 /* follow a user */
-var follow = function(user_id){
+var local_follow = function(user_id){
     // add follower to db and all that
+     console.log('.ffuck');
     $.ajax({
         url: "{{=URL('default','follow')}}",
         data: {'following_id': user_id},
         type: 'POST',
         success: function(data){
-            $('.f'+user_id).replaceWith('<a title="unfollow" id='+user_id+' class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
+            console.log('.f'+user_id);
+            $('#f'+user_id).replaceWith('<a id="f'+user_id+'" title="unfollow" class="btn form-btn followers_listing_follow_btn" onclick="local_unfollow('+user_id+', this)">unfollow</a>');
+            console.log("replaced\n");
         }
     });
 }
 
 /* unfollow a user */
-var unfollow = function(user_id){
+var local_unfollow = function(user_id){
     $.ajax({
         url: "{{=URL('default','unfollow')}}",
         data: {'following_id': user_id},
         type: 'POST',
         success: function(){
-            $(str(user_id)).hide();
+            $('#f'+user_id).replaceWith('<a id="f'+user_id+'" title="follow" class="btn form-btn followers_listing_follow_btn" onclick="local_follow('+user_id+', this)">follow</a>');
         }
     });
 }
-
 
 </script>
 
