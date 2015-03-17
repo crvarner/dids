@@ -76,29 +76,7 @@ body{
     padding-right: 10px;
     margin-top: 10px;
 }
-.profile{
-    width: 100%;
-    margin: 0px;
-    margin-bottom: 10px;
-    padding: 10px;
-    padding-left: 0px;
-    padding-right:0px;
-    background-color: #FFFFFF;
-    border-radius: 5px;
-}
-.upper_profile{
-    height: 160px;
-}
-.lower_profile{
-    height: 60px;
-}
-.profile_image_preview{
-    float: left;
-    height: 100px;
-    width: 100px;
-    border-radius: 15%;
-    padding: 4px;
-}
+
 .clear:after{
     clear: both;
     content: "";
@@ -258,12 +236,43 @@ input.form-title{
 #did_form{
     margin: 0px;
 }
+
+
+.profile{
+    width: 100%;
+    margin: 0px;
+    margin-bottom: 10px;
+    padding: 10px;
+    padding-left: 0px;
+    padding-right:0px;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+}
+.upper_profile{
+    height: 120px;
+}
+.lower_profile{
+    height: 60px;
+}
+
+.profile_image_preview{
+    float: left;
+    height: 100px;
+    width: 100px;
+    margin-left: 10px;
+    margin-top: -10px;
+    border-radius: 15%;
+    padding: 4px;
+}
+
+
 #profile_container{
 
 }
 #lower_profile{
     padding: 4px;
     padding-left: 6px;
+    padding-right: 6px;
 }
 
 #profile_author_name{
@@ -276,6 +285,8 @@ input.form-title{
 
 #about{
     width: 100%;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 #followers{
     float: left;

@@ -57,7 +57,7 @@ def did2DOM(row, following, div_num):
     
     # attach title
     if row.title != '':
-        did.append(H4(row.title, _class="did-title"))
+        did.append(H4(XML(linkify(row.title)), _class="did-title"))
     
     # get elements
     elems = db(db.elements.did_id==row.id).select(orderby=db.elements.stack_num).render()
@@ -123,7 +123,7 @@ def create_did():
                             spam = 0,
                             link = None)
     
-    did = DIV(H4(data['did_title']),
+    did = DIV(H4(XML(linkify(data['did_title']))),
               _class='did clear')
     
     if len(data) == 1:
