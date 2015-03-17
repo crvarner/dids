@@ -65,9 +65,7 @@ body{
 .image-preview{
     width: 100%;
     margin-top: 10px;
-    margin-bottom: 0px;
-    border-radius: 5px;
-    border: solid #CCC 1px;
+    margin: 0px;
 }
 .comment{
     background-color: white;
@@ -112,11 +110,11 @@ body{
 }
 
 .form-text{
-    width: 100%;
-    max-width: 100%;
+    width: 96%;
+    max-width: 96%;
     resize: none;
-    margin-top: 10px;
-    margin-bottom: 0px;
+    margin: 10px;
+    margin-top: 5px;
     border-radius: 5px;
 }
 .animated {
@@ -136,9 +134,9 @@ body{
 input.form-title{
     height: 26px;
     font-size: 18px;
-    width: 100%;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    width: 96%;
+    margin: 10px;
+    margin-top: 5px;
     border-radius: 5px;
 }
 .form-btn{
@@ -181,8 +179,16 @@ input.form-title{
     text-align: left;
 }
 
-.dids-btn-container{
+.dids-btn-container-big{
     width: 540px;
+    display: inline-block;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dids-btn-container{
+    width: 440px;
     display: inline-block;
     text-align: left;
     margin-left: auto;

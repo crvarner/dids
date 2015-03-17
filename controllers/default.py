@@ -42,7 +42,7 @@ def index():
     return dict(dids=ds)
 
     
-def did2DOM(row, following, div_num, new=False):
+def did2DOM(row, div_num, following=set(), new=False):
     """ things I need to pass
     did db row
     following
@@ -50,7 +50,10 @@ def did2DOM(row, following, div_num, new=False):
     """
     
     #create did
-    did = DIV( _class="did clear", _id="d"+ str(div_num) )
+    if not new:
+        did = DIV( _class="did clear", _id="d"+ str(div_num) )
+    elif new:
+        did = DIV( _class="did clear", _id=str(div_num) )
     
     #attach author
     did.append(A(db.users(row.author_id).username, _href=URL('default','profile', args=[db.users(row.author_id).username]), _class="did-author"))
@@ -71,7 +74,7 @@ def did2DOM(row, following, div_num, new=False):
     actions = DIV( _class="did-actions clear")
     
     # follow/unfollow button
-    if row.author_id != auth.user_id:
+    if str(row.author_id) != str(auth.user_id) and not new:
         if str(row.author_id) in following:
             actions.append(A('unfollow', _class="btn form-btn f"+str(row.author_id), _title="unfollow", _onclick="unfollow("+row.author_id+")"))
         else:
@@ -123,14 +126,14 @@ def create_did():
                             spam = 0,
                             link = None)
     
-    did = DIV(H4(data['did_title']),
-              _class='did clear')
+    #did = DIV(H4(data['did_title']),
+    #          _class='did clear')
     
-    if len(data) == 1:
-        did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
-        did.append(HR( _class="did-sep"))
-        did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
-        return did
+    #if len(data) == 1:
+    #    did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
+    #    did.append(HR( _class="did-sep"))
+    #    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
+    #    return did
     
     num_elems = (len(data) - 2)/2
     for i in range(0, num_elems):
@@ -141,15 +144,15 @@ def create_did():
                 stack_num = i,
                 is_image = True,
                 element_data = img_id)
-            did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(img_id).img )))
+            #did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(img_id).img )))
         else:
             db.elements.insert(did_id = did_id,
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
-            did.append(P(XML(linkify(str(d), did_id, author).replace('\n','<br />')), _style="word-break: break-word"))
+            #did.append(P(XML(linkify(str(d), did_id, author).replace('\n','<br />')), _style="word-break: break-word"))
             
-    did.append(P(str(db.users(auth.user_id).username) +' on '+ str(date_created)))
+    """did.append(P(str(db.users(auth.user_id).username) +' on '+ str(date_created)))
 
     bottom = DIV( _class="clear")
 
@@ -162,9 +165,9 @@ def create_did():
     bottom.append(A("show comments (0)", _class="toggle-coms", _onclick="toggleComments('com_"+data['div_id']+"', this)"));
     bottom.append(DIV( _class="comment-container", _id="com_"+data['div_id'] ))
 
-    did.append(bottom)
+    did.append(bottom)"""
     
-    return did
+    return did2DOM( row = db.dids(did_id) , div_num = data['div_id'], new = True )
     
 
 """###################################################################################################
@@ -346,8 +349,11 @@ def add_comment():
                        reply_id = None,
                        body = data['comment'])
     
-    comment = DIV( B(str(auth.user.first_name + ' ' + str(auth.user.last_name)))+ ' ' + P(XML(linkify(data['comment'], data['did_id'], auth.user_id).replace('\n','<br />')), _style="word-break: break-word"),
-                   _class="comment" )
+    linked_string = linkify(str(data['comment']), data['did_id'], auth.user_id).replace('\n','<br />')
+    
+    comment = DIV( _class="comment")
+    com_author = A(B(str(db.users(auth.user_id).username) + ' '), _href=URL('default','profile', args=[str(db.users(auth.user_id).username)]))
+    comment.append(P( com_author, XML(linked_string), _style="word-break: break-word; margin-bottom: 0px; text-align: left;"))
     
     return comment
     
