@@ -9,18 +9,32 @@
 
 </head>
 <body>
-{{block center}}
+
+{{block left}}
 {{include}}
-{{for f in followers:}}
-	{{if f.following == "True":}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "unfollow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="unfollow", _onclick="local_unfollow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
-	{{else:}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "follow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="follow", _onclick="local_follow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
-	{{pass}}
-{{pass}}
+<div id="left_main_container" class="did-span">
+</div>
 {{end}}
 
-</body>
+{{block right}}
+{{include}}
+<div id="right_main_container" class="did-span">
+</div>
+{{end}}
+
+{{block center}}
+{{include}}
+<div id="center_main_container" class="did-span">
+    {{for f in followers:}}
+    {{if f.following == "True":}}
+        {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "unfollow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="unfollow", _onclick="local_unfollow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
+    {{else:}}
+        {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A( "follow", _class="btn form-btn followers_listing_follow_btn" ,_id="f"+str(f.user_id), _title="follow", _onclick="local_follow("+f.user_id+")"), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), _class="followers_listing")}}
+    {{pass}}
+{{pass}}
+</div>
+
+
 
 
 <script>
@@ -59,6 +73,11 @@ var local_unfollow = function(user_id){
 
 <script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
 <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
+
+
+{{end}}
+
+</body>
 
 
 </html>
