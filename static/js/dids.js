@@ -30,7 +30,7 @@ var imgPreview = function(image, div_id){
         reader.onload = function(e){
             console.log(e.target.result);
             $('#'+div_id).html(
-                '<img style="width: 100%; border-radius: 5px;" src="'+ e.target.result +'"></img>'
+                '<img style="width: 100%;" src="'+ e.target.result +'"></img>'
             );
         }
         reader.readAsDataURL(image.files[0]);

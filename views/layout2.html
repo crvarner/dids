@@ -46,6 +46,7 @@
   {{include 'web2py_ajax.html'}}
 
   <noscript><link href="{{=URL('static', 'css/web2py_bootstrap_nojs.css')}}" rel="stylesheet" type="text/css" /></noscript>
+
 </head>
 <body>
 
@@ -56,7 +57,7 @@
         <div class="logo-container">
             <a><img id="logo" src="{{=URL('static', 'images/dids.png')}}"></img></a>
         </div>
-        <div class='dids-btn-container'>
+        <div id='dbc' class='dids-btn-container'>
             <a href="{{=URL('default','index')}}"><img id="feed-btn" class='dids-btn' title="Home" src="{{=URL('static','images/feed-default.png')}}"></img></a>
             <a href="{{=URL('default','index', args=['explore'])}}"><img id="explore-btn" class='dids-btn' title="Explore" src="{{=URL('static','images/explore-default.png')}}"></img></a>
             <a href="{{=URL('default','index', args=['followers'])}}"><img id="followers-btn" class='dids-btn' title="Followers" src="{{=URL('static','images/followers-default.png')}}"></img></a>
@@ -131,14 +132,15 @@
 
   <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
   <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
+  
   <script>
   
   {{if request.args:}}
-      var arg = '{{=request.args[0]}}';
+  var arg = '{{=request.args[0]}}';
   {{else:}}
-      var arg = 'feed';
-      var new_url = "{{=URL('static', 'images/new-default.png')}}";
-      $('.dids-btn-container').append('<a><img id="new-btn" onclick="newDid();"class="dids-btn" title="New Did" src="'+new_url+'"></img></a>');
+  var arg = 'feed';
+  var new_url = "{{=URL('static', 'images/new-default.png')}}";
+  $('#dbc').append('<a><img id="new-btn" onclick="newDid();"class="dids-btn" title="New Did" src="'+new_url+'"></img></a>');
   {{pass}}
   var img_url = "{{=URL('static','images/')}}" + arg + '-selected.png';
   $('#'+arg+'-btn').attr('src',img_url);
@@ -165,11 +167,13 @@ var newDid = function(){
                     +'<input class="form-title" name="did_title" type="text"/>'
                     +'<input name="div_id" type="hidden" value="new' + new_count + '" />'
                     +'</form>'
+                    +'<div style="margin-left: 10px; margin-right: 10px;">'
                     +'<a class="btn form-btn" onclick="addText()">add text</a>'
                     +'<a class="btn form-btn" onclick="addImage()">add image</a>'
                     +'<a class="btn form-btn" onclick="rmElement()">remove element</a>'
                     +'<a style="float: right" class="btn form-btn" onclick="publishDid();">publish</a>'
                     +'<a style="float: right" class="btn form-btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
+                    +'</div>'
                     +'</div>';
     $('#did_container').prepend(did_string);
     
@@ -256,7 +260,7 @@ var addImage = function(){
     var elem_id = "elem" + elem_count;
     
     $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="{{=URL('static','images/addimage.png')}}"></img>'
+                         +'<img style="width: 100%;" src="{{=URL('static','images/addimage.png')}}"></img>'
                          +'</div>'
                          +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
                          +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
