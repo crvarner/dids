@@ -36,13 +36,13 @@ def index():
     i = 0;
     ds = []
     for d in dids:
-        ds.append(did2DOM(d, following, i))
+        ds.append(did2DOM(row = d, following = following, div_num = i))
         i += 1
         
     return dict(dids=ds)
 
     
-def did2DOM(row, following, div_num):
+def did2DOM(row, following, div_num, new=False):
     """ things I need to pass
     did db row
     following

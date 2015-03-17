@@ -2,6 +2,9 @@
     style sheet for dids!
     first css stylesheet evar!
 */
+html{
+    overflow-y: scroll;
+}
 
 body{
     /* background: #295887 top right no-repeat; */
@@ -38,6 +41,9 @@ body{
     margin-left: 10px;
     margin-bottom: 5px;
     display: inline-block;
+}
+.did-author:hover{
+    text-decoration: none;
 }
 .did-title{
     margin-left: 10px;

@@ -11,34 +11,34 @@
 
 {{block left}}
 {{include}}
-<div class="did" style="width:100%; magin-top:-200px; background-color: white;"> {{=H1(XML(hashtag))}}</h1></div>
-
-{{for d in dids_left:}}
-    {{=d}}
-{{pass}}
-
+<div id="left_main_container" class="did-span">
+    <div class="did" style="background-color: white;"> {{=H1(XML(hashtag), _style="padding:10px; text-align: center;")}}</h1></div>
+    {{for d in dids_left:}}
+        {{=d}}
+    {{pass}}
+</div>
 {{end}}
 
 
 <!-- center column -->
 {{block center}}
 {{include}}
-
-{{for d in dids_center:}}
-    {{=d}}
-{{pass}}
-
+<div id="left_main_container" class="did-span">
+    {{for d in dids_center:}}
+        {{=d}}
+    {{pass}}
+</div>
 {{end}}
 
 
 <!-- right column -->
 {{block right}}
 {{include}}
-
-{{for d in dids_right:}}
-    {{=d}}
-{{pass}}
-
+<div id="left_main_container" class="did-span">
+    {{for d in dids_right:}}
+        {{=d}}
+    {{pass}}
+</div>
 {{end}}
 
 </body>

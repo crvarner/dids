@@ -1,4 +1,14 @@
-{{extend 'layout.html'}}
+<html>
+<head>
+
+{{left_sidebar_enabled=False}}
+{{right_sidebar_enabled=False}}
+{{response.files.append(URL('static','css/dids.css'))}}
+{{extend 'layout2.html'}}
+
+</head>
+<body>
+
 
 <h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>
 <div id="web2py_user_form">
@@ -14,6 +24,8 @@ pass
 =form
 }}
 </div>
+
+</body>
 <script language="javascript"><!--
 jQuery("#web2py_user_form input:visible:enabled:first").focus();
 {{if request.args(0)=='register':}}
@@ -23,3 +35,5 @@ jQuery("#web2py_user_form input:visible:enabled:first").focus();
 {{pass}}
 //--></script>
 
+
+</html>

@@ -10,16 +10,31 @@
 </head>
 <body>
 
+{{block left}}
+{{include}}
+<div id="left_main_container" class="did-span">
+</div>
+{{end}}
 
+{{block right}}
+{{include}}
+<div id="right_main_container" class="did-span">
+</div>
+{{end}}
 
-{{for f in followers:}}
-	{{if f.following == "True":}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _class="followers_listing")}}
-	{{else:}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _class="followers_listing")}}
-	{{pass}}
-{{pass}}
-
+{{block center}}
+{{include}}
+<div id="center_main_container" class="did-span">
+    {{for f in followers:}}
+        {{if f.following == "True":}}
+            {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _class="followers_listing")}}
+        {{else:}}
+            {{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _class="followers_listing")}}
+        {{pass}}
+    {{pass}}
+</div>
+{{end}}
+    
 </body>
 
 
