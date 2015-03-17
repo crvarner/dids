@@ -52,8 +52,12 @@ def did2DOM(row, following, div_num):
     #create did
     did = DIV( _class="did clear", _id="d"+ str(div_num) )
     
+    #attach author
+    did.append(A(db.users(row.author_id).username, _href=URL('default','profile', args=[db.users(row.author_id).username]), _class="did-author"))
+    
     # attach title
-    did.append(H4(row.title))
+    if row.title != '':
+        did.append(H4(row.title, _class="did-title"))
     
     # get elements
     elems = db(db.elements.did_id==row.id).select(orderby=db.elements.stack_num).render()
@@ -61,13 +65,10 @@ def did2DOM(row, following, div_num):
         if e.is_image:
             did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(e.element_data).img )))
         else:
-            did.append(P(XML(e.element_data.replace('\n','<br />')), _style="word-break: break-word"))
-            
-    # separate comments/actions from content
-    did.append(HR( _class="did-sep"))
+            did.append(P(XML(e.element_data.replace('\n','<br />')), _class="text-element"))
     
     # div for actions
-    actions = DIV( _class="clear")
+    actions = DIV( _class="did-actions clear")
     
     # follow/unfollow button
     if row.author_id != auth.user_id:
@@ -97,11 +98,12 @@ def did2DOM(row, following, div_num):
     comment_div = DIV( _class="comment-container", _id="com_d"+str(div_num) )
     for c in comments.render():
         comment = DIV( _class="comment")
-        comment.append(B(str(db.users(c.author_id).username) + ' '))
-        comment.append(P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"))
+        com_author = A(B(str(db.users(c.author_id).username) + ' '), _href=URL('default','profile', args=[str(db.users(c.author_id).username)]))
+        comment.append(P( com_author, XML(c.body.replace('\n','<br />')), _style="word-break: break-word; margin-bottom: 0px; text-align: left;"))
         comment_div.append(comment)
     did.append(comment_div)
     
+    #return DOM element
     return did
     
     

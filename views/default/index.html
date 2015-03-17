@@ -11,21 +11,26 @@
 
 {{block left}}
 {{include}}
+<div id="left_main_container" class="did-span">
 <!-- left column -->
+</div>
 {{end}}
 
 {{block right}}
 {{include}}
+<div id="right_main_container" class="did-span" >
 <!-- right column -->
+</div>
 {{end}}
 
 {{block center}}
 {{include}}
-
-<div id="did_container">
-    {{for d in dids:}}
-        {{=d}}
-    {{pass}}
+<div id="center_main_container" class="did-span-big" >
+    <div id="did_container">
+        {{for d in dids:}}
+            {{=d}}
+        {{pass}}
+    </div>
 </div>
 
 {{end}}
