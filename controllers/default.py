@@ -194,7 +194,7 @@ def update_profile():
 
 @auth.requires_login()
 def profile():
-    user = db(db.users.user_id == auth.user.id).select().first()
+    user = db.users(auth.user_id)
     name = request.args(0)
     editable = False
     if name:
@@ -227,21 +227,15 @@ def profile():
     else:        
         dids = db(db.dids.author_id==user.user_id).select(orderby=~db.dids.date_created)
     if dids:
-        i = 1
+        i = 0
         for d in dids:
-            d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
-            d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-            d.following = (str(d.author_id) in following)
-            d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-            if i == 1:
-                dids_left.append(d)
-                i += 1
-            elif i == 2:
-                dids_center.append(d)
-                i += 1
-            else: 
-                dids_right.append(d)
-                i = 1
+            if i%3 == 0:
+                dids_left.append(did2DOM(d, following, i))
+            elif i%3 == 1:
+                dids_center.append(did2DOM(d, following, i))
+            elif i%3 == 2: 
+                dids_right.append(did2DOM(d, following, i))
+            i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
                                     user=user, about_str=about_str, editable=editable)
 
@@ -324,22 +318,16 @@ def find():
         dids_left = []
         dids_center = []
         dids_right = []
-        i=1
+        i=0
         if dids:
             for d in dids:
-                d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
-                d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-                d.following = (str(d.author_id) in following)
-                d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-                if i == 1:
-                    dids_left.append(d)
-                    i += 1
-                elif i == 2:
-                    dids_center.append(d)
-                    i += 1
-                else: 
-                    dids_right.append(d)
-                    i = 1
+                if i%3 == 0:
+                    dids_left.append(did2DOM(d, following, i))
+                elif i%3 == 1:
+                    dids_center.append(did2DOM(d, following, i))
+                elif i%3 == 2: 
+                    dids_right.append(did2DOM(d, following, i))
+                i += 1
     else:
         return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag='')
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag=hashtag)

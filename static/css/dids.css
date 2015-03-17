@@ -153,7 +153,9 @@ input.form-title{
 }
 
 .dids-btn-container{
+    width: 450px;
     display: inline-block;
+    text-align: left;
     margin-left: auto;
     margin-right: auto;
 }
@@ -259,8 +261,8 @@ input.form-title{
 }
 
 
-.span5{
-    width: 430px;
+.did-span{
+    width: 450px;
 }
 
 textarea.about-text {
@@ -309,4 +311,8 @@ textarea.about-text {
     border: 1px solid #D3d3d3;
     padding: 0px;
     border-collapse:collapse;
+}
+
+#new-btn{
+    float: right;
 }

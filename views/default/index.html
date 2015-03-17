@@ -23,14 +23,9 @@
 {{include}}
 
 <div id="did_container">
-
-{{if len(dids) == 0:}}
-    <p>There are no Dids</p>
-{{else:}}
     {{for d in dids:}}
         {{=d}}
     {{pass}}
-{{pass}}
 </div>
 
 {{end}}

@@ -56,7 +56,7 @@
         <div class="logo-container">
             <a><img id="logo" src="{{=URL('static', 'images/dids.png')}}"></img></a>
         </div>
-        <div class='dids-btn-container' align='center'>
+        <div class='dids-btn-container'>
             <a href="{{=URL('default','index')}}"><img id="feed-btn" class='dids-btn' title="Home" src="{{=URL('static','images/feed-default.png')}}"></img></a>
             <a href="{{=URL('default','index', args=['explore'])}}"><img id="explore-btn" class='dids-btn' title="Explore" src="{{=URL('static','images/explore-default.png')}}"></img></a>
             <a href="{{=URL('default','index', args=['followers'])}}"><img id="followers-btn" class='dids-btn' title="Followers" src="{{=URL('static','images/followers-default.png')}}"></img></a>
@@ -80,17 +80,17 @@
 
     <section id="main" class="main row">
 
-          <div id="left_main_container" class="span4" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
+          <div id="left_main_container" class="did-span" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
             {{block left}}
             {{include}}
             {{end}}
           </div>
-          <div id="center_main_container" class="span4" style="margin-left:0px; padding:15px; margin-top:0px; text-align:left;">  
+          <div id="center_main_container" class="did-span" style="margin-left:0px; padding:15px; margin-top:0px; text-align:left;">  
             {{block center}}
             {{include}}
             {{end}}
           </div>
-          <div id="right_main_container" class="span4" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
+          <div id="right_main_container" class="did-span" style="margin-left:0px;padding:15px; margin-top:0px; text-align:left;">  
             {{block right}}
             {{include}}
             {{end}}
@@ -329,8 +329,7 @@ var unlike = function(did_id, l_btn){
     });
 }
 </script>
-  
-  </script>
+
   <!--[if lt IE 7 ]>
       <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
       <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
@@ -346,12 +345,8 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     ga('create', '{{=response.google_analytics_id}}', 'auto');
     ga('send', 'pageview');
   </script>
-
-
-
-
-
   <!-- End Google Analytics -->
   {{pass}}
 </body>
+
 </html>

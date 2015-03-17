@@ -14,12 +14,8 @@
 
 <body>
 
-
-
 {{block left}}
 {{include}}
-<div id="left_did_container" class="span4">
-
 <!-- ############## profile information block -->
 {{if editable:}}
 <div id="profile_container" class="profile">
@@ -27,7 +23,7 @@
         <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
         <div id="profile_username"> {{=H4(user.username)}} </div>
         <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-        <!--<div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}}-->
+        <!-- <div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}} </div> -->
         <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
         <div id="num_dids"></div>
     </div>
@@ -41,7 +37,6 @@
         <div id="profile_image">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
         <div id="profile_username"> {{=H4(user.username)}} </div>
         <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-
         <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
         <div id="num_dids"></div>
     </div>
@@ -53,151 +48,32 @@
 
 <!-- DID information from here down -->
 
-{{i = 0}}
-{{if len(dids_left) == 0:}}
-    <p>There are no Dids</p>
-{{else:}}
-    {{for d in dids_left:}}
-        <div class="did clear" id="{{='d'+str(i)}}" >
-            {{=H4(str(d.title))}}
-            {{for b in d.body:}}
-                {{if b.is_image:}}
-                    {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
-                {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
-                {{pass}}
-            {{pass}}
-            {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
-            {{=HR( _class="did-sep")}}
-            <div class="clear">
-            {{if d.author_id != str(auth.user_id):}}
-                {{if not d.following:}}
-                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+")") }}
-                {{else:}}
-                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
-                {{pass}}
-                {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
-                {{else:}}
-                    {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
-                {{pass}}
-            {{pass}}
-            {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
-            </div>
-            <div id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments.render():}}
-                {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
-                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
-                        _class="comment" ) }}
-            {{pass}}
-            </div>
-        </div>
-        {{i += 1}}
-    {{pass}}
+{{for d in dids_left:}}
+    {{=d}}
 {{pass}}
-</div>
+
 {{end}}
 
 
-
-
+<!-- center column -->
 {{block center}}
 {{include}}
-<div id="center_did_container" class="span4">
-{{if len(dids_center) == 0:}}
-    <p></p>
-{{else:}}
-    {{for d in dids_center:}}
-        <div class="did clear" id="{{='d'+str(i)}}" >
-            {{=H4(str(d.title))}}
-            {{for b in d.body:}}
-                {{if b.is_image:}}
-                    {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
-                {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
-                {{pass}}
-            {{pass}}
-            {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
-            {{=HR( _class="did-sep")}}
-            <div class="clear">
-            {{if d.author_id != str(auth.user_id):}}
-                {{if not d.following:}}
-                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+")") }}
-                {{else:}}
-                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
-                {{pass}}
-                {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
-                {{else:}}
-                    {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
-                {{pass}}
-            {{pass}}
-            {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
-            </div>
-            <div id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments.render():}}
-                {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
-                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
-                        _class="comment" ) }}
-            {{pass}}
-            </div>
-        </div>
-        {{i += 1}}
-    {{pass}}
+
+{{for d in dids_center:}}
+    {{=d}}
 {{pass}}
-</div>
+
 {{end}}
 
 
-
-
-
-
+<!-- right column -->
 {{block right}}
 {{include}}
-<div id="right_did_container" class="span4">
-{{if len(dids_right) == 0:}}
-    <p></p>
-{{else:}}
-    {{for d in dids_right:}}
-        <div class="did clear" id="{{='d'+str(i)}}" >
-            {{=H4(str(d.title))}}
-            {{for b in d.body:}}
-                {{if b.is_image:}}
-                    {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
-                {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
-                {{pass}}
-            {{pass}}
-            {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
-            {{=HR( _class="did-sep")}}
-            <div class="clear">
-            {{if d.author_id != str(auth.user_id):}}
-                {{if not d.following:}}
-                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+")") }}
-                {{else:}}
-                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
-                {{pass}}
-                {{if d.like:}}
-                    {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
-                {{else:}}
-                    {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
-                {{pass}}
-            {{pass}}
-            {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
-            </div>
-            <div id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments.render():}}
-                {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
-                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
-                        _class="comment" ) }}
-            {{pass}}
-            </div>
-        </div>
-        {{i += 1}}
-    {{pass}}
+
+{{for d in dids_right:}}
+    {{=d}}
 {{pass}}
-</div>
+
 {{end}}
 
 </body>
