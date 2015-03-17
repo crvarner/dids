@@ -33,14 +33,78 @@ def index():
         authors = following | set(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
 
+    i = 0;
+    ds = []
     for d in dids:
-        d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
-        d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-        d.following = (str(d.author_id) in following)
-        d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-    return dict(dids=dids)
+        ds.append(did2DOM(d, following, i))
+        i += 1
+        
+    return dict(dids=ds)
 
-
+    
+def did2DOM(row, following, div_num):
+    """ things I need to pass
+    did db row
+    following
+    div_num
+    """
+    
+    #create did
+    did = DIV( _class="did clear", _id="d"+ str(div_num) )
+    
+    # attach title
+    did.append(H4(row.title))
+    
+    # get elements
+    elems = db(db.elements.did_id==row.id).select(orderby=db.elements.stack_num).render()
+    for e in elems:
+        if e.is_image:
+            did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(e.element_data).img )))
+        else:
+            did.append(P(XML(e.element_data.replace('\n','<br />')), _style="word-break: break-word"))
+            
+    # separate comments/actions from content
+    did.append(HR( _class="did-sep"))
+    
+    # div for actions
+    actions = DIV( _class="clear")
+    
+    # follow/unfollow button
+    if row.author_id != auth.user_id:
+        if str(row.author_id) in following:
+            actions.append(A('unfollow', _class="btn form-btn f"+str(row.author_id), _title="unfollow", _onclick="unfollow("+row.author_id+")"))
+        else:
+            actions.append(A('follow' , _class="btn form-btn f"+str(row.author_id), _title="follow", _onclick="follow("+row.author_id+")"))
+        
+    # like button
+    if db.likes(user_id = auth.user_id, did_id = row.id) != None:
+        actions.append(A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(row.id)+", this)"))
+    else:
+        actions.append(A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(row.id)+", this)"))
+        
+    # number of likes
+    actions.append(SPAN( str(row.likes), _class="likes", _id='l'+str(row.id)))
+    
+    # show/hide/add comment anchors
+    comments = db(db.comments.did_id==row.id).select(orderby=~db.comments.date_created)
+    actions.append(A('comment', _id="com_btn"+str(row.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(div_num)+"', "+str(row.id)+", this)"))
+    actions.append(A("show comments ("+str(len(comments))+")", _class="toggle-coms", _onclick="toggleComments('com_d"+str(div_num)+"', this)"))
+    
+    # append actions to did
+    did.append(actions)
+    
+    # comments
+    comment_div = DIV( _class="comment-container", _id="com_d"+str(div_num) )
+    for c in comments.render():
+        comment = DIV( _class="comment")
+        comment.append(B(str(db.users(c.author_id).username) + ' '))
+        comment.append(P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"))
+        comment_div.append(comment)
+    did.append(comment_div)
+    
+    return did
+    
+    
 @auth.requires_login()
 def create_did():
     """
@@ -58,7 +122,7 @@ def create_did():
                             link = None)
     
     did = DIV(H4(data['did_title']),
-              _style="width:100%")
+              _class='did clear')
     
     if len(data) == 1:
         did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
@@ -75,21 +139,26 @@ def create_did():
                 stack_num = i,
                 is_image = True,
                 element_data = img_id)
-            did.append(IMG( _style="witdh:100%", _src=URL('download', args = db.image(img_id).img )))
+            did.append(IMG( _style="width:100%", _src=URL('download', args = db.image(img_id).img )))
         else:
             db.elements.insert(did_id = did_id,
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
-            did.append(P(XML(linkify(str(d), did_id).replace('\n','<br />')), _style="word-break: break-word"))
+            did.append(P(XML(linkify(str(d), did_id, author).replace('\n','<br />')), _style="word-break: break-word"))
             
-    did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
+    did.append(P(str(db.users(auth.user_id).username) +' on '+ str(date_created)))
 
     bottom = DIV( _class="clear")
 
     bottom.append(HR( _class="did-sep"))
+    
+    bottom.append(A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(did_id)+", this)"))
+    bottom.append(SPAN( '0', _style="margin-left: 5px;", _class="likes", _id='l'+str(did_id)))
+    
     bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
-    bottom.append(DIV( _id="com_"+data['div_id'] ))
+    bottom.append(A("show comments (0)", _class="toggle-coms", _onclick="toggleComments('com_"+data['div_id']+"', this)"));
+    bottom.append(DIV( _class="comment-container", _id="com_"+data['div_id'] ))
 
     did.append(bottom)
     
@@ -125,7 +194,7 @@ def update_profile():
 
 @auth.requires_login()
 def profile():
-    user = db(db.users.user_id == auth.user.id).select().first()
+    user = db.users(auth.user_id)
     name = request.args(0)
     editable = False
     if name:
@@ -158,21 +227,15 @@ def profile():
     else:        
         dids = db(db.dids.author_id==user.user_id).select(orderby=~db.dids.date_created)
     if dids:
-        i = 1
+        i = 0
         for d in dids:
-            d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
-            d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-            d.following = (str(d.author_id) in following)
-            d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-            if i == 1:
-                dids_left.append(d)
-                i += 1
-            elif i == 2:
-                dids_center.append(d)
-                i += 1
-            else: 
-                dids_right.append(d)
-                i = 1
+            if i%3 == 0:
+                dids_left.append(did2DOM(d, following, i))
+            elif i%3 == 1:
+                dids_center.append(did2DOM(d, following, i))
+            elif i%3 == 2: 
+                dids_right.append(did2DOM(d, following, i))
+            i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
                                     user=user, about_str=about_str, editable=editable)
 
@@ -255,22 +318,16 @@ def find():
         dids_left = []
         dids_center = []
         dids_right = []
-        i=1
+        i=0
         if dids:
             for d in dids:
-                d.body = db(db.elements.did_id==d.id).select(orderby=db.elements.stack_num).render()
-                d.comments = db(db.comments.did_id==d.id).select(orderby=~db.comments.date_created)
-                d.following = (str(d.author_id) in following)
-                d.like = (db.likes(user_id = auth.user_id, did_id = d.id) != None)
-                if i == 1:
-                    dids_left.append(d)
-                    i += 1
-                elif i == 2:
-                    dids_center.append(d)
-                    i += 1
-                else: 
-                    dids_right.append(d)
-                    i = 1
+                if i%3 == 0:
+                    dids_left.append(did2DOM(d, following, i))
+                elif i%3 == 1:
+                    dids_center.append(did2DOM(d, following, i))
+                elif i%3 == 2: 
+                    dids_right.append(did2DOM(d, following, i))
+                i += 1
     else:
         return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag='')
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag=hashtag)

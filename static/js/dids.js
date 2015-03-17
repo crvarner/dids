@@ -12,7 +12,7 @@ var cancelNewDid = function(id_num){
     elem_count = 0;
     new_count--;
     $('#new'+id_num).remove();
-    $('#new_btn').show();
+    $('#new-btn').show();
 }
 
 /* Adds a text element to new did being edited */
@@ -30,7 +30,7 @@ var imgPreview = function(image, div_id){
         reader.onload = function(e){
             console.log(e.target.result);
             $('#'+div_id).html(
-                '<img style="width: 100%; height: 100%; border-radius: 5px;" src="'+ e.target.result +'"></img>'
+                '<img style="width: 100%; border-radius: 5px;" src="'+ e.target.result +'"></img>'
             );
         }
         reader.readAsDataURL(image.files[0]);
@@ -64,7 +64,7 @@ var linkify = function(str) {
     var regex_user   = /(^|[^@\w])@(\w{1,15})\b/g;
     var regex_hash = /(^|\s)#([^ ]*)/g;
     var replace_user = '$1<a href="../dids/default/profile/$2">@$2</a>';
-    var replace_hash = '$1<a href="../dids/default/find/$2">#$2</a>';
+    var replace_hash = '$1<a href="/dids/default/find/$2">#$2</a>';
     str = str.replace( regex_user, replace_user );
     str = str.replace( regex_hash, replace_hash );
     console.log(str);
@@ -188,5 +188,19 @@ $('#dids-menu-right-container').click(function(event){
 });
 
 $('#dids-menu-title').click(function(event){
-     $('#dids-menu-right').toggle();
+     $('#dids-menu-right').slideToggle(100);
 });
+
+/*************************
+toggle comments
+*************************/
+
+var toggleComments = function(div_id, com_btn){
+    var num = ($(com_btn).html()).replace(/^\D+|\D+$/g, "")
+    if ($('#'+div_id).css('display') != 'none'){
+        $(com_btn).html('show comments ('+num+')');
+    } else {
+        $(com_btn).html('hide comments ('+num+')');
+    }
+    $('#'+div_id).slideToggle(100);
+}
