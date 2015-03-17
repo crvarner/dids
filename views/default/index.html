@@ -2,236 +2,39 @@
 <head>
 {{left_sidebar_enabled=False}}
 {{right_sidebar_enabled=False}}
-
 {{response.files.append(URL('static','css/dids.css'))}}
-
 {{extend 'layout2.html'}}
 
 </head>
 
 <body>
 
+{{block left}}
+{{include}}
+<!-- left column -->
+{{end}}
+
+{{block right}}
+{{include}}
+<!-- right column -->
+{{end}}
+
+{{block center}}
+{{include}}
+
 <div id="did_container">
 
 {{if len(dids) == 0:}}
     <p>There are no Dids</p>
 {{else:}}
-    {{i = 0}}
     {{for d in dids:}}
-        <div class="did clear" id="{{='d'+str(i)}}" >
-            {{=H4(str(d.title))}}
-            {{for b in d.body:}}
-                {{if b.is_image:}}
-                    {{=IMG( _style="width:100%", _src=URL('download', args = db.image(b.element_data).img ))}}
-                {{else:}}
-                    {{=P(XML(b.element_data.replace('\n','<br />')), _style="word-break: break-word")}}
-                {{pass}}
-            {{pass}}
-            {{=P('posted by: '+str(db.auth_user(d.author_id).email)+' on '+str(d.date_created))}}
-            {{=HR( _class="did-sep")}}
-            <div class="clear">
-            {{if d.author_id != str(auth.user_id):}}
-                {{if not d.following:}}
-                    {{=A('follow' , _class="btn form-btn f"+str(d.author_id), _title="follow", _onclick="follow("+d.author_id+")") }}
-                {{else:}}
-                    {{=A('unfollow', _class="btn form-btn f"+str(d.author_id), _title="unfollow", _onclick="unfollow("+d.author_id+")") }}
-                {{pass}}
-            {{pass}}
-            {{if d.like:}}
-                {{=A('unlike', _class="btn form-btn like", _title="Unlike", _onclick="unlike("+str(d.id)+", this)") }}
-            {{else:}}
-                {{=A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(d.id)+", this)") }}
-            {{pass}}
-            <span class="likes" id="{{='l'+str(d.id)}}">{{=d.likes}}</span>
-            {{=A('comment', _id="com_btn"+str(d.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(i)+"', "+str(d.id)+", this)") }}
-            {{=A("show comments ("+str(len(d.comments))+")", _class="toggle-coms", _onclick="toggleComments('com_d"+str(i)+"', this)")}}
-            </div>
-            <div class='comment-container' id={{=str("com_d"+str(i))}}>
-            {{for c in d.comments:}}
-                {{=DIV( B(str(db.auth_user(c.author_id).first_name +' '+ db.auth_user(c.author_id).last_name))+ ' ' + 
-                        P(XML(c.body.replace('\n','<br />')), _style="word-break: break-word"),
-                        _class="comment" ) }}
-            {{pass}}
-            </div>
-        </div>
-        {{i += 1}}
+        {{=d}}
     {{pass}}
 {{pass}}
 </div>
 
+{{end}}
+
 </body>
-
-<script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
-<script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
-<script>
-
-/* Generates a new editable did */
-var newDid = function(){
-    ++new_count;
-    var did_string = '<div class="did clear" id="new' + new_count + '">'
-                    +'<form id="did_form" enctype="multipart/form-data" action="create_did" method="post">'
-                    +'<input class="form-title" name="did_title" type="text"/>'
-                    +'<input name="div_id" type="hidden" value="new' + new_count + '" />'
-                    +'</form>'
-                    +'<a class="btn form-btn" onclick="addText()">add text</a>'
-                    +'<a class="btn form-btn" onclick="addImage()">add image</a>'
-                    +'<a class="btn form-btn" onclick="rmElement()">remove element</a>'
-                    +'<a style="float: right" class="btn form-btn" onclick="publishDid();">publish</a>'
-                    +'<a style="float: right" class="btn form-btn" onclick="cancelNewDid('+new_count+');">cancel</a>'
-                    +'</div>';
-    $('#did_container').prepend(did_string);
-    
-    $('#did_form').submit(function(event){
-        event.preventDefault(); 
-        var fd = new FormData(this);
-    
-        $.ajax({
-            url: "{{=URL('default','create_did')}}",
-            data: fd,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function(data){
-                $('#new'+new_count).replaceWith(data);
-                $('#new-btn').show();
-            }
-        });
-    });
-    $('#new-btn').hide()
-}
-
-/* adds a comment field and cancel/submit buttons */
-var addComment = function(div_id, did_id, com_btn){
-    
-    var parent = $(com_btn).closest('div');
-    var com_id = "com"+com_count;
-    
-    // prepend comment form to comment section
-    $(parent).append('<div id="'+com_id+'" class="clear"><form id="'+com_id+'_form">'
-                        +'<textarea name="comment" id="com_text'+div_id+'" class="form-text animated"></textarea>'
-                        +'<input name="did_id" type="hidden" value="'+did_id+'" />'
-                        +'<a id="submit'+did_id+'" class="btn form-btn" style="float:right">submit</a>'
-                        +'<a id="cancel'+did_id+'" class="btn form-btn" style="float:right">cancel</a>'
-                        +'</form></div>');
-    $('#com_text'+div_id).autosize();
-    
-    // submit comment when submit button is clicked
-    $('#submit'+did_id).click(function(){
-        $('#'+com_id+'_form').submit();
-    });
-    
-    
-    // removes text-area when cancel is clicked
-    $('#cancel'+did_id).click(function(){
-        $('#'+com_id).remove();
-        $(com_btn).show();
-        com_count--;
-    });
-    
-    // submit comment form
-    $('#'+com_id+'_form').submit(function(event){
-        event.preventDefault(); 
-        var fd = new FormData(this);
-    
-        $.ajax({
-            url: "{{=URL('default','add_comment')}}",
-            data: fd,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function(data){
-                //remove comment form
-                $('#'+com_id).remove();
-                // show add comment button
-                $(com_btn).show();
-                if ($('.toggle-coms', parent).html().substring(0,4) == 'show'){
-                    $('.toggle-coms', parent).click();
-                }
-                //add new comment to top of comments
-                $('#com_'+div_id).prepend(data);
-            }
-        });
-    });
-    
-    // hide comment button
-    $(com_btn).hide();
-    com_count++;
-}
-
-/* Adds an image upload field to the new did being edited */
-var addImage = function(){
-    var prev_div_id = "img_prev" + elem_count; 
-    var elem_id = "elem" + elem_count;
-    
-    $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%; height: 100%; border-radius: 5px;" src="{{=URL('static','images/addimage.png')}}"></img>'
-                         +'</div>'
-                         +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
-                         +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
-    
-    $('#'+elem_id).hide();
-    $('#'+ elem_id ).change(function(){
-        imgPreview(this, prev_div_id );
-    });
-    
-    $('#'+prev_div_id).click(function(e){
-        e.preventDefault();
-        $('#'+elem_id).trigger('click');
-    });
-    
-    elem_count++;
-};
-
-/* follow a user */
-var follow = function(user_id){
-    // add follower to db and all that
-    $.ajax({
-        url: "{{=URL('default','follow')}}",
-        data: {'following_id': user_id},
-        type: 'POST',
-        success: function(data){
-            $('.f'+user_id).replaceWith('<a title="unfollow" class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
-        }
-    });
-}
-
-/* unfollow a user */
-var unfollow = function(user_id){
-    $.ajax({
-        url: "{{=URL('default','unfollow')}}",
-        data: {'following_id': user_id},
-        type: 'POST',
-        success: function(){
-            $('.f'+user_id).replaceWith('<a title="follow" class="btn form-btn f'+user_id+'" onclick="follow('+user_id+', this)">follow</a>');
-        }
-    });
-}
-
-/* like a did */
-var like = function(did_id, l_btn){
-    $.ajax({
-        url: "{{=URL('default','like')}}",
-        data: {'did_id': did_id},
-        type: 'POST',
-        success: function(){
-            $(l_btn).replaceWith('<a title="Unlike" class="btn form-btn like" onclick="unlike('+did_id+', this)">unlike</a>');
-            $('#l'+did_id).html( parseInt($('#l'+did_id).html()) + 1 );
-        }
-    });
-}
-
-/* unlike a did */
-var unlike = function(did_id, l_btn){
-    $.ajax({
-        url: "{{=URL('default','unlike')}}",
-        data: {'did_id': did_id},
-        type: 'POST',
-        success: function(){
-            $(l_btn).replaceWith('<a title="Like" class="btn form-btn dont-like" onclick="like('+did_id+', this)">like</a>');
-            $('#l'+did_id).html( parseInt($('#l'+did_id).html()) - 1 );
-        }
-    });
-}
-</script>
 
 </html>

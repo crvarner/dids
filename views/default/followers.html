@@ -1,0 +1,64 @@
+<html>
+<head>
+{{left_sidebar_enabled=False}}
+{{right_sidebar_enabled=False}}
+
+{{response.files.append(URL('static','css/dids.css'))}}
+
+{{extend 'layout2.html'}}
+
+</head>
+<body>
+
+
+
+{{for f in followers:}}
+	{{if f.following == "True":}}
+		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _class="followers_listing")}}
+	{{else:}}
+		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _class="followers_listing")}}
+	{{pass}}
+{{pass}}
+
+</body>
+
+
+
+<script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
+<script>
+
+/* follow a user */
+var follow = function(user_id){
+    // add follower to db and all that
+    $.ajax({
+        url: "{{=URL('default','follow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(data){
+            $('.f'+user_id).replaceWith('<a title="unfollow" class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
+        }
+    });
+}
+
+/* unfollow a user */
+var unfollow = function(user_id){
+    $.ajax({
+        url: "{{=URL('default','unfollow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(){
+            $('.f'+user_id).replaceWith('<a title="follow" class="btn form-btn f'+user_id+'" onclick="follow('+user_id+', this)">follow</a>');
+        }
+    });
+}
+
+
+</script>
+
+
+
+
+
+</html>
+

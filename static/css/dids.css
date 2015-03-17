@@ -6,9 +6,18 @@
 body{
     /* background: #295887 top right no-repeat; */
     background: top right no-repeat;
-    background-size: 100% auto;
+    background-size: 100% 100%;
     background-image: url('../images/dids_back.jpg');
     background-attachment: fixed;
+    text-align: center;
+}
+
+.main-container{
+    display: inline-block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px; 
 }
 
 .did{
@@ -52,7 +61,7 @@ body{
     width: 100%;
     margin: 10px;
     padding: 10px;
-    background-color: #c0c0c0;
+    background-color: #FFFFFF;
     border-radius: 5px;
 }
 .upper_profile{
@@ -116,6 +125,13 @@ input.form-title{
     background-color: #DDD;
 }
 
+
+/*################################################################
+################ profile.html related css
+################
+#################################################################*/
+
+
 .dids-navbar{
     height: 60px;
     /* background-color: #113355; */
@@ -174,6 +190,12 @@ input.form-title{
     color:  #3377AA;
 }
 
+#main{
+    display: block;
+    width: auto;
+    text-align: center;
+}
+
 #logo{
     width: 140px;
     height:100%;
@@ -218,6 +240,15 @@ input.form-title{
     padding: 4px;
     padding-left: 6px;
 }
+
+#profile_author_name{
+    margin-left: 0px;
+}
+
+#profile_username{
+    margin-left: 40%;
+}
+
 #about{
     width: 100%;
 }
@@ -225,11 +256,58 @@ input.form-title{
     float: left;
     float: top;
     margin-top:6%;
-    margin-left: 20%;
+    margin-left: 10%;
 }
-#following{
+
+
+.span5{
+    width: 430px;
+}
+
+textarea.about-text {
+  width: 100%;
+  max-width: 100%;
+  resize: none;
+  border: 0px;
+  margin-bottom: 0px;
+  border-radius: 5px;
+}
+
+.profile_image_preview{
     float: left;
-    float: top;
-    margin=top: ;
-    margin-left: 30%;
+    height: 100px;
+    width: 100px;
+    border-radius: 15%;
+    padding: 4px;
+}
+
+.followers_image_preview{
+    float: left;
+    margin=left: 0px;
+    height:50px;
+    border: 0px solid white;
+
+}
+
+
+#followers_listing_username{
+    margin-left: 160px;
+    margin-top: 15px;
+    float: left;
+}
+
+#followers_listing_follow_btn {
+    float:right;
+    margin-right: 5%;
+    margin-top: 10px;
+}
+
+.followers_listing{
+    height: 50px; 
+    width:100%; 
+    background-color: white; 
+    margin-top: -1px;
+    border: 1px solid #D3d3d3;
+    padding: 0px;
+    border-collapse:collapse;
 }
