@@ -14,9 +14,9 @@
 
 {{for f in followers:}}
 	{{if f.following == "True":}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _class="followers_listing")}}
+		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "unfollow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="unfollow", _onclick="unfollow("+f.user_id+")"), _id=str(user.user_id), _class="followers_listing")}}
 	{{else:}}
-		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _class="followers_listing")}}
+		{{=DIV( IMG( _class="followers_image_preview", _src=URL("download", args=f.profile_img)), A(f.username, _href=URL('default', 'profile/'+f.username), _id="followers_listing_username"), A( "follow", _class="btn form-btn" ,_id="followers_listing_follow_btn", _title="follow", _onclick="follow("+f.user_id+")"), _id=str(user.user_id), _class="followers_listing")}}
 	{{pass}}
 {{pass}}
 
@@ -36,7 +36,7 @@ var follow = function(user_id){
         data: {'following_id': user_id},
         type: 'POST',
         success: function(data){
-            $('.f'+user_id).replaceWith('<a title="unfollow" class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
+            $('.f'+user_id).replaceWith('<a title="unfollow" id='+user_id+' class="btn form-btn f'+user_id+'" onclick="unfollow('+user_id+', this)">unfollow</a>');
         }
     });
 }
@@ -48,7 +48,7 @@ var unfollow = function(user_id){
         data: {'following_id': user_id},
         type: 'POST',
         success: function(){
-            $('.f'+user_id).replaceWith('<a title="follow" class="btn form-btn f'+user_id+'" onclick="follow('+user_id+', this)">follow</a>');
+            $(str(user_id)).hide();
         }
     });
 }
