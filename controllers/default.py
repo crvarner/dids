@@ -13,6 +13,7 @@ import logging
 
 @auth.requires_login()
 def index():
+    response.flash = 'auth.user_id = '+str(auth.user_id)
 
     """
     if you need a simple wiki simply replace the two lines below with:

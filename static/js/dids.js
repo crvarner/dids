@@ -180,7 +180,7 @@ navbar menu behaviour
 *******************/
 
 $('html').click(function() {
-   $('#dids-menu-right').hide(); 
+   $('#dids-menu-right').slideUp(100); 
 });
 
 $('#dids-menu-right-container').click(function(event){
@@ -188,6 +188,8 @@ $('#dids-menu-right-container').click(function(event){
 });
 
 $('#dids-menu-title').click(function(event){
+    event.stopImmediatePropagation();
+    event.preventDefault();
      $('#dids-menu-right').slideToggle(100);
 });
 
