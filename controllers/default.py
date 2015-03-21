@@ -184,19 +184,19 @@ def update_profile():
     data = request.vars
     user_id = auth.user.id
     logging.error('in update_profile')
-    #logging.error(data)
+    # logging.error(data)
     # if an updated about in vars update user's about 
     #logging.error(data)
     about_str = ''
     if(data['about']):
-
         #logging.error('updating about\n')
         logging.error(linkify(data['about']))
         db(db.users.user_id == user_id).update(about=str(data['about']))
         #logging.error('updated about\n')
     else:
-        logging.error('inserting an image')
-        db(db.users.user_id == user_id).update(profile_img=data['image'])
+        data = request.vars.image.value
+        logging.error(data)
+        #db(db.users.user_id == user_id).update(profile_img=data)
         logging.error('inserted an image')
     return 
 
