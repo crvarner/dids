@@ -368,7 +368,7 @@ var resize = function(images, div_id, profile, elem_id) {
                 var ratio = 1020/W;
                 console.log(W);
                 ctx.drawImage(image, 0, 0); //draw image
-                resample_hermite(canvas, W, H, 1240.0, H*ratio);
+                resample_hermite(canvas, W, H, 1020.0, H*ratio);
                 resized_img = new Image();
                 resized_img.onload = function() {
                     console.log("!!!!LOAD!!!!");
