@@ -9,7 +9,11 @@
 ## - api is an example of Hypermedia API support and access control
 #########################################################################
 
+
 import logging
+import base64
+import re
+
 
 @auth.requires_login()
 def index():
@@ -135,7 +139,21 @@ def create_did():
     for i in range(0, num_elems):
         d = data['elem'+str(i)]
         if (data['is_img' + str(i)] == 'True'):
-            img_id = db.image.insert(img = db.image.img.store(d.file, d.filename))
+
+
+
+            image = re.search(r'base64,(.*)', str(d)).group(1)
+
+            # open file and write decoded binary
+            output = open('anon.jpeg', 'wb+')
+            output.write(str(base64.b64decode(image)))
+            # move file pointer to beginning for rewriting in DB
+            output.seek(0,0) 
+            logging.error(output.tell())
+
+            # store image file in db
+            logging.error(d)
+            img_id = db.image.insert(img = db.image.img.store(output, 'anon.jpeg'))
             db.elements.insert(did_id = did_id,
                 stack_num = i,
                 is_image = True,
@@ -160,22 +178,40 @@ def create_did():
 @auth.requires_login()
 def update_profile():
     data = request.vars
+    user = db.users(auth.user_id)
     user_id = auth.user.id
     logging.error('in update_profile')
-    #logging.error(data)
+    # logging.error(data)
     # if an updated about in vars update user's about 
+    #logging.error(data)
     #logging.error(data)
     about_str = ''
     if(data['about']):
-
         #logging.error('updating about\n')
         logging.error(linkify(data['about']))
         db(db.users.user_id == user_id).update(about=str(data['about']))
         #logging.error('updated about\n')
     else:
-        logging.error('inserting an image')
-        db(db.users.user_id == user_id).update(profile_img=data['image'])
-        logging.error('inserted an image')
+        logging.error("lalala")
+    
+        logging.error('here')
+        # find start of base64 string from urldata
+        image = re.search(r'base64,(.*)', str(data.file)).group(1)
+
+        # open file and write decoded binary
+        output = open(str(data.filename), 'wb+')
+        output.write(str(base64.b64decode(image)))
+        # move file pointer to beginning for rewriting in DB
+        output.seek(0,0) 
+        logging.error(output.tell())
+
+        # store image file in db
+        new_img = db.profile_image.insert(img = db.profile_image.img.store(output, data.filename))
+        logging.error('the new id of the image is ' + str(new_img))
+        db(db.users.user_id == user_id).update(profile_img=new_img)
+        output.close()
+
+        logging.error('no internal error')
     return 
 
 @auth.requires_login()
@@ -202,6 +238,8 @@ def profile():
     else:
         redirect(URL('default', 'profile/' + user.username))
     about_str = linkify(user.about)
+    user_img = URL('download', URL('static', 'images', 'facebook.png'))
+    if user.profile_img: user_img = URL('download', args = db.profile_image(user.profile_img).img)
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     dids_left = []
     dids_center = []
@@ -225,7 +263,7 @@ def profile():
                 dids_right.append(did2DOM(row = d, following = following, div_num = i))
             i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
-                                    user=user, about_str=about_str, editable=editable)
+                                    user=user, user_img=user_img, about_str=about_str, editable=editable)
 
 
 

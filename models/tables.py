@@ -82,6 +82,13 @@ defines table that will hold image locations on FS
 db.define_table('image',
                 Field('img','upload'))
 
+
+"""
+defines table that will hold image locations on FS
+"""
+db.define_table('profile_image',
+                Field('img','upload'))
+
 """
 defines the table holding all comments for all dids.
 """
@@ -137,13 +144,13 @@ db.define_table('users',
                 Field('username'),
                 Field('first_name'),
                 Field('last_name'),
-                Field('profile_img', 'upload'),
+                Field('profile_img'),
                 Field('about', 'text'),
                 Field('email'),
                 Field('dids', 'reference dids'),
                 Field('feed'),
                 )
-db.users.profile_img.default=os.path.join(request.folder, 'static', 'images', 'facebook.png')
+#db.users.profile_img.default=os.path.join(request.folder, 'static', 'images', 'facebook.png')
 db.users.username.default = IS_NOT_IN_DB(db, db.users)
 db.users.username.default = get_user_name()
 db.users.username.requires = IS_LOWER()
