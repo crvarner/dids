@@ -13,6 +13,7 @@ import logging
 
 @auth.requires_login()
 def index():
+    response.flash = 'auth.user_id = '+str(auth.user_id)
 
     """
     if you need a simple wiki simply replace the two lines below with:
@@ -127,16 +128,8 @@ def create_did():
                             link = None)
     
 
+    linkify(s = str(data['did_title']), did_id = did_id, user_id = author)
 
-    #did = DIV(H4(data['did_title']),
-    #          _class='did clear')
-
-    
-    #if len(data) == 1:
-    #    did.append(P('posted by: '+str(db.auth_user(author).email) +' on '+ str(date_created)))
-    #    did.append(HR( _class="did-sep"))
-    #    did.append(A('comment', _id="com_btn"+str(did_id), _class="btn form-btn", _onclick="addComment('new"+str(i)+"', "+str(did_id)+", this)"))
-    #    return did
     
     num_elems = (len(data) - 2)/2
     for i in range(0, num_elems):
@@ -153,22 +146,7 @@ def create_did():
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
-            #did.append(P(XML(linkify(str(d), did_id, author).replace('\n','<br />')), _style="word-break: break-word"))
-            
-    """did.append(P(str(db.users(auth.user_id).username) +' on '+ str(date_created)))
-
-    bottom = DIV( _class="clear")
-
-    bottom.append(HR( _class="did-sep"))
-    
-    bottom.append(A('like', _class="btn form-btn dont-like", _title="Like", _onclick="like("+str(did_id)+", this)"))
-    bottom.append(SPAN( '0', _style="margin-left: 5px;", _class="likes", _id='l'+str(did_id)))
-    
-    bottom.append(A('comment', _id="com_btn"+str(did_id), _style="float:right", _class="btn form-btn", _onclick="addComment('"+data['div_id']+"', "+str(did_id)+", this)"))
-    bottom.append(A("show comments (0)", _class="toggle-coms", _onclick="toggleComments('com_"+data['div_id']+"', this)"));
-    bottom.append(DIV( _class="comment-container", _id="com_"+data['div_id'] ))
-
-    did.append(bottom)"""
+            linkify(s = str(d), did_id = did_id, user_id = author)
     
     return did2DOM( row = db.dids(did_id) , div_num = data['div_id'], new = True )
     
@@ -202,6 +180,8 @@ def update_profile():
 
 @auth.requires_login()
 def profile():
+    session.flash = 'auth.user_id = ' + str(auth.user_id)
+
     user = db.users(auth.user_id)
     name = request.args(0)
     editable = False
