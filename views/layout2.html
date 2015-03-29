@@ -316,51 +316,13 @@ function resample_hermite(canvas, W, H, W2, H2){
 }
 
 
-
-
-
-/* Image preview modified from example*/
-/* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
-var imgProfilePreview = function(image, div_id){
-    if(image.files && image.files[0]){
-        var reader = new FileReader();
-        console.log("in image preview");
-        reader.onload = function(e){
-            console.log(e.target.result);
-            $('#'+div_id).html(
-                '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ e.target.result +'"></img>'
-            );
-        }
-        reader.readAsDataURL(image.files[0]);
-    }
-};
-
-
-
-/* Image preview modified from example*/
-/* http://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded */
-var imgProfilePreview_resize = function(image, div_id){
-    if(image.files && image.files[0]){
-        var reader = new FileReader();
-        //console.log("in image preview");
-        reader.onload = function(e){
-            console.log(e.target.result);
-            $('#'+div_id).html(
-                '<canvas class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ e.target.result +'"></canvas>'
-            );
-        }
-        reader.readAsDataURL(image.files[0]);
-    }
-};
-
-
 /**
 * Creates and returns a blob from a data URL (either base64 encoded or not).
 * https://github.com/ebidel/filer.js/blob/master/src/filer.js#L137
 * @param {string} dataURL The data URL to convert.
 * @return {Blob} A blob representing the array buffer data.
 */
-
+// currently not in use
 var dataURLToBlob = function(dataURL) {
     var BASE64_MARKER = ';base64,';
     if (dataURL.indexOf(BASE64_MARKER) == -1) {
@@ -381,11 +343,12 @@ var dataURLToBlob = function(dataURL) {
 };
 
 
-var resize = function(images, div_id, profile) {
+var resize = function(images, div_id, profile, elem_id) {
     if(images.files && images.files[0]){
         var reader = new FileReader();
         var image  = new Image();
         var file = images.files[0];
+        var file_name = file.name;
         reader.readAsDataURL(file);  
         reader.onload = function(_file) {
             image.src    = _file.target.result;              // url.createObjectURL(file);
@@ -397,48 +360,46 @@ var resize = function(images, div_id, profile) {
                 var H = this.height;
                 canvas.width = W;
                 canvas.height = H;
-                //var t = file.type;                           // ext only: // file.type.split('/')[1],
+
+                //var t = file.type;                         // ext only: // file.type.split('/')[1],
                 //n = file.name                              // can be used to validate files
                 //s = ~~(file.size/1024) +'KB';              // can be used to check maximum file size uploads
+                console.log(file.size);
+                var ratio = 1020/W;
+                console.log(W);
                 ctx.drawImage(image, 0, 0); //draw image
+                resample_hermite(canvas, W, H, 1240.0, H*ratio);
+                resized_img = new Image();
+                resized_img.onload = function() {
+                    console.log("!!!!LOAD!!!!");
+                    console.log(this.src);
+                }
                 if (profile) {
-                    resample_hermite(canvas, W, H, W/15.0, H/15.0);
                     $('#'+div_id).html(
-                    '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ canvas.toDataURL('image/png)') +'"></img>'
+                    '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
                     );
-                    var resize = dataURLToBlob(canvas.toDataURL('image/png'));
-                    $('#image').remove();
+                    var resize = canvas.toDataURL('image/jpeg');
+                    var fd = new FormData();
+                    fd.append('name', 'img_data')
+                    fd.append('filename', file_name);
+                    fd.append('file', resize);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "{{=URL('default','update_profile')}}");
+                    xhr.send(fd);
+            
                     
                 }else{
                     $('#'+div_id).html(
-                    '<img style="width: 100%;" src="'+ canvas.toDataURL('image/png') +'"></img>'
-                    );
-                    var resize = dataURLToBlob(canvas.toDataURL('image/png'));
-                     
+                    '<img style="width: 100%;" src="'+ canvas.toDataURL('image/jpeg') +'"></img>');
+                    $('#'+elem_id).remove();
+                    $('#hidden_img').attr('value', canvas.toDataURL('image/jpeg'));
+                    //var resize = canvas.toDataURL('image/jpeg');
+
                 };
-                var fd = new FormData();
-                fd.append('name', 'image')
-                fd.append('fname', 'image.png');
-                fd.append('data', resize);
-                fd.append('id', 'resize_form');
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{=URL('default','update_profile')}}");
-                xhr.send(fd);
-                $.ajax({
-                    type: 'POST',
-                    url: "{{=URL('default','update_profile')}}",
-                    data: fd,
-                    processData: false,
-                    contentType: false
-                }).done(function(data) {
-                    console.log(data);
-                });
-            };
-        };
-    };
-};
-
-
+            }  
+        }
+    }
+}
 
 var editProfileImage = function() {
     //$('#profile_image').hide();
@@ -455,24 +416,8 @@ var editProfileImage = function() {
     console.log('image sent\n')
     $('#image').change(function(){
         console.log("in in image change");
-
-        resize(this, 'profile_image', true);
-        $('#edit_div').remove();
+        resize(this, 'profile_image', profile=true);
     });
-    /*$('#image_form').submit(function(event){
-        event.preventDefault(); 
-        var up = new FormData(this);
-       $.ajax({
-            url: 'http://127.0.0.1:8000/dids/default/update_profile',
-            data: up,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function(data){
-                console.log(data);
-            }
-        });
-    }); */
     return;
 }
 
@@ -529,13 +474,14 @@ var addImage = function(){
     $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
                          +'<img style="width: 100%;" src="{{=URL('static','images/addimage.png')}}"></img>'
                          +'</div>'
-                         +'<input id="'+ elem_id +'" name="'+ elem_id +'" type="file"/>'
+                         +'<input id="'+ elem_id +'" name="temp" type="file"/>'
+                         +'<input type="hidden" name="'+ elem_id +'" id="hidden_img" value="" />'
                          +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
     
     $('#'+elem_id).hide();
     $('#'+ elem_id ).change(function(){
         document.canvas = new 
-        resize(this, prev_div_id);
+        resize(this, prev_div_id, profile=false, elem_id=elem_id);
     });
     
     $('#'+prev_div_id).click(function(e){

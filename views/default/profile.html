@@ -5,12 +5,10 @@
 <head>
 {{left_sidebar_enabled=False}}
 {{right_sidebar_enabled=False}}
-
 {{response.files.append(URL('static','css/dids.css'))}}
-
 {{extend 'layout2.html'}}
-
 </head>
+
 
 <body>
 
@@ -23,10 +21,9 @@
     {{if editable:}}
     <div id="profile_container" class="profile">
         <div id="upper_profile" class="upper_profile">  
-            <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user.profile_img))}}</div>
+            <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user_img))}}</div>
             <div id="profile_username"> {{=H4(user.username)}} </div>
             <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-            <!-- <div id="profile_author_name"> {{=H6(user.first_name + " " + user.last_name)}} </div> -->
             <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
             <div id="num_dids"></div>
         </div>
