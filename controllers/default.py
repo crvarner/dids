@@ -17,7 +17,7 @@ import re
 
 @auth.requires_login()
 def index():
-    response.flash = 'auth.user_id = '+str(auth.user_id)
+    #response.flash = 'auth.user_id = '+str(auth.user_id)
 
     """
     if you need a simple wiki simply replace the two lines below with:
@@ -131,7 +131,7 @@ def create_did():
                             spam = 0,
                             link = None)
     
-
+    # allows for linkify in title after first post
     linkify(s = str(data['did_title']), did_id = did_id, user_id = author)
 
     
@@ -139,21 +139,21 @@ def create_did():
     for i in range(0, num_elems):
         d = data['elem'+str(i)]
         if (data['is_img' + str(i)] == 'True'):
-
-
-
+            # trim away JSON attributes
             image = re.search(r'base64,(.*)', str(d)).group(1)
-
             # open file and write decoded binary
             output = open('anon.jpeg', 'wb+')
+            # write file in temp file object
             output.write(str(base64.b64decode(image)))
             # move file pointer to beginning for rewriting in DB
             output.seek(0,0) 
+            # for error checking print index of filewriter cursor element
             logging.error(output.tell())
-
             # store image file in db
             logging.error(d)
+            # throw image into image db
             img_id = db.image.insert(img = db.image.img.store(output, 'anon.jpeg'))
+            # throw element number into did id
             db.elements.insert(did_id = did_id,
                 stack_num = i,
                 is_image = True,
@@ -164,6 +164,7 @@ def create_did():
                 stack_num = i,
                 is_image = False,
                 element_data = str(d))
+            # redundant but necessary 
             linkify(s = str(d), did_id = did_id, user_id = author)
     
     return did2DOM( row = db.dids(did_id) , div_num = data['div_id'], new = True )
