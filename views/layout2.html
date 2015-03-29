@@ -392,7 +392,7 @@ var resize = function(images, div_id, profile, elem_id) {
                     $('#'+div_id).html(
                     '<img style="width: 100%;" src="'+ canvas.toDataURL('image/jpeg') +'"></img>');
                     $('#'+elem_id).remove();
-                    $('#hidden_img').attr('value', canvas.toDataURL('image/jpeg'));
+                    $('#hidden_'+elem_id).attr('value', canvas.toDataURL('image/jpeg'));
                     //var resize = canvas.toDataURL('image/jpeg');
 
                 };
@@ -475,7 +475,7 @@ var addImage = function(){
                          +'<img style="width: 100%;" src="{{=URL('static','images/addimage.png')}}"></img>'
                          +'</div>'
                          +'<input id="'+ elem_id +'" name="temp" type="file"/>'
-                         +'<input type="hidden" name="'+ elem_id +'" id="hidden_img" value="" />'
+                         +'<input type="hidden" name="'+ elem_id +'" id="hidden_'+elem_id+'" value="" />'
                          +'<input name="is_img'+ elem_count +'" type="hidden" value="True" />');                    
     
     $('#'+elem_id).hide();
