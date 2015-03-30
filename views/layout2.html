@@ -127,6 +127,7 @@
 
   <script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
   <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
+ <script type="text/javascript" src="{{=URL('static','js/spin.js')}}"></script>
  
 
 
@@ -167,7 +168,7 @@ var newDid = function(){
                     +'<input class="form-title" name="did_title" type="text"/>'
                     +'<input name="div_id" type="hidden" value="new' + new_count + '" />'
                     +'</form>'
-                    +'<div style="margin-left: 10px; margin-right: 10px;">'
+                    +'<div id="actions" style="margin-left: 10px; margin-right: 10px;">'
                     +'<a class="btn form-btn" onclick="addText()">add text</a>'
                     +'<a class="btn form-btn" onclick="addImage()">add image</a>'
                     +'<a class="btn form-btn" onclick="rmElement()">remove element</a>'
@@ -343,8 +344,42 @@ var dataURLToBlob = function(dataURL) {
 };
 
 
+
+
 var resize = function(images, div_id, profile, elem_id) {
     if(images.files && images.files[0]){
+        var opts = {
+            lines: 13, // The number of lines to draw
+            length: 10, // The length of each line
+            width: 6, // The line thickness
+            radius: 15, // The radius of the inner circle
+            corners: 1, // Corner roundness (0..1)
+            rotate: 71, // The rotation offset
+            direction: 1, // 1: clockwise, -1: counterclockwise
+            color: '#000', // #rgb or #rrggbb or array of colors
+            speed: 0.5, // Rounds per second
+            trail: 46, // Afterglow percentage
+            shadow: false, // Whether to render a shadow
+            hwaccel: false, // Whether to use hardware acceleration
+            className: 'spinner', // The CSS class to assign to the spinner
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            top: '80%', // Top position relative to parent
+            left: '49%', // Left position relative to parent
+        };
+
+        
+        //var temp_div = document.createElement('div');
+        //temp_div.attr('id', 'temp_div');
+        var spin_div = document.getElementById(div_id);
+        if(profile){
+            var spin_div = document.getElementById('upper_profile');
+            opts.color = '#fff';
+            opts.top = '37%';
+            opts.left = '15%';
+        }
+        spin_div.style.position = 'relative';
+        //spin_div.appendChild(temp_div);
+        var spinner = new Spinner(opts).spin(spin_div);
         var reader = new FileReader();
         var image  = new Image();
         var file = images.files[0];
@@ -353,6 +388,8 @@ var resize = function(images, div_id, profile, elem_id) {
         reader.onload = function(_file) {
             image.src    = _file.target.result;              // url.createObjectURL(file);
             image.onload = function() {
+                spinner.stop();
+                //spin_div.remove();
                 var resize;
                 var canvas = document.createElement('canvas');
                 var ctx = canvas.getContext("2d");
@@ -369,16 +406,11 @@ var resize = function(images, div_id, profile, elem_id) {
                 console.log(W);
                 ctx.drawImage(image, 0, 0); //draw image
                 resample_hermite(canvas, W, H, 1020.0, H*ratio);
-                resized_img = new Image();
-                resized_img.onload = function() {
-                    console.log("!!!!LOAD!!!!");
-                    console.log(this.src);
-                }
                 if (profile) {
                     $('#'+div_id).html(
                     '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
                     );
-                    //var resize = canvas.toDataURL('image/jpeg');
+                    var resize = canvas.toDataURL('image/jpeg');
                     var fd = new FormData();
                     fd.append('name', 'img_data')
                     fd.append('filename', file_name);
@@ -472,7 +504,7 @@ var addImage = function(){
     var elem_id = "elem" + elem_count;
     
     $('#did_form').append('<div id="'+ prev_div_id +'" class="image-preview">'
-                         +'<img style="width: 100%;" src="{{=URL('static','images/addimage.png')}}"></img>'
+                         +'<img id="add_img" style="width: 100%;" src="{{=URL('static','images/addimage.png')}}"></img>'
                          +'</div>'
                          +'<input id="'+ elem_id +'" name="temp" type="file"/>'
                          +'<input type="hidden" name="'+ elem_id +'" id="hidden_'+elem_id+'" value="" />'

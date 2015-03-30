@@ -206,6 +206,8 @@ def update_profile():
         output.seek(0,0) 
         logging.error(output.tell())
 
+        #delete old profile img
+        if user.profile_img: db(db.profile_image.id==user.profile_img).delete()
         # store image file in db
         new_img = db.profile_image.insert(img = db.profile_image.img.store(output, data.filename))
         logging.error('the new id of the image is ' + str(new_img))
