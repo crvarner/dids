@@ -378,7 +378,7 @@ var resize = function(images, div_id, profile, elem_id) {
                     $('#'+div_id).html(
                     '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
                     );
-                    var resize = canvas.toDataURL('image/jpeg');
+                    //var resize = canvas.toDataURL('image/jpeg');
                     var fd = new FormData();
                     fd.append('name', 'img_data')
                     fd.append('filename', file_name);
@@ -448,7 +448,7 @@ var editAbout = function() {
         event.preventDefault(); 
         var up = new FormData(this);
        $.ajax({
-            url: 'http://127.0.0.1:8000/dids/default/update_profile',
+            url: "{{=URL('default','update_profile')}}",
             data: up,
             processData: false,
             contentType: false,

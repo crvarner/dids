@@ -192,7 +192,7 @@ def update_profile():
         logging.error(linkify(data['about']))
         db(db.users.user_id == user_id).update(about=str(data['about']))
         #logging.error('updated about\n')
-    else:
+    elif(data.file):
         logging.error("lalala")
     
         logging.error('here')
