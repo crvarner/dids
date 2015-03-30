@@ -217,7 +217,7 @@ def update_profile():
 
 @auth.requires_login()
 def profile():
-    session.flash = 'auth.user_id = ' + str(auth.user_id)
+    #session.flash = 'auth.user_id = ' + str(auth.user_id)
 
     user = db.users(auth.user_id)
     name = request.args(0)
