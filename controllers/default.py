@@ -31,9 +31,9 @@ def index():
         xauthors = set([row.following_id for row in db(db.followers.follower_id.belongs(following)).select(db.followers.following_id)])
         authors = xauthors - following - set([str(auth.user_id)])
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
-    elif request.args and request.args[0] == 'followers':
+        """elif request.args and request.args[0] == 'followers':
         authors = [row.follower_id for row in db(db.followers.following_id == auth.user_id).select(db.followers.follower_id)]
-        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)        
+        dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)  """     
     else:
         authors = following | set(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
@@ -114,6 +114,7 @@ def did2DOM(row, div_num, following=set(), new=False):
     #return DOM element
     return did
     
+
     
 @auth.requires_login()
 def create_did():
@@ -227,6 +228,8 @@ def profile():
     if name:
         name = name.lower()
         logging.error('name is         :'+name+'\n')
+        if name == 'bucketlist':
+            redirect(URL('default', 'profile', args =  [user.username, 'bucketlist']))
         if user.username == name: 
             editable = True
         else: 
@@ -237,9 +240,9 @@ def profile():
                 logging.error('found profile' + name + '\n')
                 user = find_user
             else:
-                redirect(URL('default', 'profile/' + user.username))
+                redirect(URL('default', 'profile', args =[user.username]))
     else:
-        redirect(URL('default', 'profile/' + user.username))
+        redirect(URL('default', 'profile', args = [user.username]))
     about_str = linkify(user.about)
     user_img = URL('download', URL('static', 'images', 'facebook.png'))
     if user.profile_img: user_img = URL('download', args = db.profile_image(user.profile_img).img)
