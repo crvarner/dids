@@ -135,7 +135,6 @@ db.define_table('followers',
                 Field('following_id')
                 )
     
-    
 """
 defines table holding user information
 """
@@ -145,10 +144,16 @@ db.define_table('users',
                 Field('first_name'),
                 Field('last_name'),
                 Field('profile_img'),
+                Field('profile_background_img'),
                 Field('about', 'text'),
                 Field('email'),
                 Field('dids', 'reference dids'),
                 Field('feed'),
+                Field('numDids'),
+                Field('numFollowers'),
+                Field('numFollowing'),
+                Field('numBucket'),
+                Field('numDidBucket'),
                 )
 #db.users.profile_img.default=os.path.join(request.folder, 'static', 'images', 'facebook.png')
 db.users.username.default = IS_NOT_IN_DB(db, db.users)

@@ -413,24 +413,30 @@ var resize = function(images, div_id, profile, elem_id, profile_background) {
                     /*$('#'+div_id).html(
                     '<img class="profile_image_preview" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
                     );*/
-
+                    console.log("here is where I am suppose to be");
                     var resize = canvas.toDataURL('image/jpeg');
                     var fd = new FormData();
                     fd.append('name', 'img_data');
+                    fd.append('is_profile', 'true');
                     fd.append('filename', file_name);
                     fd.append('file', resize);
                     var xhr = new XMLHttpRequest();
                     xhr.open("POST", "{{=URL('default','update_profile')}}");
                     xhr.send(fd);
+                    return;
                 }else if(profile_background) {
                     $('#upper_profile').css('background-image', 'url('+ canvas.toDataURL('image/jpeg') + ')');
-                    $('#hidden').attr('value', canvas.toDataURL('image/jpeg'));  
+                    $('#image').remove();
+                    $('#hidden').attr('value', canvas.toDataURL('image/jpeg')); 
+                    $('#image_form').submit(); 
+                    return;
                 }else{
-                    console.log(profile_background);
+                    console.log("tell me something usefule");
                     $('#'+div_id).html(
                     '<img style="width: 100%;" src="'+ canvas.toDataURL('image/jpeg') +'"></img>');
                     $('#'+elem_id).remove();
                     $('#hidden_'+elem_id).attr('value', canvas.toDataURL('image/jpeg'));
+                    return;
                 };
             }  
         }
@@ -444,7 +450,7 @@ var editProfileImage = function() {
     $('#middle_profile').prepend('<div id=edit_div type="hidden">'
                          +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
                          +'<input id="image" name="image" type="file"/>'
-                         +'<input name="is_img" type="hidden" value="True"/>'
+                         +'<input name="is_profile" type="hidden" value="True"/>'
                          +'</form>'
                          +'</div>');
     $('#image').hide();
@@ -452,7 +458,7 @@ var editProfileImage = function() {
     console.log('image sent\n')
     $('#image').change(function(){
         console.log("in in image change");
-        resize(this, 'profile_img', elem_id=undefined, profile=true, profile_background=false);
+        resize(this, 'profile_img', profile=true, elem_id=undefined, profile_background=false);
     });
     return;
 }
@@ -466,7 +472,7 @@ var editProfileBackgroundImage = function() {
                          +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
                          +'<input id="image" name="image" type="file"/>'
                          +'<input type="hidden" name="background" id="hidden" value="" />'
-                         +'<input name="is_profile_img" type="hidden" value="True"/>'
+                         +'<input name="is_background" type="hidden" value="True"/>'
                          +'</form>'
                          +'</div>');
     $('#image').hide();

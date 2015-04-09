@@ -31,7 +31,7 @@
         {{=DIV("69", _class="check_upper_right")}}
         {{=A(user.username, _href=URL('default','profile', args=user.username), _class="did-author")}}
 
-        {{=DIV(_id="upper_profile", _ondblclick="editProfileBackgroundImage();", _style="color:white;background-image: url("+ URL('download', args=user_img)+"); background-size: 100% Auto;")}}
+        {{=DIV(_id="upper_profile", _ondblclick="editProfileBackgroundImage();", _style="color:white;background-image: url("+ URL('download', args=user_background_img)+"); background-size: 100% Auto;")}}
 
         <div id="middle_profile" style="width:100%; height: 150px;">
 

@@ -186,14 +186,14 @@ def update_profile():
     # logging.error(data)
     # if an updated about in vars update user's about 
     #logging.error(data)
-    #logging.error(data)
+    logging.error(data)
     about_str = ''
     if(data['about']):
         #logging.error('updating about\n')
         logging.error(linkify(data['about']))
         db(db.users.user_id == user_id).update(about=str(data['about']))
         #logging.error('updated about\n')
-    elif(data.file):
+    elif(data.is_profile):
         logging.error("lalala")
     
         logging.error('here')
@@ -201,7 +201,7 @@ def update_profile():
         image = re.search(r'base64,(.*)', str(data.file)).group(1)
 
         # open file and write decoded binary
-        output = open(str(data.filename), 'wb+')
+        output = open(str('TEMP.JPEG'), 'wb+')
         output.write(str(base64.b64decode(image)))
         # move file pointer to beginning for rewriting in DB
         output.seek(0,0) 
@@ -213,6 +213,28 @@ def update_profile():
         new_img = db.profile_image.insert(img = db.profile_image.img.store(output, data.filename))
         logging.error('the new id of the image is ' + str(new_img))
         db(db.users.user_id == user_id).update(profile_img=new_img)
+        output.close()
+
+        logging.error('no internal error')
+    elif(data.is_background):
+
+        logging.error('here')
+        # find start of base64 string from urldata
+        image = re.search(r'base64,(.*)', str(data.background)).group(1)
+
+        # open file and write decoded binary
+        output = open(str('TEMP.JPEG'), 'wb+')
+        output.write(str(base64.b64decode(image)))
+        # move file pointer to beginning for rewriting in DB
+        output.seek(0,0) 
+        logging.error(output.tell())
+
+        #delete old profile img
+        if user.profile_background_img: db(db.profile_image.id==user.profile_background_img).delete()
+        # store image file in db
+        new_img = db.profile_image.insert(img = db.profile_image.img.store(output, data.filename))
+        logging.error('the new id of the image is ' + str(new_img))
+        db(db.users.user_id == user_id).update(profile_background_img=new_img)
         output.close()
 
         logging.error('no internal error')
@@ -246,6 +268,7 @@ def profile():
     about_str = linkify(user.about)
     user_img = URL('download', URL('static', 'images', 'facebook.png'))
     if user.profile_img: user_img = URL('download', args = db.profile_image(user.profile_img).img)
+    if user.profile_background_img: user_background_img = URL('download', args = db.profile_image(user.profile_background_img).img)
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     dids_left = []
     dids_center = []
@@ -269,7 +292,8 @@ def profile():
                 dids_right.append(did2DOM(row = d, following = following, div_num = i))
             i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
-                                    user=user, user_img=user_img, about_str=about_str, editable=editable)
+                                    user=user, user_img=user_img, user_background_img=user_background_img,
+                                    about_str=about_str, editable=editable)
 
 
 
