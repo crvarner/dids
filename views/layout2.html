@@ -128,7 +128,7 @@
 
   <script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
   <script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
- <script type="text/javascript" src="{{=URL('static','js/spin.js')}}"></script>
+  <script type="text/javascript" src="{{=URL('static','js/spin.js')}}"></script>
  
 
 
@@ -136,7 +136,6 @@
   <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
   
   <script>
-  
   {{if request.args:}}
   var arg = '{{=request.args[0]}}';
   {{else:}}
@@ -160,6 +159,8 @@
       });
   });
 
+
+ 
 
 /* Generates a new editable did */
 var newDid = function(){
@@ -347,7 +348,7 @@ var dataURLToBlob = function(dataURL) {
 
 
 
-var resize = function(images, div_id, profile, elem_id) {
+var resize = function(images, div_id, profile, elem_id, profile_background) {
     if(images.files && images.files[0]){
         var opts = {
             lines: 13, // The number of lines to draw
@@ -373,10 +374,10 @@ var resize = function(images, div_id, profile, elem_id) {
         //temp_div.attr('id', 'temp_div');
         var spin_div = document.getElementById(div_id);
         if(profile){
-            var spin_div = document.getElementById('upper_profile');
+            var spin_div = document.getElementById('middle_profile');
             opts.color = '#fff';
-            opts.top = '37%';
-            opts.left = '15%';
+            opts.top = '20%';
+            opts.left = '20%';
         }
         spin_div.style.position = 'relative';
         //spin_div.appendChild(temp_div);
@@ -408,20 +409,24 @@ var resize = function(images, div_id, profile, elem_id) {
                 ctx.drawImage(image, 0, 0); //draw image
                 resample_hermite(canvas, W, H, 1240.0, H*ratio);
                 if (profile) {
-                    $('#'+div_id).html(
-                    '<img class ="profile_image_preview" style="width: 100px; height: 100px; border-radius: 15%; padding: 4px" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
-                    );
+                    $('#'+div_id).attr('src', canvas.toDataURL('image/jpeg'));
+                    /*$('#'+div_id).html(
+                    '<img class="profile_image_preview" src="'+ canvas.toDataURL('image/jpeg)') +'"></img>'
+                    );*/
+
                     var resize = canvas.toDataURL('image/jpeg');
                     var fd = new FormData();
-                    fd.append('name', 'img_data')
+                    fd.append('name', 'img_data');
                     fd.append('filename', file_name);
                     fd.append('file', resize);
                     var xhr = new XMLHttpRequest();
                     xhr.open("POST", "{{=URL('default','update_profile')}}");
                     xhr.send(fd);
-            
-                    
+                }else if(profile_background) {
+                    $('#upper_profile').css('background-image', 'url('+ canvas.toDataURL('image/jpeg') + ')');
+                    $('#hidden').attr('value', canvas.toDataURL('image/jpeg'));  
                 }else{
+                    console.log(profile_background);
                     $('#'+div_id).html(
                     '<img style="width: 100%;" src="'+ canvas.toDataURL('image/jpeg') +'"></img>');
                     $('#'+elem_id).remove();
@@ -436,7 +441,7 @@ var editProfileImage = function() {
     //$('#profile_image').hide();
     //var image = $('#profile_image').val();
     //$('#profile_image').html('');
-    $('#upper_profile').prepend('<div id=edit_div type="hidden">'
+    $('#middle_profile').prepend('<div id=edit_div type="hidden">'
                          +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
                          +'<input id="image" name="image" type="file"/>'
                          +'<input name="is_img" type="hidden" value="True"/>'
@@ -447,8 +452,44 @@ var editProfileImage = function() {
     console.log('image sent\n')
     $('#image').change(function(){
         console.log("in in image change");
-        resize(this, 'profile_image', profile=true);
+        resize(this, 'profile_img', elem_id=undefined, profile=true, profile_background=false);
     });
+    return;
+}
+
+
+var editProfileBackgroundImage = function() {
+    //$('#profile_image').hide();
+    //var image = $('#profile_image').val();
+    //$('#profile_image').html('');
+    $('#upper_profile').prepend('<div id=edit_div type="hidden">'
+                         +'<form id="image_form" style="padding:0px; margin:0px;"type="hidden" enctype="multipart/form-data" action="update_profile" method="post">'
+                         +'<input id="image" name="image" type="file"/>'
+                         +'<input type="hidden" name="background" id="hidden" value="" />'
+                         +'<input name="is_profile_img" type="hidden" value="True"/>'
+                         +'</form>'
+                         +'</div>');
+    $('#image').hide();
+    $('#image').click();
+    console.log('image sent\n')
+    $('#image').change(function(){
+        console.log("in in image change");
+        resize(this, 'upper_profile', profile=false, elem_id=undefined, profile_background=true);
+    });
+    $('#image_form').submit(function(event){
+        event.preventDefault(); 
+        var up = new FormData(this);
+        $.ajax({
+            url: "{{=URL('default','update_profile')}}",
+            data: up,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(data){
+            }
+        });
+    }); 
+
     return;
 }
 
@@ -512,7 +553,7 @@ var addImage = function(){
     $('#'+elem_id).hide();
     $('#'+ elem_id ).change(function(){
         document.canvas = new 
-        resize(this, prev_div_id, profile=false, elem_id=elem_id);
+        resize(this, prev_div_id, profile=false, elem_id=elem_id, profile_background=false);
     });
     
     $('#'+prev_div_id).click(function(e){

@@ -7,6 +7,7 @@
 {{right_sidebar_enabled=False}}
 {{response.files.append(URL('static','css/dids.css'))}}
 {{extend 'layout2.html'}}
+
 </head>
 
 
@@ -17,17 +18,35 @@
 
 <div id="left_main_container" class="did-span">
 
-    <!-- ############## profile information block -->
-    {{if editable:}}
-    <div id="profile_container" class="profile">
-        <div id="upper_profile" class="upper_profile">  
-            <div id="profile_image" ondblclick="editProfileImage();">{{=IMG(_class="profile_image_preview", _src=URL("download", args=user_img))}}</div>
-            <div id="profile_username"> {{=H4(user.username)}} </div>
-            <div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
+
+    <!--<div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
             <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
             <div id="num_dids"></div>
+            -->
+    <!-- ############## profile information block -->
+    {{if editable:}}
+    <div id="profile_container" class="did">
+
+        {{=DIV(IMG(_src=URL("static", "images", args="green_check.svg.png")), _class="check_upper_right")}}
+        {{=DIV("69", _class="check_upper_right")}}
+        {{=A(user.username, _href=URL('default','profile', args=user.username), _class="did-author")}}
+
+        {{=DIV(_id="upper_profile", _ondblclick="editProfileBackgroundImage();", _style="color:white;background-image: url("+ URL('download', args=user_img)+"); background-size: 100% Auto;")}}
+
+        <div id="middle_profile" style="width:100%; height: 150px;">
+
+            {{=DIV(H5("Following"), "69", _class="profile_text")}}  
+            {{=DIV(H5("Followers"), "69", _class="profile_text")}} 
+            {{=DIV(H5("Dids"), "69", _class="profile_text")}}
+
+            {{=IMG(_id="profile_img", _ondblclick="editProfileImage();", _class="profile_image_preview", _src=URL("download", args=user_img))}}
+
+            {{=DIV("Edit Profile", _id="edit_profile_btn")}}
+            {{=DIV(H4(user.username), _id="profile_username")}}
+
+            
         </div>
-        <div ondblclick="editAbout();" id="lower_profile" class="lower_profile">
+        <div ondblclick="editAbout();" id="lower_profile">
             <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
         </div>
     </div>
@@ -75,6 +94,7 @@
     {{pass}}
 </div>
 {{end}}
+
 
 </body>
 

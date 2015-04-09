@@ -192,6 +192,8 @@ input.form-title{
     cursor: pointer;
 }
 
+
+
 .dids-menu-right-item{
     display: block;
     color: white;
@@ -260,31 +262,70 @@ input.form-title{
     background-color: #FFFFFF;
     border-radius: 5px;
 }
-.upper_profile{
-    height: 120px;
+
+#upper_profile:hover {
+    background-color: black;
+    opacity: 80%;
 }
-.lower_profile{
-    height: 60px;
+
+#upper_profile{
+    height: 200px; 
+}
+
+#upper_profile{
+    height: 200px;
+}
+
+.check_upper_right {
+    width:20px;
+    height:20px;
+    float:right;
+    margin-right: 5px;
+}
+
+#edit_profile_btn {
+    text-align: center;
+    width:200px;
+    float:left;
+    float: top;
+    margin-left: 10%;
+    margin-top: 10px;
+    background-color: orange;
+    padding-left: 0px;
+    border: 2px solid orange;
+    border-radius: 5px;
+
+}
+.profile_text {
+    margin-right: 8%;
+    margin-top: 0px;
+    float:right;
+    text-align: center;
 }
 
 .profile_image_preview{
     float: left;
-    height: 100px;
-    width: 100px;
+    height: 140px;
+    width: 140px;
     margin-left: 10px;
-    margin-top: -10px;
+    margin-top: -60px;
+    border-color: 2px solid white;
+    border-width: 20px;
     border-radius: 15%;
-    padding: 4px;
+    padding: 5px;
+    z-index: 9999;
 }
 
 
 #profile_container{
 
 }
+
 #lower_profile{
     padding: 4px;
     padding-left: 6px;
     padding-right: 6px;
+    
 }
 
 #profile_author_name{
@@ -292,7 +333,13 @@ input.form-title{
 }
 
 #profile_username{
-    margin-left: 40%;
+    margin-left: 10px;
+    margin-top: 0px;
+    padding: 1px;
+    float:left;
+    float: bottom;
+    clear:both;
+    
 }
 
 #about{
@@ -330,14 +377,6 @@ textarea.about-text {
   border: 0px;
   margin-bottom: 0px;
   border-radius: 5px;
-}
-
-.profile_image_preview{
-    float: left;
-    height: 100px;
-    width: 100px;
-    border-radius: 15%;
-    padding: 4px;
 }
 
 .followers_image_preview{
