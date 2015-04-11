@@ -17,7 +17,7 @@ import re
 
 @auth.requires_login()
 def index():
-    #response.flash = 'auth.user_id = '+str(auth.user_id)
+    #response.flash = 'auth.username = '+str(auth.user.username)
 
     """
     if you need a simple wiki simply replace the two lines below with:
@@ -273,6 +273,11 @@ def profile():
     dids_left = []
     dids_center = []
     dids_right = []
+    form = form = SQLFORM.factory(Field('body', 'text',
+                                     label='About',
+                                     default=user.about
+                                     ))
+
     if request.args(1) and request.args(1) == 'bucketlist':
         bucket_items = set([row.did_id for row in db(db.bucketlist.user_id == user.user_id).select(db.bucketlist.did_id)])
         dids = db(db.dids.id.belongs(bucket_items)).select(orderby=~db.dids.date_created)
@@ -293,7 +298,7 @@ def profile():
             i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
                                     user=user, user_img=user_img, user_background_img=user_background_img,
-                                    about_str=about_str, editable=editable)
+                                    about_str=about_str, editable=editable, form=form)
 
 
 

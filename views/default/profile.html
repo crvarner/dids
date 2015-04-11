@@ -18,18 +18,13 @@
 
 <div id="left_main_container" class="did-span">
 
-
-    <!--<div id="followers">{{=A("followers", _class="btn", _id="followers_btn", _href=URL('default', 'followers/'+user.username))}}</div>
-            <div id="followers">{{=A("following", _class="btn", _id="followers_btn", _href=URL('default', 'following/'+user.username))}}</div>
-            <div id="num_dids"></div>
-            -->
-    <!-- ############## profile information block -->
     {{if editable:}}
     <div id="profile_container" class="did">
 
         {{=DIV(IMG(_src=URL("static", "images", args="green_check.svg.png")), _class="check_upper_right")}}
         {{=DIV("69", _class="check_upper_right")}}
         {{=A(user.username, _href=URL('default','profile', args=user.username), _class="did-author")}}
+        {{=DIV(_id="spin_div", _class="spin_div")}}
 
         {{=DIV(_id="upper_profile", _ondblclick="editProfileBackgroundImage();", _style="color:white;background-image: url("+ URL('download', args=user_background_img)+"); background-size: 100% Auto;")}}
 
@@ -41,7 +36,7 @@
 
             {{=IMG(_id="profile_img", _ondblclick="editProfileImage();", _class="profile_image_preview", _src=URL("download", args=user_img))}}
 
-            {{=DIV("Edit Profile", _id="edit_profile_btn")}}
+            {{=DIV("Bucketlist", _id="edit_profile_btn")}}
             {{=DIV(H4(user.username), _id="profile_username")}}
 
             
@@ -49,6 +44,8 @@
         <div ondblclick="editAbout();" id="lower_profile">
             <div id="about" class="form-text lower_profile">{{=XML(about_str)}}</div>
         </div>
+        {{=DIV("vvv Edit Profile vvv", _id="edit_bar", _style="flaot:bottom;text-align:center; width:100%; height:20px; background-image: url("+URL('static', 'images', args=['steel.jpg'])+")", _onclick="drop_edit_page();" )}}
+        
     </div>
     {{else:}}
     <div id="profile_container" class="profile">
