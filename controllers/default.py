@@ -246,6 +246,7 @@ def profile():
 
     user = db.users(auth.user_id)
     name = request.args(0)
+
     editable = False
     if name:
         name = name.lower()
@@ -268,7 +269,9 @@ def profile():
     about_str = linkify(user.about)
     user_img = URL('download', URL('static', 'images', 'facebook.png'))
     if user.profile_img: user_img = URL('download', args = db.profile_image(user.profile_img).img)
+    else: user_img = None
     if user.profile_background_img: user_background_img = URL('download', args = db.profile_image(user.profile_background_img).img)
+    else: user_background_img = None
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     dids_left = []
     dids_center = []

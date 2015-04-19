@@ -276,10 +276,12 @@ input.form-title{
 
 .drop_edit_box {
     margin-top:10px;
-    margin-left: 5%;
+    margin-left: 10.4%;
     background-color: #e6eeee;
-    width:90%;
+    width:20%;
     height: 40px;
+    float: top;
+    float:left;
 }
 
 #upper_profile:hover {

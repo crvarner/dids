@@ -29,8 +29,10 @@ db.define_table('dids',
                 Field('date_created','datetime'),
                 Field('title'),
                 Field('likes','integer', default=0),
-                Field('spam','integer'),
-                Field('link')
+                Field('spam','integer', default=0),
+                Field('link'),
+                Field('redid', 'integer', default=0),
+                Field('bucketed', 'integer', default=0),
                 )
                 
 """
@@ -147,13 +149,17 @@ db.define_table('users',
                 Field('profile_background_img'),
                 Field('about', 'text'),
                 Field('email'),
+                Field('PHONENUM'),
+                Field('CITY'),
+                Field('ST'),
+                Field('COUNTRY'),
                 Field('dids', 'reference dids'),
                 Field('feed'),
-                Field('numDids'),
-                Field('numFollowers'),
-                Field('numFollowing'),
-                Field('numBucket'),
-                Field('numDidBucket'),
+                Field('numDids','integer', default=0),
+                Field('numFollowers','integer', default=0),
+                Field('numFollowing','integer', default=0),
+                Field('numBucket','integer', default=0),
+                Field('numDidBucket','integer', default=0),
                 )
 #db.users.profile_img.default=os.path.join(request.folder, 'static', 'images', 'facebook.png')
 db.users.username.default = IS_NOT_IN_DB(db, db.users)
