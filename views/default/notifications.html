@@ -1,0 +1,78 @@
+<html>
+<head>
+{{left_sidebar_enabled=False}}
+{{right_sidebar_enabled=False}}
+
+{{response.files.append(URL('static','css/dids.css'))}}
+
+{{extend 'layout2.html'}}
+
+</head>
+<body>
+{{block left}}
+{{include}}
+<div id="left_main_container" class="did-span">
+</div>
+{{end}}
+
+{{block right}}
+{{include}}
+<div id="right_main_container" class="did-span">
+</div>
+{{end}}
+
+{{block center}}
+{{include}}
+
+{{=notifications_DOM}}
+
+
+
+<script type="text/javascript" src="{{=URL('static','js/jquery.autosize.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/dids.js')}}"></script>
+
+<script>
+/* follow a user */
+var local_follow = function(user_id){
+    // add follower to db and all that
+     console.log('.ffuck');
+    $.ajax({
+        url: "{{=URL('default','follow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(data){
+            console.log('.f'+user_id);
+            $('#f'+user_id).replaceWith('<a id="f'+user_id+'" title="unfollow" class="btn form-btn followers_listing_follow_btn" onclick="local_unfollow('+user_id+', this)">unfollow</a>');
+            console.log("replaced\n");
+        }
+    });
+}
+
+
+/* unfollow a user */
+var local_unfollow = function(user_id){
+    $.ajax({
+        url: "{{=URL('default','unfollow')}}",
+        data: {'following_id': user_id},
+        type: 'POST',
+        success: function(){
+            $('#f'+user_id).replaceWith('<a id="f'+user_id+'" title="follow" class="btn form-btn followers_listing_follow_btn" onclick="local_follow('+user_id+', this)">follow</a>');
+        }
+    });
+}
+
+</script>
+
+
+
+{{end}}
+</body>
+
+
+
+
+
+
+
+</html>
+
