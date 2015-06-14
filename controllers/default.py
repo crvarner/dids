@@ -470,7 +470,7 @@ def notifications():
 
 
 
-@auth.requires_login()
+@auth.requires_login(
 def add_comment():
     data = request.vars
     
@@ -487,7 +487,7 @@ def add_comment():
     comment.append(P( com_author, XML(linked_string), _style="word-break: break-word; margin-bottom: 0px; text-align: left;"))
     receiver_id = db(db.dids.id == data['did_id']).select().first().author_id
     db.notifications.insert(sender = auth.user_id, receiver = receiver_id,
-                            not_action = "commented")
+                            not_action = "commented") 
     return comment
     
 
