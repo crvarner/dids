@@ -404,7 +404,18 @@ textarea.about-text {
 
 .followers_image_preview{
     float: left;
-    margin=left: 0px;
+    margin-left: 0px;
+    height: 100%;
+    width: 70px;
+    border: 0px solid white;
+    border-radius: 15%;
+
+}
+
+
+.not_img_preview{
+    float: right;
+
     height: 100%;
     width: 70px;
     border: 0px solid white;

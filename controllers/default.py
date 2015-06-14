@@ -435,32 +435,29 @@ def notifications():
     
     if set_nots:
         for n in set_nots:
+            did = ""
+            if (n.did_id): 
+                elems = db(db.elements.did_id==n.did_id).select(orderby=db.elements.stack_num)
+                for e in elems:
+                    if e.is_image:
+                        did = (IMG( _src=URL('download', args = db.image(e.element_data).img ), _class="not_img_preview"))
+                        break
+            logging.error(did)
             sender = db(db.users.user_id == n.sender).select().first()
-            logging.error(sender)
             if (n.not_action == "liked"):
                 notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
-                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
+                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])), did,
                     DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " liked your did.",  _id="not_listing_text"),
-                     _class="followers_listing"))
+                    _class="followers_listing"))
             elif (n.not_action == "followed"):
                 notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
                     _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
                     DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " started following you.",  _id="not_listing_text"),
                      _class="followers_listing"))
-            elif (n.not_action == "unliked"):
-                notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
-                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
-                    DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " unliked your did.",  _id="not_listing_text"),
-                     _class="followers_listing"))
-            elif (n.not_action == "unfollowed"):
-                notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
-                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
-                    DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " stopped following you.",  _id="not_listing_text"),
-                     _class="followers_listing"))
             elif (n.not_action == "commented"):
                 notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
-                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
-                    DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " commented on your did",  _id="not_listing_text"),
+                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  did,
+                    DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " commented on your did.",  _id="not_listing_text"),
                      _class="followers_listing"))
            
 
@@ -487,7 +484,7 @@ def add_comment():
     comment.append(P( com_author, XML(linked_string), _style="word-break: break-word; margin-bottom: 0px; text-align: left;"))
     receiver_id = db(db.dids.id == data['did_id']).select().first().author_id
     db.notifications.insert(sender = auth.user_id, receiver = receiver_id,
-                            not_action = "commented") 
+                            not_action = "commented", did_id = data['did_id']) 
     return comment
     
 
@@ -516,8 +513,8 @@ def unfollow():
     f = db.followers(following_id = data['following_id'], follower_id = auth.user_id)
     if f:
         db(db.followers.id==f.id).delete()
-        db.notifications.insert(sender = auth.user_id, receiver = data['following_id'],
-                            not_action = "unfollowed")
+        #db.notifications.insert(sender = auth.user_id, receiver = data['following_id'],
+        #                    not_action = "unfollowed")
     return
  
 """
@@ -533,7 +530,7 @@ def like():
         db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes + 1)
         receiver_id = db(db.dids.id == data['did_id']).select().first().author_id
         db.notifications.insert(sender = auth.user_id, receiver = receiver_id,
-                            not_action = "liked")
+                            not_action = "liked", did_id = data['did_id'])
     return
 
 """
@@ -550,7 +547,7 @@ def unlike():
         db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes - 1)
         receiver_id = db(db.dids.id == data['did_id']).select().first().author_id
         db.notifications.insert(sender = auth.user_id, receiver = receiver_id,
-                            not_action = "unliked")
+                            not_action = "unliked", did_id = data['did_id'])
     return
 
 
