@@ -470,7 +470,7 @@ def notifications():
 
 
 
-@auth.requires_login(
+@auth.requires_login()
 def add_comment():
     data = request.vars
     
