@@ -76,6 +76,18 @@ db.bucketlist.date_bucketed.default = datetime.datetime.utcnow()
 
 
 
+"""
+defines table that will hold Notifications
+"""
+db.define_table('notifications',
+                Field('did_id'),
+                Field('not_action'),
+                Field('sender'),
+                Field('receiver'),
+                Field('time_stamp'),
+                )
+db.notifications.time_stamp.default = datetime.datetime.utcnow()
+
 
 
 """
@@ -102,7 +114,6 @@ db.define_table('comments',
                 Field('reply_id'),
                 Field('body','text')
                 )
-     
                 
 """
 defines the table holding all "likes"
@@ -174,7 +185,7 @@ db.users.about.default = ''
 """##################################################################################################
 ########  Represent users with @ and later represent search criteria with 
 ########  hashtag marks
-"""##################################################################################################"""
+##################################################################################################"""
 def regex_users(s):
     def makelink(match):
         title = match.group(0).strip()
@@ -201,10 +212,10 @@ def linkify(s, did_id=None, user_id=None):
 def represent_links(s, v):
     return linkify(s)
 
-"""################################################################################################"""
+"""################################################################################################
 ## store new user in users database on_accpet of registration
 ##
-"""################################################################################################"""
+################################################################################################"""
 def enter_user(myform):
     logging.error(myform.vars.username)
     form = myform.vars
@@ -215,10 +226,17 @@ def enter_user(myform):
                     last_name=form.last_name,
                     )
 
-"""################################################################################################"""
+"""################################################################################################
+## Methods for manipulating fast feed
+##
+################################################################################################"""
+def notifier (did_id, action, executor):
+    return
+
+"""################################################################################################
 ###  Validation and Representation statements
 ###
-"""################################################################################################"""
+################################################################################################"""
 auth.settings.register_onaccept = enter_user 
 db.dids.title.represent = represent_links 
 db.comments.body.represent = represent_links 

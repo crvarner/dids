@@ -63,6 +63,7 @@
             <a href="{{=URL('default','index', args=['top'])}}"><img id="top-btn" class='dids-btn' title="Top Dids" src="{{=URL('static','images/top-default.png')}}"></img></a>
             <a href="{{=URL('default','profile', args=['bucketlist'])}}"><img id="top-btn" class='dids-btn' title="Bucketlist" src="{{=URL('static','images/bucket.png')}}"></img></a>
             <a href="{{=URL('default','profile')}}"><img id="top-btn" class='dids-btn' title="Profile" src="{{=URL('static','images/castle.png')}}"></img></a>
+            <a href="{{=URL('default','notifications')}}"><img id="top-btn" class='dids-btn' title="Notifications" src="{{=URL('static','images/!.png')}}"></img></a>
         </div>
         <div id="dids-menu-right-container">
             <a id="dids-menu-title">{{=db.users(auth.user_id).username}} <img style="width: 10px; height: 10px;" src="{{=URL('static', 'images/menu-arrow.png')}}"></img></a>

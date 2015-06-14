@@ -149,9 +149,9 @@ def create_did():
             # move file pointer to beginning for rewriting in DB
             output.seek(0,0) 
             # for error checking print index of filewriter cursor element
-            logging.error(output.tell())
+            #logging.error(output.tell())
             # store image file in db
-            logging.error(d)
+            #logging.error(d)
             # throw image into image db
             img_id = db.image.insert(img = db.image.img.store(output, 'anon.jpeg'))
             # throw element number into did id
@@ -182,11 +182,8 @@ def update_profile():
     data = request.vars
     user = db.users(auth.user_id)
     user_id = auth.user.id
-    logging.error('in update_profile')
-    # logging.error(data)
+    
     # if an updated about in vars update user's about 
-    #logging.error(data)
-    logging.error(data)
     about_str = ''
     if(data['about']):
         #logging.error('updating about\n')
@@ -194,9 +191,9 @@ def update_profile():
         db(db.users.user_id == user_id).update(about=str(data['about']))
         #logging.error('updated about\n')
     elif(data.is_profile):
-        logging.error("lalala")
+        
     
-        logging.error('here')
+       
         # find start of base64 string from urldata
         image = re.search(r'base64,(.*)', str(data.file)).group(1)
 
@@ -215,10 +212,10 @@ def update_profile():
         db(db.users.user_id == user_id).update(profile_img=new_img)
         output.close()
 
-        logging.error('no internal error')
+        
     elif(data.is_background):
 
-        logging.error('here')
+        
         # find start of base64 string from urldata
         image = re.search(r'base64,(.*)', str(data.background)).group(1)
 
@@ -233,12 +230,12 @@ def update_profile():
         if user.profile_background_img: db(db.profile_image.id==user.profile_background_img).delete()
         # store image file in db
         new_img = db.profile_image.insert(img = db.profile_image.img.store(output, data.filename))
-        logging.error('the new id of the image is ' + str(new_img))
+        
         db(db.users.user_id == user_id).update(profile_background_img=new_img)
         output.close()
 
-        logging.error('no internal error')
     return 
+
 
 @auth.requires_login()
 def profile():
@@ -250,24 +247,24 @@ def profile():
     editable = False
     if name:
         name = name.lower()
-        logging.error('name is         :'+name+'\n')
+        #logging.error('name is         :'+name+'\n')
         if name == 'bucketlist':
             redirect(URL('default', 'profile', args =  [user.username, 'bucketlist']))
         if user.username == name: 
             editable = True
         else: 
             find_user = db(db.users.username == name).select().first() 
-            logging.error('requested ' + name + "'s profile" )
-            logging.error('value of test is:')
+            #logging.error('requested ' + name + "'s profile" )
+            #logging.error('value of test is:')
             if find_user != None:
-                logging.error('found profile' + name + '\n')
+                #logging.error('found profile' + name + '\n')
                 user = find_user
             else:
                 redirect(URL('default', 'profile', args =[user.username]))
     else:
         redirect(URL('default', 'profile', args = [user.username]))
     about_str = linkify(user.about)
-    user_img = URL('download', URL('static', 'images', 'facebook.png'))
+    user_img = URL('download', URL('static', args=['images', 'face.png']))
     if user.profile_img: user_img = URL('download', args = db.profile_image(user.profile_img).img)
     else: user_img = None
     if user.profile_background_img: user_background_img = URL('download', args = db.profile_image(user.profile_background_img).img)
@@ -284,7 +281,7 @@ def profile():
     if request.args(1) and request.args(1) == 'bucketlist':
         bucket_items = set([row.did_id for row in db(db.bucketlist.user_id == user.user_id).select(db.bucketlist.did_id)])
         dids = db(db.dids.id.belongs(bucket_items)).select(orderby=~db.dids.date_created)
-        logging.error('in my bucketlist')
+        #logging.error('in my bucketlist')
         about_str = linkify(user.about)
         following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     else:        
@@ -305,12 +302,12 @@ def profile():
 
 
 
-"""################################################################################################"""
 """###################################################################################################
 ###########
 ########### Folowers and Following
 ###########
 ###################################################################################################"""
+
 
 def followers():  
     user = db(db.users.user_id == auth.user.id).select().first()
@@ -333,10 +330,24 @@ def followers():
     set_followers = set([row.follower_id for row in db(db.followers.following_id == user.user_id).select(db.followers.follower_id)])
     set_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     followers = db(db.users.id.belongs(set_followers)).select(orderby=~db.users.first_name)
+    follow_DOM = DIV (_id="center-main-conatiner", _class="did-span")
     for f in followers:
         f.following = str(f.user_id in set_following)
-        logging.error("I am following "+f.username+ " = "+ f.following+"\n")
-    return dict(user=user, followers=followers)
+        if (f.following == True):
+            follow_DOM.append(DIV( IMG( _class="followers_image_preview", 
+                _src=URL('download', args=[db.profile_image(f.profile_img).img])), 
+                A( "unfollow", _class="btn form-btn followers_listing_follow_btn" 
+                ,_id="f"+str(f.user_id), _title="unfollow", _onclick="local_unfollow("+f.user_id+")"), 
+                A(f.username, _href=URL('profile', args=[f.username]), _id="followers_listing_username"),
+                 _class="followers_listing"))
+        else: follow_DOM.append(DIV( IMG( _class="followers_image_preview", 
+                _src=URL('download', args=[db.profile_image(f.profile_img).img])), 
+                A( "unfollow", _class="btn form-btn followers_listing_follow_btn" 
+                ,_id="f"+str(f.user_id), _title="follow", _onclick="local_unfollow("+f.user_id+")"), 
+                A(f.username, _href=URL('profile', args=[f.username]), _id="followers_listing_username"), 
+                _class="followers_listing"))
+    return dict(follow_DOM = follow_DOM)
+
 
 def following():
     user = db(db.users.user_id == auth.user.id).select().first()
@@ -358,26 +369,38 @@ def following():
     set_following = set([row.following_id for row in db(db.followers.follower_id == user.user_id).select(db.followers.following_id)])
     set_auth_following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     followers = db(db.users.id.belongs(set_following)).select(orderby=~db.users.first_name)
+    follow_DOM = DIV (_id="center-main-container", _class="did-span")
     for f in followers:
         f.following = str(f.user_id in set_auth_following)
-        logging.error("I am following "+f.username+ " = "+ f.following+"\n")
-    return dict(user=user, followers=followers)
+        if (f.following == True):
+            follow_DOM.append(DIV( IMG( _class="followers_image_preview", 
+                _src=URL('download', args=[db.profile_image(f.profile_img).img])), 
+                A( "unfollow", _class="btn form-btn followers_listing_follow_btn" 
+                ,_id="f"+str(f.user_id), _title="unfollow", _onclick="local_unfollow("+f.user_id+")"), 
+                A(f.username, _href=URL('profile', args=[f.username]), _id="followers_listing_username"),
+                 _class="followers_listing"))
+        else: follow_DOM.append(DIV( IMG( _class="followers_image_preview", 
+                _src=URL('download', args=[db.profile_image(f.profile_img).img])), 
+                A( "unfollow", _class="btn form-btn followers_listing_follow_btn" 
+                ,_id="f"+str(f.user_id), _title="follow", _onclick="local_unfollow("+f.user_id+")"), 
+                A(f.username, _href=URL('profile', args=[f.username]), _id="followers_listing_username"), 
+                _class="followers_listing"))
+    return dict(follow_DOM = follow_DOM)
 
 
 
-"""################################################################################################"""
 """###################################################################################################
 ###########
 ########### Searching Hashtags and Users
 ###########
 ###################################################################################################"""
 
+
 def find():
     if request.args:
         following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
         hashtags = set([row.did_id for row in db(db.hashtags.hashtag == request.args(0)).select(db.hashtags.did_id)])
         dids = db(db.dids.id.belongs(hashtags)).select(orderby=~db.dids.date_created)
-        logging.error(dids)
         hashtag = linkify('#' + request.args(0))
         dids_left = []
         dids_center = []
@@ -395,6 +418,35 @@ def find():
     else:
         return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag='')
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right, hashtag=hashtag)
+
+
+"""###################################################################################################
+##########
+########## Notifications
+##########
+####################################################################################################"""
+
+def notifications():  
+    user = db(db.users.user_id == auth.user.id).select().first()
+    name = request.args(0)
+    if (name != user.username): redirect(URL('notifications', args=user.username))
+    set_nots = db(db.notifications.receiver == user.user_id).select(orderby=~db.notifications.time_stamp)
+    notifications_DOM =  DIV (_id="center-main-container", _class="did-span")
+    
+    if set_nots:
+        for n in set_nots:
+            sender = db(db.users.user_id == n.sender).select().first()
+            logging.error(sender)
+            if (n.not_action == "liked"):
+                notifications_DOM.append(DIV( IMG( _class="followers_image_preview", 
+                    _src=URL('download', args=[db.profile_image(sender.profile_img).img])),  
+                    DIV(A(sender.username, _href=URL('profile', args=[sender.username])), " liked your did!",  _id="not_listing_text"),
+                     _class="followers_listing"))
+           
+
+    return dict(notifications_DOM=notifications_DOM)
+
+
 
 
 
@@ -416,9 +468,11 @@ def add_comment():
     
     return comment
     
+
 """
 follow() called via AJAX adds an entry to the followers table
 """
+
 def follow():
     data = request.vars
     
@@ -431,6 +485,8 @@ def follow():
 """
 unfollow() called via AJAX deletes entry from the followers table
 """
+
+
 def unfollow():
     data = request.vars
 
@@ -442,27 +498,32 @@ def unfollow():
 """
 like a did
 """ 
+
+
 def like():
     data = request.vars
     if not db.likes(did_id = data['did_id'], user_id = auth.user_id):
         db.likes.insert(did_id = data['did_id'],
                             user_id = auth.user_id)
         db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes + 1)
-        
+
     return
 
 """
 unlike a did
 """
+
+
 def unlike():
     data = request.vars
-          
+
     l = db.likes(did_id = data['did_id'], user_id = auth.user_id)
     if l:
         db(db.likes.id==l.id).delete()
         db(db.dids.id == data['did_id']).update(likes = db.dids(data['did_id']).likes - 1)
         
     return
+
 
 
 def user():
