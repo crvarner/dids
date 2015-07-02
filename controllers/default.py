@@ -140,9 +140,9 @@ def did2DOM(row, div_num, following=set(), new=False, do_list=False):
         
     # number of likes
     actions.append(SPAN( str(row.likes), _class="likes", _id='l'+str(row.id)))
-    actions.append(A('View', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[row.id, 'single'])))
+    #actions.append(A('View', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[row.id, 'single'])))
     if (do_list):
-         actions.append(A('Check Off!', _class="btn form-btn like", _title="View", _href=URL('checkoff', args=[row.id])))
+        actions.append(A('Check Off!', _class="btn form-btn like", _title="View", _href=URL('checkoff', args=[row.id])))
 
     # show/hide/add comment anchors
     comments = db(db.comments.did_id==row.id).select(orderby=~db.comments.date_created)
