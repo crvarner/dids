@@ -41,7 +41,7 @@ def index():
     return dict(dids=ds)
 
 
-def view():
+def viewer():
     #response.flash = 'auth.username = '+str(auth.user.username)
     if request.args: did_id = request.args[0] 
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
@@ -61,9 +61,9 @@ def view():
     ds = []
 
     selection = DIV ( _class="did_clear")
-    selection.append(A('Single', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'single'])))
-    selection.append(A('Friends', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'follow'])))
-    selection.append(A('All', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'all'])))
+    selection.append(A('Single', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[did_id, 'single'])))
+    selection.append(A('Friends', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[did_id, 'follow'])))
+    selection.append(A('All', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[did_id, 'all'])))
     ds.append(selection)
     for d in dids:
         ds.append(did2DOM(row = d, following = following, div_num = i))
@@ -140,7 +140,7 @@ def did2DOM(row, div_num, following=set(), new=False, do_list=False):
         
     # number of likes
     actions.append(SPAN( str(row.likes), _class="likes", _id='l'+str(row.id)))
-    actions.append(A('View', _class="btn form-btn like", _title="View", _href=URL('view', args=[row.id, 'single'])))
+    actions.append(A('View', _class="btn form-btn like", _title="View", _href=URL('viewer', args=[row.id, 'single'])))
     if (do_list):
          actions.append(A('Check Off!', _class="btn form-btn like", _title="View", _href=URL('checkoff', args=[row.id])))
 
