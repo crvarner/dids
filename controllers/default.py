@@ -17,12 +17,6 @@ import re
 
 @auth.requires_login()
 def index():
-    #response.flash = 'auth.username = '+str(auth.user.username)
-
-    """
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
     following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
     
     if request.args and request.args[0] == 'top':
@@ -37,7 +31,7 @@ def index():
     else:
         authors = following | set(str(auth.user_id))
         dids = db(db.dids.author_id.belongs(authors)).select(orderby=~db.dids.date_created)
-
+    logging.error(dids)
     i = 0;
     ds = []
     for d in dids:
@@ -46,8 +40,58 @@ def index():
         
     return dict(dids=ds)
 
+
+def view():
+    #response.flash = 'auth.username = '+str(auth.user.username)
+    if request.args: did_id = request.args[0] 
+    following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    if request.args[1] == "single":
+        set_dids = set([str(did_id)])
+        dids = db(db.dids.id.belongs(set_dids)).select(orderby=db.dids.date_created)     
+    elif request.args[1] == "follow":
+        set_dids = set([row.child_id for row in db(db.redids.parent_id == did_id).select(db.redids.child_id)])
+        authors = (set([row.author_id for row in db(db.dids.id.belongs(set_dids)).select(db.dids.author_id)]) & following) | set([str(auth.user_id)])
+        author_dids = set([str(row.id) for row in db(db.dids.author_id.belongs(authors)).select(db.dids.id)]) 
+        set_dids = (author_dids & set_dids) | set([str(did_id)])
+        dids = db(db.dids.id.belongs(set_dids)).select(orderby=db.dids.date_created)
+    else:
+        set_dids = set([row.child_id for row in db(db.redids.parent_id == did_id).select(db.redids.child_id)]) | set([str(did_id)])
+        dids = db(db.dids.id.belongs(set_dids)).select(orderby=db.dids.date_created)
+    i = 0;
+    ds = []
+
+    selection = DIV ( _class="did_clear")
+    selection.append(A('Single', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'single'])))
+    selection.append(A('Friends', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'follow'])))
+    selection.append(A('All', _class="btn form-btn like", _title="View", _href=URL('view', args=[did_id, 'all'])))
+    ds.append(selection)
+    for d in dids:
+        ds.append(did2DOM(row = d, following = following, div_num = i))
+        i += 1
+        
+    return dict(dids=ds)
+
+
+
+def checkoff():
+    #response.flash = 'auth.username = '+str(auth.user.username)
+    if request.args: did_id = request.args[0] 
+    following = set([row.following_id for row in db(db.followers.follower_id == auth.user_id).select(db.followers.following_id)])
+    set_dids = set([str(did_id)])
+    dids = db(db.dids.id.belongs(set_dids)).select(orderby=~db.dids.date_created)     
+   
+    i = 0;
+    ds = []
+
     
-def did2DOM(row, div_num, following=set(), new=False):
+    for d in dids:
+        ds.append(did2DOM(row = d, following = following, div_num = i))
+        i += 1
+        
+    return dict(dids=ds, did=did_id)
+
+    
+def did2DOM(row, div_num, following=set(), new=False, do_list=False):
     """ things I need to pass
     did db row
     following
@@ -56,13 +100,16 @@ def did2DOM(row, div_num, following=set(), new=False):
     
     #create did
     if not new:
-        did = DIV( _class="did clear", _id="d"+ str(div_num) )
+        did = DIV( _class="did clear", _id="d"+ str(div_num))
     elif new:
         did = DIV( _class="did clear", _id=str(div_num) )
     
     #attach author
     did.append(A(db.users(row.author_id).username, _href=URL('default','profile', args=[db.users(row.author_id).username]), _class="did-author"))
     
+    did.append(DIV(IMG(_src=URL("static", "images", args="green_check.svg.png")), _class="check_upper_right"))
+    did.append(DIV(row.num_redid, _class="check_upper_right"))
+
     # attach title
     if row.title != '':
         did.append(H4(XML(linkify(row.title)), _class="did-title"))
@@ -93,7 +140,10 @@ def did2DOM(row, div_num, following=set(), new=False):
         
     # number of likes
     actions.append(SPAN( str(row.likes), _class="likes", _id='l'+str(row.id)))
-    
+    actions.append(A('View', _class="btn form-btn like", _title="View", _href=URL('view', args=[row.id, 'single'])))
+    if (do_list):
+         actions.append(A('Check Off!', _class="btn form-btn like", _title="View", _href=URL('checkoff', args=[row.id])))
+
     # show/hide/add comment anchors
     comments = db(db.comments.did_id==row.id).select(orderby=~db.comments.date_created)
     actions.append(A('comment', _id="com_btn"+str(row.id), _style="float: right", _class="btn form-btn", _onclick="addComment('d"+str(div_num)+"', "+str(row.id)+", this)"))
@@ -135,8 +185,8 @@ def create_did():
     # allows for linkify in title after first post
     linkify(s = str(data['did_title']), did_id = did_id, user_id = author)
 
-    
     num_elems = (len(data) - 2)/2
+
     for i in range(0, num_elems):
         d = data['elem'+str(i)]
         if (data['is_img' + str(i)] == 'True'):
@@ -148,10 +198,6 @@ def create_did():
             output.write(str(base64.b64decode(image)))
             # move file pointer to beginning for rewriting in DB
             output.seek(0,0) 
-            # for error checking print index of filewriter cursor element
-            #logging.error(output.tell())
-            # store image file in db
-            #logging.error(d)
             # throw image into image db
             img_id = db.image.insert(img = db.image.img.store(output, 'anon.jpeg'))
             # throw element number into did id
@@ -164,10 +210,16 @@ def create_did():
             db.elements.insert(did_id = did_id,
                 stack_num = i,
                 is_image = False,
-                element_data = str(d))
+                element_data = d)
             # redundant but necessary 
             linkify(s = str(d), did_id = did_id, user_id = author)
-    
+        """if data['is_redid']:
+            redid = db(db.dids.id == data['is_redid']).select().first()
+            redid.update_record(num_redid = redid.num_redid + 1)
+            db.redids.insert(orig_id = redid.id, 
+                parent_id = int(data['is_redid']),
+                child_id = did_id)
+        """ 
     return did2DOM( row = db.dids(did_id) , div_num = data['div_id'], new = True )
     
 
@@ -277,8 +329,9 @@ def profile():
                                      label='About',
                                      default=user.about
                                      ))
-
+    isbucket = False
     if request.args(1) and request.args(1) == 'bucketlist':
+        isbucket = True
         bucket_items = set([row.did_id for row in db(db.bucketlist.user_id == user.user_id).select(db.bucketlist.did_id)])
         dids = db(db.dids.id.belongs(bucket_items)).select(orderby=~db.dids.date_created)
         #logging.error('in my bucketlist')
@@ -290,11 +343,11 @@ def profile():
         i = 0
         for d in dids:
             if i%3 == 0:
-                dids_left.append(did2DOM(row = d, following = following, div_num = i))
+                dids_left.append(did2DOM(row = d, following = following, div_num = i, do_list=isbucket))
             elif i%3 == 1:
-                dids_center.append(did2DOM(row = d, following = following, div_num = i))
+                dids_center.append(did2DOM(row = d, following = following, div_num = i, do_list=isbucket))
             elif i%3 == 2: 
-                dids_right.append(did2DOM(row = d, following = following, div_num = i))
+                dids_right.append(did2DOM(row = d, following = following, div_num = i, do_list=isbucket))
             i += 1
     return dict(dids_left=dids_left, dids_center=dids_center, dids_right=dids_right,
                                     user=user, user_img=user_img, user_background_img=user_background_img,
@@ -500,8 +553,16 @@ def follow():
                             follower_id = auth.user_id)
         db.notifications.insert(sender = auth.user_id, receiver = data['following_id'],
                             not_action = "followed")
+
+        follower = db(db.users.user_id == auth.user.id).select().first()
+        follower.update_record(num_following = follower.num_following + 1)
+
+        followee = db(db.users.user_id == data['following_id']).select().first()
+        followee.update_record(num_followers = followee.num_followers + 1)
+
     return
-    
+
+
 """
 unfollow() called via AJAX deletes entry from the followers table
 """
@@ -515,6 +576,12 @@ def unfollow():
         db(db.followers.id==f.id).delete()
         #db.notifications.insert(sender = auth.user_id, receiver = data['following_id'],
         #                    not_action = "unfollowed")
+        follower = db(db.users.user_id ==  auth.user.id).select().first()
+        follower.update_record(num_following = follower.num_following - 1)
+
+        followee = db(db.users.user_id == data['following_id']).select().first()
+        followee.update_record(num_followers = followee.num_followers - 1)
+
     return
  
 """

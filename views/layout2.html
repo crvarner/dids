@@ -55,7 +55,7 @@
     <div class="flash">{{=response.flash or ''}}</div>
     <div class="dids-navbar clear">
         <div class="logo-container">
-            <a><img id="logo" src="{{=URL('static', 'images/dids.png')}}"></img></a>
+            <a href="{{=URL('default','index')}}"><img id="logo" src="{{=URL('static', 'images/dids.png')}}"></img></a>
         </div>
         <div id='dbc' class='dids-btn-container'>
             <a href="{{=URL('default','index')}}"><img id="feed-btn" class='dids-btn' title="Home" src="{{=URL('static','images/feed-default.png')}}"></img></a>
@@ -137,7 +137,7 @@
   <script src="{{=URL('static','js/web2py_bootstrap.js')}}"></script>
   
   <script>
-  {{if request.args:}}
+  {{if request.args :}}
   var arg = '{{=request.args[0]}}';
   {{else:}}
   var arg = 'feed';
@@ -173,6 +173,7 @@ var newDid = function(){
                     +'<form id="did_form" enctype="multipart/form-data" action="create_did" method="post">'
                     +'<input class="form-title" name="did_title" type="text"/>'
                     +'<input name="div_id" type="hidden" value="new' + new_count + '" />'
+                    +'<input name="is_redid" type="hidden" value="False"/>'
                     +'</form>'
                     +'<div id="actions" style="margin-left: 10px; margin-right: 10px;">'
                     +'<a class="btn form-btn" onclick="addText()">add text</a>'
@@ -403,15 +404,10 @@ var resize = function(images, div_id, profile, elem_id, profile_background) {
                 //s = ~~(file.size/1024) +'KB';              // can be used to check maximum file size uploads
                 
                 if (profile) {
-
-                    console.log(file.size);
                     var ratio = 310/W;
-                    console.log(W);
                     ctx.drawImage(image, 0, 0); //draw image
                     resample_hermite(canvas, W, H, 310.0, H*ratio);
-
                     $('#'+div_id).attr('src', canvas.toDataURL('image/jpeg'));
-                    console.log("here is where I am suppose to be");
                     var resize = canvas.toDataURL('image/jpeg');
                     var fd = new FormData();
                     fd.append('name', 'img_data');
@@ -423,9 +419,7 @@ var resize = function(images, div_id, profile, elem_id, profile_background) {
                     xhr.send(fd);
                     return;
                 }else if(profile_background) {
-                    console.log(file.size);
                     var ratio = 1240/W;
-                    console.log(W);
                     ctx.drawImage(image, 0, 0); //draw image
                     resample_hermite(canvas, W, H, 1240.0, H*ratio);
                     $('#upper_profile').css('background-image', 'url('+ canvas.toDataURL('image/jpeg') + ')');
@@ -435,12 +429,9 @@ var resize = function(images, div_id, profile, elem_id, profile_background) {
                     $('#edit_div').remove();
                     return;
                 }else{
-                    console.log(file.size);
                     var ratio = 1240/W;
-                    console.log(W);
                     ctx.drawImage(image, 0, 0); //draw image
                     resample_hermite(canvas, W, H, 1240.0, H*ratio);
-                    
                     $('#'+div_id).html(
                     '<img style="width: 100%;" src="'+ canvas.toDataURL('image/jpeg') +'"></img>');
                     $('#'+elem_id).remove();

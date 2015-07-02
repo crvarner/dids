@@ -22,7 +22,7 @@
     <div id="profile_container" class="did">
 
         {{=DIV(IMG(_src=URL("static", "images", args="green_check.svg.png")), _class="check_upper_right")}}
-        {{=DIV("69", _class="check_upper_right")}}
+        {{=DIV(user.num_dids, _class="check_upper_right")}}
         {{=A(user.username, _href=URL('default','profile', args=user.username), _class="did-author")}}
         {{=DIV(_id="spin_div", _class="spin_div")}}
 
@@ -30,12 +30,14 @@
 
         <div id="middle_profile" style="width:100%; height: 150px;">
 
-            {{=A(DIV(H5("Following"), "69", _class="profile_text"), _href=URL("following", args=[user.username]))}}  
-            {{=A(DIV(H5("Followers"), "69", _class="profile_text"), _href=URL("followers", args=[user.username]))}} 
-            {{=A(DIV(H5("Dids"), "69", _class="profile_text"), _href=URL("profile", args=[user.username]))}}
-
-            {{=IMG(_id="profile_img", _ondblclick="editProfileImage();", _class="profile_image_preview", _src=URL("download", args=user_img))}}
-
+            {{=A(DIV(H5("Following"), user.num_following, _class="profile_text"), _href=URL("following", args=[user.username]))}}  
+            {{=A(DIV(H5("Followers"), user.num_followers, _class="profile_text"), _href=URL("followers", args=[user.username]))}} 
+            {{=A(DIV(H5("Dids"), user.num_dids, _class="profile_text"), _href=URL("profile", args=[user.username]))}}
+            {{ if user_img: }}
+                {{=IMG(_id="profile_img", _ondblclick="editProfileImage();", _class="profile_image_preview", _src=URL("download", args=user_img))}}
+            {{ else: }}
+                {{ =IMG(_id="profile_img", _ondblclick="editProfileImage();", _class="profile_image_preview", _src=URL("static", "images", args="new-default.png")) }} 
+            {{ pass }}
             {{=A(DIV("Bucketlist", _id="edit_profile_btn", _style="color:black;"), _href=URL("profile", args=[user.username, "bucketlist"]))}}
             {{=DIV(H4(user.username), _id="profile_username")}}
 
@@ -51,7 +53,7 @@
     <div id="profile_container" class="did">
 
         {{=DIV(IMG(_src=URL("static", "images", args="green_check.svg.png")), _class="check_upper_right")}}
-        {{=DIV("69", _class="check_upper_right")}}
+        {{=DIV(user.num_dids, _class="check_upper_right")}}
         {{=A(user.username, _href=URL('default','profile', args=user.username), _class="did-author")}}
         {{=DIV(_id="spin_div", _class="spin_div")}}
 
@@ -59,9 +61,9 @@
 
         <div id="middle_profile" style="width:100%; height: 150px;">
 
-            {{=A(DIV(H5("Following"), "69", _class="profile_text"), _href=URL("following", args=[user.username]))}}  
-            {{=A(DIV(H5("Followers"), "69", _class="profile_text"), _href=URL("followers", args=[user.username]))}} 
-            {{=A(DIV(H5("Dids"), "69", _class="profile_text"), _href=URL("profile", args=[user.username]))}}
+            {{=A(DIV(H5("Following"), user.num_following, _class="profile_text"), _href=URL("following", args=[user.username]))}}  
+            {{=A(DIV(H5("Followers"), user.num_followers, _class="profile_text"), _href=URL("followers", args=[user.username]))}} 
+            {{=A(DIV(H5("Dids"), user.num_dids, _class="profile_text"), _href=URL("profile", args=[user.username]))}}
 
             {{=IMG(_id="profile_img", _class="profile_image_preview", _src=URL("download", args=user_img))}}
 

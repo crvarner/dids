@@ -35,7 +35,6 @@
 /* follow a user */
 var local_follow = function(user_id){
     // add follower to db and all that
-     console.log('.ffuck');
     $.ajax({
         url: "{{=URL('default','follow')}}",
         data: {'following_id': user_id},

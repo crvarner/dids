@@ -31,7 +31,7 @@ db.define_table('dids',
                 Field('likes','integer', default=0),
                 Field('spam','integer', default=0),
                 Field('link'),
-                Field('redid', 'integer', default=0),
+                Field('num_redid', 'integer', default=0),
                 Field('bucketed', 'integer', default=0),
                 )
                 
@@ -125,6 +125,13 @@ db.define_table('likes',
                 )
 
 
+db.define_table('redids',
+                Field('orig_id'),
+                Field('parent_id'),
+                Field('child_id'),
+                )
+
+
 """#########################################################################################
 #######
 #######   users table 
@@ -166,11 +173,11 @@ db.define_table('users',
                 Field('COUNTRY'),
                 Field('dids', 'reference dids'),
                 Field('feed'),
-                Field('numDids','integer', default=0),
-                Field('numFollowers','integer', default=0),
-                Field('numFollowing','integer', default=0),
-                Field('numBucket','integer', default=0),
-                Field('numDidBucket','integer', default=0),
+                Field('num_dids','integer', default=0),
+                Field('num_followers','integer', default=0),
+                Field('num_following','integer', default=0),
+                Field('num_bucket','integer', default=0),
+                Field('num_did_bucket','integer', default=0),
                 )
 #db.users.profile_img.default=os.path.join(request.folder, 'static', 'images', 'facebook.png')
 db.users.username.default = IS_NOT_IN_DB(db, db.users)
@@ -201,7 +208,7 @@ def regex_hash(s, did_id, user_id):
         if did_id != None: 
             logging.error(str(id) + page +'\n')
             db.hashtags.insert(hashtag=page, did_id=did_id)
-            if page == 'bucketlist': db.bucketlist.insert(did_id=did_id, user_id=user_id)
+            if (page == 'bucketlist') | (page == 'bucket'): db.bucketlist.insert(did_id=did_id, user_id=user_id)
         return '%s' % (A(title, _href=URL('default', 'find', args=[page])))
 
     return re.sub(RE_HASH, makelink, s)
